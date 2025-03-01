@@ -1,6 +1,23 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  TransactionCategory,
+  TransactionPaymentMethod,
+  TransactionType,
+} from "@prisma/client";
 import { ArrowDownUpIcon } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { addTransaction } from "../_actions/add-transaction";
+import {
+  TRANSACTION_CATEGORY_OPTIONS,
+  TRANSACTION_PAYMENT_METHOD_OPTIONS,
+  TRANSACTION_TYPE_OPTIONS,
+} from "../_constants/transactions";
+import { formSchema, tFormSchema } from "../transactions/_schema";
+import { MoneyInput } from "./money-input";
 import { Button } from "./ui/button";
+import { DatePicker } from "./ui/date-picker";
 import {
   Dialog,
   DialogClose,
@@ -12,13 +29,6 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import {
-  TransactionCategory,
-  TransactionPaymentMethod,
-  TransactionType,
-} from "@prisma/client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import {
   Form,
   FormControl,
   FormField,
@@ -27,7 +37,6 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import { MoneyInput } from "./money-input";
 import {
   Select,
   SelectContent,
@@ -35,20 +44,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import {
-  TRANSACTION_PAYMENT_METHOD_OPTIONS,
-  TRANSACTION_TYPE_OPTIONS,
-  TRANSACTION_CATEGORY_OPTIONS,
-} from "../_constants/transactions";
-import { DatePicker } from "./ui/date-picker";
-import { formSchema, tFormSchema } from "../transactions/_schema";
 
 const AddTransactionButton = () => {
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+
   const form = useForm<tFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      amount: "",
+      amount: 50,
       type: TransactionType.EXPENSE,
       category: TransactionCategory.OTHER,
       paymentMethod: TransactionPaymentMethod.OTHER,
@@ -56,13 +60,23 @@ const AddTransactionButton = () => {
     },
   });
 
-  const onSubmit = (data: tFormSchema) => {
-    console.log(data);
+  const onSubmit = async (data: tFormSchema) => {
+    try {
+      await addTransaction(data);
+      setDialogIsOpen(false);
+
+      form.reset();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <Dialog
+      open={dialogIsOpen}
       onOpenChange={(open) => {
+        setDialogIsOpen(open);
+
         if (!open) form.reset();
       }}
     >
@@ -103,7 +117,15 @@ const AddTransactionButton = () => {
                   <FormLabel>Valor</FormLabel>
 
                   <FormControl>
-                    <MoneyInput placeholder="Digite o valor..." {...field} />
+                    <MoneyInput
+                      placeholder="Digite o valor..."
+                      value={field.value}
+                      onValueChange={({ floatValue }) => {
+                        field.onChange(floatValue);
+                      }}
+                      onBlur={field.onBlur}
+                      disabled={field.disabled}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
