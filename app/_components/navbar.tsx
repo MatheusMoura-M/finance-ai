@@ -11,7 +11,13 @@ const Navbar = () => {
     <nav className="flex justify-between border-b border-solid px-8 py-8">
       {/* ESQUERDA */}
       <div className="item-center flex gap-10">
-        <Image src="/logo.svg" width={173} height={39} alt="Finance AI" />
+        <Image
+          src="/logo.svg"
+          width={173}
+          height={39}
+          alt="Finance AI"
+          priority
+        />
 
         <Link
           href="/"

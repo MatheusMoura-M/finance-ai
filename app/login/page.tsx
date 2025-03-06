@@ -22,6 +22,7 @@ const LoginPage = () => {
           height={39}
           alt="Finance AI"
           className="mb-8"
+          priority
         />
 
         <h1 className="mb-3 text-4xl font-bold">Bem-vindo</h1>
