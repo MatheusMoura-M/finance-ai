@@ -28,19 +28,19 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-interface TransactionPierChartProps {
+interface TransactionsPierChartProps {
   typesPercentage: TransactionPercentagePerType;
   expensesTotal: number;
   investmentsTotal: number;
   depositsTotal: number;
 }
 
-const TransactionPieChart = ({
+const TransactionsPieChart = ({
   expensesTotal,
   investmentsTotal,
   depositsTotal,
   typesPercentage,
-}: TransactionPierChartProps) => {
+}: TransactionsPierChartProps) => {
   const chartData = [
     {
       type: TransactionType.DEPOSIT,
@@ -103,4 +103,4 @@ const TransactionPieChart = ({
   );
 };
 
-export default TransactionPieChart;
+export default TransactionsPieChart;
