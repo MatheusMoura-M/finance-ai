@@ -8,6 +8,10 @@ import { db } from "../_lib/prisma";
 import { transactionsColumns } from "./_columns";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 
+export const metadata = {
+  title: "Transações",
+};
+
 const TransactionsPage = async () => {
   const { userId } = auth();
 

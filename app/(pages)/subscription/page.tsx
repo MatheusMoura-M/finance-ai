@@ -1,11 +1,16 @@
-import Navbar from "../../_components/navbar";
-import { auth, clerkClient } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader } from "../../_components/ui/card";
-import { CheckIcon, XIcon } from "lucide-react";
-import AquirePlanButton from "./_components/aquire-plan-button";
 import { Badge } from "@/app/_components/ui/badge";
+import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { getCurrentMonthTransactions } from "@/app/_data/get-month-transactions";
+import { auth, clerkClient } from "@clerk/nextjs/server";
+import { CheckIcon, XIcon } from "lucide-react";
+import { redirect } from "next/navigation";
+import Navbar from "../../_components/navbar";
+import { Card, CardContent, CardHeader } from "../../_components/ui/card";
+import AquirePlanButton from "./_components/aquire-plan-button";
+
+export const metadata = {
+  title: "Assinatura",
+};
 
 const SubscriptionPage = async () => {
   const { userId } = auth();
@@ -21,75 +26,76 @@ const SubscriptionPage = async () => {
   return (
     <>
       <Navbar />
+      <ScrollArea>
+        <div className="space-y-6 p-6">
+          <h1 className="text-2xl font-bold">Assinatura</h1>
 
-      <div className="space-y-6 p-6">
-        <h1 className="text-2xl font-bold">Assinatura</h1>
+          <div className="flex flex-wrap justify-center gap-6 md:justify-start">
+            <Card className="w-[36.53%] min-w-[345px] max-w-[450px]">
+              <CardHeader className="border-b border-solid py-8">
+                <h2 className="text-center text-2xl font-semibold">
+                  Plano Básico
+                </h2>
 
-        <div className="flex gap-6">
-          <Card className="w-[450px]">
-            <CardHeader className="border-b border-solid py-8">
-              <h2 className="text-center text-2xl font-semibold">
-                Plano Básico
-              </h2>
+                <div className="flex items-center justify-center">
+                  <span className="text-4xl">R$</span>
+                  <span className="text-6xl font-semibold">0</span>
+                  <span className="text-2xl text-muted-foreground">/mês</span>
+                </div>
+              </CardHeader>
 
-              <div className="flex items-center justify-center">
-                <span className="text-4xl">R$</span>
-                <span className="text-6xl font-semibold">0</span>
-                <span className="text-2xl text-muted-foreground">/mês</span>
-              </div>
-            </CardHeader>
+              <CardContent className="space-y-6 py-8">
+                <div className="flex items-center gap-2">
+                  <CheckIcon className="text-primary" />
 
-            <CardContent className="space-y-6 py-8">
-              <div className="flex items-center gap-2">
-                <CheckIcon className="text-primary" />
+                  <p>
+                    Apenas 10 transações por mês ({currentMonthTransaction}/10)
+                  </p>
+                </div>
 
-                <p>
-                  Apenas 10 transações por mês ({currentMonthTransaction}/10)
-                </p>
-              </div>
+                <div className="flex items-center gap-2">
+                  <XIcon />
+                  <p>Relatórios de IA</p>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div className="flex items-center gap-2">
-                <XIcon />
-                <p>Relatórios de IA</p>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="w-[36.53%] min-w-[345px] max-w-[450px]">
+              <CardHeader className="relative border-b border-solid py-8">
+                {hasPremiumPlan && (
+                  <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
+                    Ativo
+                  </Badge>
+                )}
 
-          <Card className="w-[450px]">
-            <CardHeader className="relative border-b border-solid py-8">
-              {hasPremiumPlan && (
-                <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
-                  Ativo
-                </Badge>
-              )}
+                <h2 className="text-center text-2xl font-semibold">
+                  Plano Premium
+                </h2>
 
-              <h2 className="text-center text-2xl font-semibold">
-                Plano Premium
-              </h2>
+                <div className="flex items-center justify-center">
+                  <span className="text-4xl">R$</span>
+                  <span className="text-6xl font-semibold">19</span>
+                  <span className="text-2xl text-muted-foreground">/mês</span>
+                </div>
+              </CardHeader>
 
-              <div className="flex items-center justify-center">
-                <span className="text-4xl">R$</span>
-                <span className="text-6xl font-semibold">19</span>
-                <span className="text-2xl text-muted-foreground">/mês</span>
-              </div>
-            </CardHeader>
+              <CardContent className="space-y-6 py-8">
+                <div className="flex items-center gap-2">
+                  <CheckIcon className="text-primary" />
+                  <p>Transações ilimitadas</p>
+                </div>
 
-            <CardContent className="space-y-6 py-8">
-              <div className="flex items-center gap-2">
-                <CheckIcon className="text-primary" />
-                <p>Transações ilimitadas</p>
-              </div>
+                <div className="flex items-center gap-2">
+                  <CheckIcon className="text-primary" />
+                  <p>Relatórios de IA</p>
+                </div>
 
-              <div className="flex items-center gap-2">
-                <CheckIcon className="text-primary" />
-                <p>Relatórios de IA</p>
-              </div>
-
-              <AquirePlanButton />
-            </CardContent>
-          </Card>
+                <AquirePlanButton />
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      </ScrollArea>
     </>
   );
 };
