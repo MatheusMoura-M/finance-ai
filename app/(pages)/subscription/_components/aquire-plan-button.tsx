@@ -31,7 +31,7 @@ const AquirePlanButton = () => {
 
   if (hasPremiumPlan) {
     return (
-      <Button className="w-full rounded-full font-bold" variant="link">
+      <Button className="w-full rounded-full" variant="link">
         <Link
           href={`${process.env.NEXT_PUBLIC_STRIPE_COSTUMER_PORTAL_URL as string}?prefilled_email=${user.emailAddresses[0].emailAddress}`}
         >
@@ -42,10 +42,7 @@ const AquirePlanButton = () => {
   }
 
   return (
-    <Button
-      className="w-full rounded-full font-bold"
-      onClick={handleAquirePlanClick}
-    >
+    <Button className="w-full rounded-full" onClick={handleAquirePlanClick}>
       Adquirir Plano
     </Button>
   );
