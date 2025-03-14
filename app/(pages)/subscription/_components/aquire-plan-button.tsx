@@ -3,8 +3,12 @@
 import { Button } from "@/app/_components/ui/button";
 import { createStripeCheckout } from "../_actions/create-stripe-checkout";
 import { loadStripe } from "@stripe/stripe-js";
+import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 const AquirePlanButton = () => {
+  const { user } = useUser();
+
   const handleAquirePlanClick = async () => {
     const { sessionId } = await createStripeCheckout();
 
@@ -22,6 +26,20 @@ const AquirePlanButton = () => {
 
     await stripe.redirectToCheckout({ sessionId });
   };
+
+  const hasPremiumPlan = user?.publicMetadata.subscriptionPlan === "premium";
+
+  if (hasPremiumPlan) {
+    return (
+      <Button className="w-full rounded-full font-bold" variant="link">
+        <Link
+          href={`${process.env.NEXT_PUBLIC_STRIPE_COSTUMER_PORTAL_URL as string}?prefilled_email=${user.emailAddresses[0].emailAddress}`}
+        >
+          Gerenciar Plano
+        </Link>
+      </Button>
+    );
+  }
 
   return (
     <Button
