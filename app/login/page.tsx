@@ -13,7 +13,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="grid h-full grid-cols-2">
+    <div className="grid h-full grid-cols-1 sm:grid-cols-2">
       <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center p-8">
         {/* ESQUERDA */}
         <Image
@@ -40,7 +40,7 @@ const LoginPage = () => {
         </SignInButton>
       </div>
 
-      <div className="relative h-full w-full">
+      <div className="relative hidden h-full w-full sm:inline">
         {/* DIREITA */}
         <Image
           src="/login.png"
