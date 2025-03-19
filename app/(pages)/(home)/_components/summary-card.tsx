@@ -19,18 +19,18 @@ const SummaryCard = ({
   return (
     <Card className={`${size === "large" ? "bg-white bg-opacity-5" : ""}`}>
       <CardHeader
-        className={`${size === "large" ? "flex-row items-center gap-4" : "flex-col items-center gap-4 md:flex-row"} `}
+        className={`pb-3 pt-5 ${size === "large" ? "flex-row items-center gap-4" : "flex-col items-center gap-4 md:flex-row"}`}
       >
         {icon}
 
         <p
-          className={`${size === "small" ? "text-muted-foreground" : "text-white opacity-70"} `}
+          className={`!mt-0 ${size === "small" ? "text-muted-foreground" : "text-white opacity-70"}`}
         >
           {title}
         </p>
       </CardHeader>
 
-      <CardContent className="flex sm:flex-row sm:items-stretch sm:justify-between sm:space-x-0 xs:flex-col xs:items-center xs:space-y-3">
+      <CardContent className="flex pb-5 sm:flex-row sm:items-stretch sm:justify-between sm:space-x-0 xs:flex-col xs:items-center xs:space-y-3">
         <p
           className={`font-bold ${size === "small" ? "text-lg md:text-xl lg:text-2xl" : "text-4xl"}`}
         >

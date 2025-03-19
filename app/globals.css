@@ -79,4 +79,8 @@ body {
   body {
     @apply h-full bg-background text-foreground;
   }
+
+  .scroll-area-container div[data-radix-scroll-area-viewport] > div {
+    @apply h-full;
+  }
 }

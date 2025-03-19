@@ -59,7 +59,13 @@ const Navbar = () => {
 
       <div className="hidden items-center sm:flex sm:gap-10">
         <div className="flex items-center sm:gap-2">
-          <Image src="/logo.svg" width={173} height={26} alt="Finance AI" />
+          <Image
+            src="/logo.svg"
+            width={173}
+            height={39}
+            alt="Finance AI"
+            priority
+          />
         </div>
 
         <Link
