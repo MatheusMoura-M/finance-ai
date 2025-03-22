@@ -41,23 +41,28 @@ const TransactionsPieChart = ({
   depositsTotal,
   typesPercentage,
 }: TransactionsPierChartProps) => {
-  const chartData = [
-    {
-      type: TransactionType.DEPOSIT,
-      amount: depositsTotal,
-      fill: "#55B02E",
-    },
-    {
-      type: TransactionType.EXPENSE,
-      amount: expensesTotal,
-      fill: "#E93030",
-    },
-    {
-      type: TransactionType.INVESTMENT,
-      amount: investmentsTotal,
-      fill: "#FFFFFF",
-    },
-  ];
+  const isEmpty =
+    expensesTotal === 0 && depositsTotal === 0 && investmentsTotal === 0;
+
+  const chartData = isEmpty
+    ? [{ type: "Sem transações", amount: 1, fill: "#2b2b2b" }]
+    : [
+        {
+          type: TransactionType.DEPOSIT,
+          amount: depositsTotal,
+          fill: "#55B02E",
+        },
+        {
+          type: TransactionType.EXPENSE,
+          amount: expensesTotal,
+          fill: "#E93030",
+        },
+        {
+          type: TransactionType.INVESTMENT,
+          amount: investmentsTotal,
+          fill: "#FFFFFF",
+        },
+      ];
 
   return (
     <Card className="flex flex-col px-2 pb-5">

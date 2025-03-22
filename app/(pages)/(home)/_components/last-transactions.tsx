@@ -4,6 +4,7 @@ import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { TRANSACTION_PAYMENT_METHOD_ICONS } from "@/app/_constants/transactions";
 import { formatCurrency } from "@/app/_utils/currency";
 import { Transaction, TransactionType } from "@prisma/client";
+import { HandCoins } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -42,46 +43,58 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
         </Button>
       </CardHeader>
 
-      <ScrollArea className="h-[82%]">
-        <CardContent className="h-full space-y-6 overflow-auto">
-          {lastTransactions.map((transaction) => (
-            <div
-              className="flex items-center justify-between"
-              key={transaction.id}
-            >
-              <div className="flex items-center gap-3">
-                <div className="rounded-lg bg-white bg-opacity-[3%] p-3">
-                  <Image
-                    src={
-                      TRANSACTION_PAYMENT_METHOD_ICONS[
-                        transaction.paymentMethod
-                      ]
-                    }
-                    width={20}
-                    height={20}
-                    alt="PIX"
-                  />
+      <ScrollArea className="h-[82%] pr-3">
+        <CardContent className="scrollbar-custom h-full space-y-6 overflow-auto">
+          {lastTransactions.length > 0 ? (
+            lastTransactions.map((transaction) => (
+              <div
+                className="flex items-center justify-between"
+                key={transaction.id}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="rounded-lg bg-white bg-opacity-[3%] p-3">
+                    <Image
+                      src={
+                        TRANSACTION_PAYMENT_METHOD_ICONS[
+                          transaction.paymentMethod
+                        ]
+                      }
+                      width={20}
+                      height={20}
+                      className="h-5 w-5"
+                      alt="PIX"
+                    />
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-bold">{transaction.name}</p>
+
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(transaction.date).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <p className="text-sm font-bold">{transaction.name}</p>
-
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(transaction.date).toLocaleDateString("pt-BR", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </p>
-                </div>
+                <p
+                  className={`text-sm font-bold ${getAmountColor(transaction)}`}
+                >
+                  {getAmountPrefix(transaction)}
+                  {formatCurrency(Number(transaction.amount))}
+                </p>
               </div>
-
-              <p className={`text-sm font-bold ${getAmountColor(transaction)}`}>
-                {getAmountPrefix(transaction)}
-                {formatCurrency(Number(transaction.amount))}
-              </p>
+            ))
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-2">
+              <h2 className="text-xl text-muted-foreground xl2:text-2xl">
+                Você não tem transações esse mês
+              </h2>
+              <HandCoins size={32} color="#a1a1aa" />
             </div>
-          ))}
+          )}
         </CardContent>
       </ScrollArea>
     </div>

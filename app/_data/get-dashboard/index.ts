@@ -13,8 +13,8 @@ export const getDashboard = async (month: string) => {
   const where = {
     userId,
     date: {
-      gte: new Date(`2025-${month}-01`),
-      lt: new Date(`2025-${month}-31`),
+      gte: new Date(`${new Date().getFullYear()}-${month}-01`),
+      lt: new Date(`${new Date().getFullYear()}-${month}-31`),
     },
   };
 
@@ -56,17 +56,26 @@ export const getDashboard = async (month: string) => {
 
   const balance = depositsTotal - investmentsTotal - expensesTotal;
 
+  const calculatePercentage = (part: number, total: number): number => {
+    return total > 0 ? Math.round((part / total) * 100) : 0;
+  };
+
   const typesPercentage: TransactionPercentagePerType = {
-    [TransactionType.DEPOSIT]: Math.round(
-      (Number(depositsTotal || 0) / Number(transactionsTotal)) * 100,
+    [TransactionType.DEPOSIT]: calculatePercentage(
+      Number(depositsTotal || 0),
+      Number(transactionsTotal),
     ),
-    [TransactionType.EXPENSE]: Math.round(
-      (Number(expensesTotal || 0) / Number(transactionsTotal)) * 100,
+    [TransactionType.EXPENSE]: calculatePercentage(
+      Number(expensesTotal || 0),
+      Number(transactionsTotal),
     ),
-    [TransactionType.INVESTMENT]: Math.round(
-      (Number(investmentsTotal || 0) / Number(transactionsTotal)) * 100,
+    [TransactionType.INVESTMENT]: calculatePercentage(
+      Number(investmentsTotal || 0),
+      Number(transactionsTotal),
     ),
   };
+
+  console.log("typesPercentage", typesPercentage);
 
   const totalExpensePerCategory: TotalExpensePerCategory[] = (
     await db.transaction.groupBy({

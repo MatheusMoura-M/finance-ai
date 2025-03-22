@@ -11,6 +11,7 @@ const config: Config = {
     extend: {
       screens: {
         xs: { max: "639px" },
+        xl2: "1400px",
       },
       colors: {
         danger: "hsl(var(--danger))",
