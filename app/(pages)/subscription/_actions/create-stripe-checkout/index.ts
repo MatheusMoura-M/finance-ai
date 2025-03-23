@@ -11,7 +11,7 @@ export const createStripeCheckout = async () => {
   }
 
   if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error("Stripe scret key not found");
+    throw new Error("Stripe secret key not found");
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
