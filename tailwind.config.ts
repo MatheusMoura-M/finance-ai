@@ -12,6 +12,7 @@ const config: Config = {
       screens: {
         xs: { max: "639px" },
         xl2: "1400px",
+        "min-h-screen-900": { raw: "(min-height: 920px)" },
       },
       colors: {
         danger: "hsl(var(--danger))",

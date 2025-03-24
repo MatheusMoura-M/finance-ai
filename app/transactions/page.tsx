@@ -41,7 +41,7 @@ const TransactionsPage = async () => {
           <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
         </div>
 
-        <ScrollArea className="h-full" id="scroll-transactions">
+        <ScrollArea className="h-full">
           <DataTable
             columns={transactionsColumns}
             data={JSON.parse(JSON.stringify(transaction))}

@@ -60,7 +60,6 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
       return (
         <div className="space-x-1">
           <EditTransactionButton transaction={transaction} />
-
           <DeleteTransactionButton transactionId={transaction.id} />
         </div>
       );

@@ -41,6 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { useEffect } from "react";
 
 interface UpsertTransactionDialogProps {
   isOpen: boolean;
@@ -67,6 +68,15 @@ const UpsertTransactionDialog = ({
     },
   });
 
+  useEffect(() => {
+    if (isOpen && defaultValues) {
+      form.reset({
+        ...defaultValues,
+        date: defaultValues.date ? new Date(defaultValues.date) : new Date(),
+      });
+    }
+  }, [isOpen, defaultValues, form]);
+
   const onSubmit = async (data: tFormSchema) => {
     try {
       await upsertTransaction({ ...data, id: transactionId });
@@ -89,7 +99,7 @@ const UpsertTransactionDialog = ({
         }
       }}
     >
-      <DialogContent>
+      <DialogContent className="scrollbar-custom max-h-[95%] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isUpdate ? "Atualizar" : "Adicionar"} transação

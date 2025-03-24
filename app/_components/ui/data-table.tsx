@@ -15,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "./table";
-import { useState, useEffect } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,35 +31,10 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const [isSticky, setIsSticky] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      const scrollFound = document.querySelector(
-        "#scroll-transactions div[data-radix-scroll-area-viewport]",
-      );
-      if (!scrollFound) return;
-
-      const handleScroll = () => {
-        setIsSticky(scrollFound.scrollTop > 0);
-      };
-      scrollFound.addEventListener("scroll", handleScroll);
-
-      return () => {
-        scrollFound.removeEventListener("scroll", handleScroll);
-      };
-    }, 100);
-  }, []);
-
   return (
     <div className="rounded-md border">
       <Table>
-        <TableHeader
-          className={`sticky top-0 bg-[#242020] shadow-md transition-all ${
-            isSticky ? "h-[50px]" : "h-12"
-          }`}
-          data-sticky={isSticky}
-        >
+        <TableHeader className="sticky top-0 bg-[#242020] shadow-md transition-all">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
