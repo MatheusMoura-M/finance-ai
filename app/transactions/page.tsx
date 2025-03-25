@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import AddTransactionButton from "../_components/add-transaction-button";
 import Navbar from "../_components/navbar";
 import { DataTable } from "../_components/ui/data-table";
-import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import { db } from "../_lib/prisma";
 import { transactionsColumns } from "./_columns";
@@ -41,12 +40,10 @@ const TransactionsPage = async () => {
           <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
         </div>
 
-        <ScrollArea className="h-full [&>div]:!overflow-scroll">
-          <DataTable
-            columns={transactionsColumns}
-            data={JSON.parse(JSON.stringify(transaction))}
-          />
-        </ScrollArea>
+        <DataTable
+          columns={transactionsColumns}
+          data={JSON.parse(JSON.stringify(transaction))}
+        />
       </div>
     </>
   );
