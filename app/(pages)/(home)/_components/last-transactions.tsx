@@ -34,7 +34,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
   };
 
   return (
-    <div className="static h-[595px] min-h-[595px] min-w-[335px] rounded-md border sm:sticky sm:top-5">
+    <div className="static h-[586px] min-h-[586px] min-w-[335px] rounded-md border sm:sticky sm:top-5">
       <CardHeader className="flex-row items-center justify-between space-x-2 space-y-0 px-4 lg2:px-6">
         <CardTitle className="font-bold">Últimas transações</CardTitle>
 

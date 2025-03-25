@@ -71,7 +71,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
                 userCanAddTransaction={userCanAddTransaction}
               />
 
-              <div className="grid grid-cols-1 gap-5 sm:h-full sm:overflow-hidden lg:max-h-[335px] lg:grid-cols-3 xl:grid-rows-1">
+              <div className="grid grid-cols-1 gap-5 sm:h-full sm:overflow-hidden lg:max-h-[325px] lg:grid-cols-3 xl:grid-rows-1">
                 <TransactionsPieChart {...dashboard} />
 
                 <ExpensesPerCategory
