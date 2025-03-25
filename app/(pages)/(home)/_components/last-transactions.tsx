@@ -34,8 +34,8 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
   };
 
   return (
-    <div className="rounded-md border">
-      <CardHeader className="flex-row items-center justify-between">
+    <div className="static h-[595px] min-h-[595px] min-w-[335px] rounded-md border sm:sticky sm:top-5">
+      <CardHeader className="flex-row items-center justify-between space-x-2 space-y-0 px-4 lg2:px-6">
         <CardTitle className="font-bold">Últimas transações</CardTitle>
 
         <Button variant="outline" className="rounded-full" asChild>
@@ -43,8 +43,8 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
         </Button>
       </CardHeader>
 
-      <ScrollArea className="h-[82%] pr-3">
-        <CardContent className="scrollbar-custom h-full space-y-6 overflow-auto">
+      <ScrollArea className="h-[82%] min-h-[480px] pb-3 pr-3">
+        <CardContent className="scrollbar-custom h-full space-y-6 overflow-auto px-4 lg2:px-6">
           {lastTransactions.length > 0 ? (
             lastTransactions.map((transaction) => (
               <div

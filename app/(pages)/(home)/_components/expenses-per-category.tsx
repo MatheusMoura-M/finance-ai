@@ -13,13 +13,13 @@ const ExpensesPerCategory = ({
   expensesPerCategory,
 }: ExpensesPerCategoryProps) => {
   return (
-    <div className="col-span-2 h-full rounded-md border pb-6">
+    <div className="col-span-1 h-full min-h-[335px] rounded-md border pb-6 lg:col-span-2">
       <CardHeader>
         <CardTitle className="font-bold">Gastos por categoria</CardTitle>
       </CardHeader>
 
       <ScrollArea className="h-[78%] pr-3">
-        <CardContent className="scrollbar-custom h-full space-y-6 overflow-auto">
+        <CardContent className="scrollbar-custom h-full space-y-6 overflow-auto px-[14px] md:px-5 lg:px-4 lg2:px-6">
           {expensesPerCategory.length > 0 ? (
             expensesPerCategory.map((category) => (
               <div key={category.category} className="space-y-2">

@@ -10,7 +10,12 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
-        xs: { max: "639px" },
+        // xs: { max: "639px" },
+        xs: "375px",
+        sm2: "700px",
+        md: "768px",
+        md2: "900px",
+        lg2: "1120px",
         xl2: "1400px",
         "min-h-screen-900": { raw: "(min-height: 920px)" },
       },

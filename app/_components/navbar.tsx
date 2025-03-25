@@ -10,7 +10,7 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 const Navbar = () => {
   const pathname = usePathname();
   return (
-    <nav className="flex justify-between border-b border-solid px-8 py-8">
+    <nav className="flex justify-between border-b border-solid px-4 py-8 sm:px-6">
       {/* ESQUERDA */}
       <Sheet>
         <SheetTrigger asChild>
