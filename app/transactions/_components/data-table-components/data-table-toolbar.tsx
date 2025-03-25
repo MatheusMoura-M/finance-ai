@@ -11,8 +11,11 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { CalendarDatePicker } from "@/app/_components/calendar-date-picker";
 import { useState } from "react";
 import { DataTableViewOptions } from "./data-table-view-options";
+import { FilterSheet } from "@/app/_components/filter-sheet";
+import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
+import { Filter } from "lucide-react";
 
-interface DataTableToolbarProps<TData> {
+export interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
@@ -32,53 +35,75 @@ export function DataTableToolbar<TData>({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between">
-      <div className="flex flex-1 flex-wrap items-center gap-2">
+    <div className="flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0">
+      <div className="flex w-full items-center gap-2 sm:w-auto">
         <Input
           placeholder="Filter labels..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => {
             table.getColumn("name")?.setFilterValue(event.target.value);
           }}
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 w-full md:w-[150px] lg:w-[250px]"
         />
 
-        {table.getColumn("category") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("category")}
-            title="Category"
-            options={categories}
+        <div className="hidden gap-2 md:flex">
+          {table.getColumn("category") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("category")}
+              title="Category"
+              options={categories}
+            />
+          )}
+
+          {table.getColumn("type") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("type")}
+              title="Type"
+              options={incomeType}
+            />
+          )}
+
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              onClick={() => table.resetColumnFilters()}
+              className="h-8 px-2 lg:px-3"
+            >
+              Reset
+              <Cross2Icon className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+
+          <CalendarDatePicker
+            date={dateRange}
+            onDateSelect={handleDateSelect}
+            className="h-8 w-[250px]"
+            variant="outline"
           />
-        )}
-
-        {table.getColumn("type") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("type")}
-            title="Type"
-            options={incomeType}
-          />
-        )}
-
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reset
-            <Cross2Icon className="ml-2 h-4 w-4" />
-          </Button>
-        )}
-
-        <CalendarDatePicker
-          date={dateRange}
-          onDateSelect={handleDateSelect}
-          className="h-8 w-[250px]"
-          variant="outline"
-        />
+        </div>
       </div>
 
       <DataTableViewOptions table={table} />
+
+      {/* BTN FILTER */}
+      <Sheet>
+        <SheetTrigger asChild className="md:hidden">
+          <Button
+            size="icon"
+            variant="outline"
+            className="flex h-[31px] w-full items-center rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 sm:w-[20%] md:w-[93px]"
+          >
+            <Filter className="mr-2 h-4 w-4" />
+            Filtrar
+          </Button>
+        </SheetTrigger>
+
+        <FilterSheet
+          table={table}
+          dateRange={dateRange}
+          handleDateSelect={handleDateSelect}
+        />
+      </Sheet>
     </div>
   );
 }

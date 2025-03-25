@@ -15,10 +15,12 @@ import { Button } from "@/app/_components/ui/button";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
+  isAppear?: boolean;
 }
 
 export function DataTableViewOptions<TData>({
   table,
+  isAppear,
 }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>
@@ -26,7 +28,7 @@ export function DataTableViewOptions<TData>({
         <Button
           variant="outline"
           size="sm"
-          className="ml-auto hidden h-8 lg:flex"
+          className={`ml-auto hidden ${isAppear ? "flex h-10" : "h-8 lg:flex"}`}
         >
           <MixerHorizontalIcon className="mr-2 h-4 w-4" />
           View
