@@ -39,7 +39,7 @@ const TimeSelect = () => {
       onValueChange={(value) => handleMonthChange(value)}
       defaultValue={month ?? ""}
     >
-      <SelectTrigger className="rounded-full sm:w-[150px]">
+      <SelectTrigger className="rounded-full sm:!w-[150px] xs:w-[120px]">
         <SelectValue placeholder="Mês" />
       </SelectTrigger>
 

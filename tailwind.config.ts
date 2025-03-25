@@ -10,8 +10,8 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
-        // xs: { max: "639px" },
-        xs: "375px",
+        xxs: "375px",
+        xs: "500px",
         sm2: "700px",
         md: "768px",
         md2: "900px",

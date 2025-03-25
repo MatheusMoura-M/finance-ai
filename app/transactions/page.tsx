@@ -4,9 +4,9 @@ import AddTransactionButton from "../_components/add-transaction-button";
 import Navbar from "../_components/navbar";
 import { DataTable } from "../_components/ui/data-table";
 import { ScrollArea } from "../_components/ui/scroll-area";
+import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import { db } from "../_lib/prisma";
 import { transactionsColumns } from "./_columns";
-import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 
 export const metadata = {
   title: "Transações",
@@ -41,7 +41,7 @@ const TransactionsPage = async () => {
           <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
         </div>
 
-        <ScrollArea className="h-full">
+        <ScrollArea className="h-full [&>div]:!overflow-scroll">
           <DataTable
             columns={transactionsColumns}
             data={JSON.parse(JSON.stringify(transaction))}

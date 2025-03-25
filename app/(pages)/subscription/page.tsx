@@ -32,7 +32,7 @@ const SubscriptionPage = async () => {
 
           <div className="flex flex-wrap justify-center gap-6 md:justify-start">
             <Card className="w-[36.53%] min-w-[345px] max-w-[450px]">
-              <CardHeader className="border-b border-solid py-8">
+              <CardHeader className="border-b border-solid px-4 py-5 md:px-6 md:py-8">
                 <h2 className="text-center text-2xl font-semibold">
                   Plano Básico
                 </h2>
@@ -44,7 +44,7 @@ const SubscriptionPage = async () => {
                 </div>
               </CardHeader>
 
-              <CardContent className="space-y-6 py-8">
+              <CardContent className="space-y-5 px-4 py-5 md:space-y-6 md:px-6 md:py-8">
                 <div className="flex items-center gap-2">
                   <CheckIcon className="text-primary" />
 
@@ -61,7 +61,7 @@ const SubscriptionPage = async () => {
             </Card>
 
             <Card className="w-[36.53%] min-w-[345px] max-w-[450px]">
-              <CardHeader className="relative border-b border-solid py-8">
+              <CardHeader className="relative border-b border-solid px-4 py-5 md:px-6 md:py-8">
                 {hasPremiumPlan && (
                   <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
                     Ativo
@@ -79,7 +79,7 @@ const SubscriptionPage = async () => {
                 </div>
               </CardHeader>
 
-              <CardContent className="space-y-6 py-8">
+              <CardContent className="space-y-5 px-4 py-5 md:space-y-6 md:px-6 md:py-8">
                 <div className="flex items-center gap-2">
                   <CheckIcon className="text-primary" />
                   <p>Transações ilimitadas</p>

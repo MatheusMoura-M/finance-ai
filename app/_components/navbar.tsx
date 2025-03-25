@@ -14,7 +14,7 @@ const Navbar = () => {
       {/* ESQUERDA */}
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="sm:hidden">
+          <Button variant="outline" size="icon" className="md:hidden">
             <MenuIcon className="h-6 w-6" />
           </Button>
         </SheetTrigger>
@@ -57,7 +57,7 @@ const Navbar = () => {
         </SheetContent>
       </Sheet>
 
-      <div className="hidden items-center sm:flex sm:gap-10">
+      <div className="hidden items-center md:flex md:gap-10">
         <div className="flex items-center sm:gap-2">
           <Image
             src="/logo.svg"
