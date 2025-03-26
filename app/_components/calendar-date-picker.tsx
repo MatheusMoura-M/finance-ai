@@ -148,6 +148,7 @@ export const CalendarDatePicker = React.forwardRef<
       if (range) {
         let from = startOfDay(toDate(range.from as Date, { timeZone }));
         let to = range.to ? endOfDay(toDate(range.to, { timeZone })) : from;
+
         if (numberOfMonths === 1) {
           if (range.from !== date.from) {
             to = from;
@@ -155,6 +156,7 @@ export const CalendarDatePicker = React.forwardRef<
             from = startOfDay(toDate(range.to as Date, { timeZone }));
           }
         }
+
         onDateSelect({ from, to });
         setMonthFrom(from);
         setYearFrom(from.getFullYear());
@@ -422,7 +424,7 @@ export const CalendarDatePicker = React.forwardRef<
               onClick={handleTogglePopover}
               suppressHydrationWarning
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
+              <CalendarIcon className="mr-2 h-4 w-4" color="#e4e2e2" />
               <span>
                 {date?.from ? (
                   date.to ? (
@@ -430,7 +432,7 @@ export const CalendarDatePicker = React.forwardRef<
                       <span
                         id={`firstDay-${id}`}
                         className={cn(
-                          "date-part",
+                          "date-part text-[#e4e2e2]",
                           highlightedPart === "firstDay" &&
                             "font-bold underline",
                         )}
@@ -442,7 +444,7 @@ export const CalendarDatePicker = React.forwardRef<
                       <span
                         id={`firstMonth-${id}`}
                         className={cn(
-                          "date-part",
+                          "date-part text-[#e4e2e2]",
                           highlightedPart === "firstMonth" &&
                             "font-bold underline",
                         )}
@@ -455,7 +457,7 @@ export const CalendarDatePicker = React.forwardRef<
                       <span
                         id={`firstYear-${id}`}
                         className={cn(
-                          "date-part",
+                          "date-part text-[#e4e2e2]",
                           highlightedPart === "firstYear" &&
                             "font-bold underline",
                         )}
@@ -470,7 +472,7 @@ export const CalendarDatePicker = React.forwardRef<
                           <span
                             id={`secondDay-${id}`}
                             className={cn(
-                              "date-part",
+                              "date-part text-[#e4e2e2]",
                               highlightedPart === "secondDay" &&
                                 "font-bold underline",
                             )}
@@ -482,7 +484,7 @@ export const CalendarDatePicker = React.forwardRef<
                           <span
                             id={`secondMonth-${id}`}
                             className={cn(
-                              "date-part",
+                              "date-part text-[#e4e2e2]",
                               highlightedPart === "secondMonth" &&
                                 "font-bold underline",
                             )}
@@ -495,7 +497,7 @@ export const CalendarDatePicker = React.forwardRef<
                           <span
                             id={`secondYear-${id}`}
                             className={cn(
-                              "date-part",
+                              "date-part text-[#e4e2e2]",
                               highlightedPart === "secondYear" &&
                                 "font-bold underline",
                             )}

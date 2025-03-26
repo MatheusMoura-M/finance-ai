@@ -26,8 +26,9 @@ const SubscriptionPage = async () => {
   return (
     <>
       <Navbar />
+
       <ScrollArea>
-        <div className="space-y-6 p-6">
+        <div className="space-y-4 p-4 sm:space-y-6 sm:p-6 sm:py-4">
           <h1 className="text-2xl font-bold">Assinatura</h1>
 
           <div className="flex flex-wrap justify-center gap-6 md:justify-start">

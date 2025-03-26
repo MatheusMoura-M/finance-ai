@@ -36,14 +36,14 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0">
-      <div className="flex w-full items-center gap-2 sm:w-auto">
+      <div className="flex w-full items-center gap-2 pt-[3px] sm:w-auto [&:has(input:focus-visible)]:pl-[3px]">
         <Input
           placeholder="Filter labels..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => {
             table.getColumn("name")?.setFilterValue(event.target.value);
           }}
-          className="h-8 w-full md:w-[150px] lg:w-[250px]"
+          className="h-8 w-full placeholder:text-[#e4e2e2] focus-visible:ring-offset-1 md:w-[150px] lg:w-[250px] [&:focus-visible]:w-[calc(100%-3px)] [&:focus-visible]:md:w-[147px] [&:focus-visible]:lg:w-[247px]"
         />
 
         <div className="hidden gap-2 md:flex">
@@ -63,6 +63,13 @@ export function DataTableToolbar<TData>({
             />
           )}
 
+          <CalendarDatePicker
+            date={dateRange}
+            onDateSelect={handleDateSelect}
+            className="h-8 w-[250px]"
+            variant="outline"
+          />
+
           {isFiltered && (
             <Button
               variant="ghost"
@@ -73,13 +80,6 @@ export function DataTableToolbar<TData>({
               <Cross2Icon className="ml-2 h-4 w-4" />
             </Button>
           )}
-
-          <CalendarDatePicker
-            date={dateRange}
-            onDateSelect={handleDateSelect}
-            className="h-8 w-[250px]"
-            variant="outline"
-          />
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export function DataTableToolbar<TData>({
           <Button
             size="icon"
             variant="outline"
-            className="flex h-[31px] w-full items-center rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 sm:w-[20%] md:w-[93px]"
+            className="flex h-[31px] w-full items-center rounded-md border px-4 py-2 text-sm font-medium text-[#e4e2e2] sm:w-[20%] md:w-[93px]"
           >
             <Filter className="mr-2 h-4 w-4" />
             Filtrar
