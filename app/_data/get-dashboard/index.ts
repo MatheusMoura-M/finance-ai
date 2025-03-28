@@ -75,8 +75,6 @@ export const getDashboard = async (month: string) => {
     ),
   };
 
-  console.log("typesPercentage", typesPercentage);
-
   const totalExpensePerCategory: TotalExpensePerCategory[] = (
     await db.transaction.groupBy({
       by: ["category"],

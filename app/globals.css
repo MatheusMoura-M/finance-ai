@@ -11,6 +11,51 @@ body {
     text-wrap: balance;
   }
 
+  /* CALENDAR */
+  @media (max-width: 1280px) {
+    div[data-radix-popper-content-wrapper]:has(div#popover-content-date) {
+      left: -25% !important;
+    }
+  }
+
+  @media (max-width: 900px) {
+    div[data-radix-popper-content-wrapper]:has(div#popover-content-date) {
+      left: -43% !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    div[data-radix-popper-content-wrapper]:has(div#popover-content-date) {
+      left: -49% !important;
+    }
+  }
+
+  @media (max-width: 700px) {
+    div[data-radix-popper-content-wrapper]:has(div#popover-content-date) {
+      left: -35% !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    div[data-radix-popper-content-wrapper]:has(div#popover-content-date) {
+      top: -200px !important;
+      width: 90%;
+    }
+  }
+
+  @media (max-width: 590px) {
+    div[data-radix-popper-content-wrapper]:has(div#popover-content-date) {
+      left: -30% !important;
+    }
+  }
+
+  @media (max-width: 550px) {
+    div[data-radix-popper-content-wrapper]:has(div#popover-content-date) {
+      left: -25% !important;
+    }
+  }
+
+  /* SCROLLBAR */
   .scrollbar-custom::-webkit-scrollbar {
     display: block !important;
     width: 8px;

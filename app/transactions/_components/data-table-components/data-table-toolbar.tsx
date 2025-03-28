@@ -68,6 +68,7 @@ export function DataTableToolbar<TData>({
             onDateSelect={handleDateSelect}
             className="h-8 w-[250px]"
             variant="outline"
+            closeOnSelect
           />
 
           {isFiltered && (
