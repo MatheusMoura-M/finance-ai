@@ -313,176 +313,210 @@ export const CalendarDatePicker = React.forwardRef<
     ];
 
     return (
-      <>
-        <style>
-          {`
-            .date-part {
-              touch-action: none;
-            }
-          `}
-        </style>
-
-        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              id="date"
-              ref={ref}
-              {...props}
-              className={cn(
-                "w-auto",
-                multiSelectVariants({ variant, className }),
-              )}
-              onClick={handleTogglePopover}
-              suppressHydrationWarning
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" color="#e4e2e2" />
-              <span>
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      <DatePart
-                        id={`firstDay-${id}`}
-                        date={date}
-                        part="firstDay"
-                        highlightedPart={highlightedPart}
-                        setHighlightedPart={setHighlightedPart}
-                        orientation="from"
-                      />{" "}
-                      <DatePart
-                        id={`firstMonth-${id}`}
-                        date={date}
-                        part="firstMonth"
-                        highlightedPart={highlightedPart}
-                        setHighlightedPart={setHighlightedPart}
-                        orientation="from"
-                      />
-                      ,{" "}
-                      <DatePart
-                        id={`firstYear-${id}`}
-                        date={date}
-                        part="firstYear"
-                        highlightedPart={highlightedPart}
-                        setHighlightedPart={setHighlightedPart}
-                        orientation="from"
-                      />
-                      {numberOfMonths === 2 && (
-                        <>
-                          {" - "}
-                          <DatePart
-                            id={`secondDay-${id}`}
-                            date={date}
-                            part="secondDay"
-                            highlightedPart={highlightedPart}
-                            setHighlightedPart={setHighlightedPart}
-                            orientation="to"
-                          />{" "}
-                          <DatePart
-                            id={`secondMonth-${id}`}
-                            date={date}
-                            part="secondMonth"
-                            highlightedPart={highlightedPart}
-                            setHighlightedPart={setHighlightedPart}
-                            orientation="to"
-                          />
-                          ,{" "}
-                          <DatePart
-                            id={`secondYear-${id}`}
-                            date={date}
-                            part="secondYear"
-                            highlightedPart={highlightedPart}
-                            setHighlightedPart={setHighlightedPart}
-                            orientation="to"
-                          />
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <DatePart
-                        id="day"
-                        date={date}
-                        part="day"
-                        highlightedPart={highlightedPart}
-                        setHighlightedPart={setHighlightedPart}
-                        orientation="from"
-                      />{" "}
-                      <DatePart
-                        id="month"
-                        date={date}
-                        part="month"
-                        highlightedPart={highlightedPart}
-                        setHighlightedPart={setHighlightedPart}
-                        orientation="from"
-                      />
-                      ,{" "}
-                      <DatePart
-                        id="year"
-                        date={date}
-                        part="year"
-                        highlightedPart={highlightedPart}
-                        setHighlightedPart={setHighlightedPart}
-                        orientation="from"
-                      />
-                    </>
-                  )
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            id="date"
+            ref={ref}
+            {...props}
+            className={cn(
+              "w-auto",
+              multiSelectVariants({ variant, className }),
+            )}
+            onClick={handleTogglePopover}
+            suppressHydrationWarning
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" color="#e4e2e2" />
+            <span>
+              {date?.from ? (
+                date.to ? (
+                  <>
+                    <DatePart
+                      id={`firstDay-${id}`}
+                      date={date}
+                      part="firstDay"
+                      highlightedPart={highlightedPart}
+                      setHighlightedPart={setHighlightedPart}
+                      orientation="from"
+                    />{" "}
+                    <DatePart
+                      id={`firstMonth-${id}`}
+                      date={date}
+                      part="firstMonth"
+                      highlightedPart={highlightedPart}
+                      setHighlightedPart={setHighlightedPart}
+                      orientation="from"
+                    />
+                    ,{" "}
+                    <DatePart
+                      id={`firstYear-${id}`}
+                      date={date}
+                      part="firstYear"
+                      highlightedPart={highlightedPart}
+                      setHighlightedPart={setHighlightedPart}
+                      orientation="from"
+                    />
+                    {numberOfMonths === 2 && (
+                      <>
+                        {" - "}
+                        <DatePart
+                          id={`secondDay-${id}`}
+                          date={date}
+                          part="secondDay"
+                          highlightedPart={highlightedPart}
+                          setHighlightedPart={setHighlightedPart}
+                          orientation="to"
+                        />{" "}
+                        <DatePart
+                          id={`secondMonth-${id}`}
+                          date={date}
+                          part="secondMonth"
+                          highlightedPart={highlightedPart}
+                          setHighlightedPart={setHighlightedPart}
+                          orientation="to"
+                        />
+                        ,{" "}
+                        <DatePart
+                          id={`secondYear-${id}`}
+                          date={date}
+                          part="secondYear"
+                          highlightedPart={highlightedPart}
+                          setHighlightedPart={setHighlightedPart}
+                          orientation="to"
+                        />
+                      </>
+                    )}
+                  </>
                 ) : (
-                  <span>Pick a date</span>
-                )}
-              </span>
-            </Button>
-          </PopoverTrigger>
+                  <>
+                    <DatePart
+                      id="day"
+                      date={date}
+                      part="day"
+                      highlightedPart={highlightedPart}
+                      setHighlightedPart={setHighlightedPart}
+                      orientation="from"
+                    />{" "}
+                    <DatePart
+                      id="month"
+                      date={date}
+                      part="month"
+                      highlightedPart={highlightedPart}
+                      setHighlightedPart={setHighlightedPart}
+                      orientation="from"
+                    />
+                    ,{" "}
+                    <DatePart
+                      id="year"
+                      date={date}
+                      part="year"
+                      highlightedPart={highlightedPart}
+                      setHighlightedPart={setHighlightedPart}
+                      orientation="from"
+                    />
+                  </>
+                )
+              ) : (
+                <span>Pick a date</span>
+              )}
+            </span>
+          </Button>
+        </PopoverTrigger>
 
-          {isPopoverOpen && (
-            <PopoverContent
-              id="popover-content-date"
-              className="w-auto"
-              align="start"
-              avoidCollisions={false}
-              onInteractOutside={handleClose}
-              onEscapeKeyDown={handleClose}
-              style={{
-                maxHeight: "var(--radix-popover-content-available-height)",
-                overflowY: "auto",
-              }}
-            >
-              <div className="flex sm-max:justify-center">
-                {numberOfMonths === 2 && (
-                  <div className="hidden flex-col gap-1 border-r border-foreground/10 pr-4 text-left sm2:flex">
-                    {dateRanges.map(({ label, start, end }) => (
-                      <Button
-                        key={label}
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          "justify-start hover:bg-primary/90 hover:text-background",
-                          selectedRange === label &&
-                            "bg-primary text-background hover:bg-primary/90 hover:text-background",
-                        )}
-                        onClick={() => {
-                          selectDateRange(start, end, label);
-                          setMonthFrom(start);
-                          setYearFrom(start.getFullYear());
-                          setMonthTo(end);
-                          setYearTo(end.getFullYear());
-                        }}
-                      >
-                        {label}
-                      </Button>
-                    ))}
+        {isPopoverOpen && (
+          <PopoverContent
+            id="popover-content-date"
+            className="w-auto"
+            align="start"
+            avoidCollisions={false}
+            onInteractOutside={handleClose}
+            onEscapeKeyDown={handleClose}
+            style={{
+              maxHeight: "var(--radix-popover-content-available-height)",
+              overflowY: "auto",
+            }}
+          >
+            <div className="flex sm-max:justify-center">
+              {numberOfMonths === 2 && (
+                <div className="hidden flex-col gap-1 border-r border-foreground/10 pr-4 text-left sm2:flex">
+                  {dateRanges.map(({ label, start, end }) => (
+                    <Button
+                      key={label}
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "justify-start hover:bg-primary/90 hover:text-background",
+                        selectedRange === label &&
+                          "bg-primary text-background hover:bg-primary/90 hover:text-background",
+                      )}
+                      onClick={() => {
+                        selectDateRange(start, end, label);
+                        setMonthFrom(start);
+                        setYearFrom(start.getFullYear());
+                        setMonthTo(end);
+                        setYearTo(end.getFullYear());
+                      }}
+                    >
+                      {label}
+                    </Button>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex h-[356px] flex-col sm-max:w-full">
+                <div className="flex items-center gap-4 sm-max:flex-col">
+                  <div className="ml-3 flex gap-2 sm-max:ml-0 sm-max:w-full sm-max:justify-center">
+                    <Select
+                      onValueChange={(value) => {
+                        handleMonthChange(months.indexOf(value), "from");
+                        setSelectedRange(null);
+                      }}
+                      value={
+                        monthFrom ? months[monthFrom.getMonth()] : undefined
+                      }
+                    >
+                      <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
+                        <SelectValue placeholder="Month" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        {months.map((month, idx) => (
+                          <SelectItem key={idx} value={month}>
+                            {month}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      onValueChange={(value) => {
+                        handleYearChange(Number(value), "from");
+                        setSelectedRange(null);
+                      }}
+                      value={yearFrom ? yearFrom.toString() : undefined}
+                    >
+                      <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        {years.map((year, idx) => (
+                          <SelectItem key={idx} value={year.toString()}>
+                            {year}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                )}
 
-                <div className="flex h-[356px] flex-col sm-max:w-full">
-                  <div className="flex items-center gap-4 sm-max:flex-col">
-                    <div className="ml-3 flex gap-2 sm-max:ml-0 sm-max:w-full sm-max:justify-center">
+                  {numberOfMonths === 2 && (
+                    <div className="flex gap-2 sm-max:w-full sm-max:justify-center">
                       <Select
                         onValueChange={(value) => {
-                          handleMonthChange(months.indexOf(value), "from");
+                          handleMonthChange(months.indexOf(value), "to");
                           setSelectedRange(null);
                         }}
-                        value={
-                          monthFrom ? months[monthFrom.getMonth()] : undefined
-                        }
+                        value={monthTo ? months[monthTo.getMonth()] : undefined}
                       >
                         <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
                           <SelectValue placeholder="Month" />
@@ -499,10 +533,10 @@ export const CalendarDatePicker = React.forwardRef<
 
                       <Select
                         onValueChange={(value) => {
-                          handleYearChange(Number(value), "from");
+                          handleYearChange(Number(value), "to");
                           setSelectedRange(null);
                         }}
-                        value={yearFrom ? yearFrom.toString() : undefined}
+                        value={yearTo ? yearTo.toString() : undefined}
                       >
                         <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
                           <SelectValue placeholder="Year" />
@@ -517,73 +551,27 @@ export const CalendarDatePicker = React.forwardRef<
                         </SelectContent>
                       </Select>
                     </div>
+                  )}
+                </div>
 
-                    {numberOfMonths === 2 && (
-                      <div className="flex gap-2 sm-max:w-full sm-max:justify-center">
-                        <Select
-                          onValueChange={(value) => {
-                            handleMonthChange(months.indexOf(value), "to");
-                            setSelectedRange(null);
-                          }}
-                          value={
-                            monthTo ? months[monthTo.getMonth()] : undefined
-                          }
-                        >
-                          <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
-                            <SelectValue placeholder="Month" />
-                          </SelectTrigger>
-
-                          <SelectContent>
-                            {months.map((month, idx) => (
-                              <SelectItem key={idx} value={month}>
-                                {month}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          onValueChange={(value) => {
-                            handleYearChange(Number(value), "to");
-                            setSelectedRange(null);
-                          }}
-                          value={yearTo ? yearTo.toString() : undefined}
-                        >
-                          <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
-                            <SelectValue placeholder="Year" />
-                          </SelectTrigger>
-
-                          <SelectContent>
-                            {years.map((year, idx) => (
-                              <SelectItem key={idx} value={year.toString()}>
-                                {year}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex">
-                    <Calendar
-                      mode="range"
-                      defaultMonth={monthFrom}
-                      month={monthFrom}
-                      onMonthChange={setMonthFrom}
-                      selected={date}
-                      onSelect={handleDateSelect}
-                      numberOfMonths={numberOfMonths}
-                      showOutsideDays={false}
-                      className={className}
-                    />
-                  </div>
+                <div className="flex">
+                  <Calendar
+                    mode="range"
+                    defaultMonth={monthFrom}
+                    month={monthFrom}
+                    onMonthChange={setMonthFrom}
+                    selected={date}
+                    onSelect={handleDateSelect}
+                    numberOfMonths={numberOfMonths}
+                    showOutsideDays={false}
+                    className={className}
+                  />
                 </div>
               </div>
-            </PopoverContent>
-          )}
-        </Popover>
-      </>
+            </div>
+          </PopoverContent>
+        )}
+      </Popover>
     );
   },
 );

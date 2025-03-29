@@ -12,6 +12,9 @@ body {
   }
 
   /* CALENDAR */
+  .date-part {
+    touch-action: none;
+  }
   @media (max-width: 1280px) {
     div[data-radix-popper-content-wrapper]:has(div#popover-content-date) {
       left: -25% !important;

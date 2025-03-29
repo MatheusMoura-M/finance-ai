@@ -34,6 +34,15 @@ export function DataTableToolbar<TData>({
     table.getColumn("date")?.setFilterValue([from, to]);
   };
 
+  const handleResetFilters = () => {
+    setDateRange({
+      from: new Date(new Date().getFullYear(), 0, 1),
+      to: new Date(),
+    });
+
+    table.resetColumnFilters();
+  };
+
   return (
     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0">
       <div className="flex w-full items-center gap-2 pt-[3px] sm:w-auto [&:has(input:focus-visible)]:pl-[3px]">
@@ -74,7 +83,7 @@ export function DataTableToolbar<TData>({
           {isFiltered && (
             <Button
               variant="ghost"
-              onClick={() => table.resetColumnFilters()}
+              onClick={handleResetFilters}
               className="h-8 px-2 lg:px-3"
             >
               Reset
