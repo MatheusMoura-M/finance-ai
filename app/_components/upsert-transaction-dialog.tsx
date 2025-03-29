@@ -99,7 +99,7 @@ const UpsertTransactionDialog = ({
         }
       }}
     >
-      <DialogContent className="scrollbar-custom max-h-[95%] overflow-y-auto">
+      <DialogContent className="scrollbar-custom max-h-[95%] overflow-y-auto sm-max:max-w-[95%]">
         <DialogHeader>
           <DialogTitle>
             {isUpdate ? "Atualizar" : "Adicionar"} transação
