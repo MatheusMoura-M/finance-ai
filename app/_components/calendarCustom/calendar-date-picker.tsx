@@ -13,7 +13,7 @@ import {
   startOfDay,
   endOfDay,
 } from "date-fns";
-import { toDate, formatInTimeZone } from "date-fns-tz";
+import { toDate } from "date-fns-tz";
 import { DateRange } from "react-day-picker";
 import { cva, VariantProps } from "class-variance-authority";
 
@@ -31,7 +31,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/_components/ui/select";
-import { Calendar } from "./ui/calendar";
+import { Calendar } from "../ui/calendar";
+import { DatePart } from "./date-part";
 
 const months = [
   "Janeiro",
@@ -144,16 +145,23 @@ export const CalendarDatePicker = React.forwardRef<
       }
     };
 
+    const convertToStartOfDay = (date: Date, timeZone: string) =>
+      startOfDay(toDate(date, { timeZone }));
+    const convertToEndOfDay = (date: Date, timeZone: string) =>
+      endOfDay(toDate(date, { timeZone }));
+
     const handleDateSelect = (range: DateRange | undefined) => {
-      if (range) {
-        let from = startOfDay(toDate(range.from as Date, { timeZone }));
-        let to = range.to ? endOfDay(toDate(range.to, { timeZone })) : from;
+      if (range && range.from) {
+        const { from: fromDate, to: toDate } = range;
+
+        let from = convertToStartOfDay(fromDate, timeZone);
+        let to = toDate ? convertToEndOfDay(toDate, timeZone) : from;
 
         if (numberOfMonths === 1) {
-          if (range.from !== date.from) {
+          if (fromDate !== date.from) {
             to = from;
           } else {
-            from = startOfDay(toDate(range.to as Date, { timeZone }));
+            from = convertToStartOfDay(toDate as Date, timeZone);
           }
         }
 
@@ -163,104 +171,105 @@ export const CalendarDatePicker = React.forwardRef<
         setMonthTo(to);
         setYearTo(to.getFullYear());
       }
+
       setSelectedRange(null);
     };
 
     const handleMonthChange = (newMonthIndex: number, part: string) => {
       setSelectedRange(null);
-      if (part === "from") {
-        if (yearFrom !== undefined) {
-          if (newMonthIndex < 0 || newMonthIndex > yearsRange + 1) return;
-          const newMonth = new Date(yearFrom, newMonthIndex, 1);
-          const from =
-            numberOfMonths === 2
-              ? startOfMonth(toDate(newMonth, { timeZone }))
-              : date?.from
-                ? new Date(
-                    date.from.getFullYear(),
-                    newMonth.getMonth(),
-                    date.from.getDate(),
-                  )
-                : newMonth;
-          const to =
-            numberOfMonths === 2
-              ? date.to
-                ? endOfDay(toDate(date.to, { timeZone }))
-                : endOfMonth(toDate(newMonth, { timeZone }))
-              : from;
-          if (from <= to) {
-            onDateSelect({ from, to });
-            setMonthFrom(newMonth);
-            setMonthTo(date.to);
-          }
-        }
+
+      const isFrom = part === "from";
+      const year = isFrom ? yearFrom : yearTo;
+      if (year === undefined) return;
+      if (newMonthIndex < 0 || newMonthIndex > yearsRange + 1) return;
+
+      const newMonth = new Date(year, newMonthIndex, 1);
+      const isRange = numberOfMonths === 2;
+
+      const from = isFrom
+        ? isRange
+          ? startOfMonth(toDate(newMonth, { timeZone }))
+          : date?.from
+            ? new Date(
+                date.from.getFullYear(),
+                newMonth.getMonth(),
+                date.from.getDate(),
+              )
+            : newMonth
+        : date?.from
+          ? startOfDay(toDate(date.from, { timeZone }))
+          : startOfMonth(toDate(newMonth, { timeZone }));
+
+      const to = isFrom
+        ? isRange
+          ? date?.to
+            ? endOfDay(toDate(date.to, { timeZone }))
+            : endOfMonth(toDate(newMonth, { timeZone }))
+          : from
+        : isRange
+          ? endOfMonth(toDate(newMonth, { timeZone }))
+          : from;
+
+      if (from > to) return;
+
+      onDateSelect({ from, to });
+
+      if (isFrom) {
+        setMonthFrom(newMonth);
+        setMonthTo(date.to);
       } else {
-        if (yearTo !== undefined) {
-          if (newMonthIndex < 0 || newMonthIndex > yearsRange + 1) return;
-          const newMonth = new Date(yearTo, newMonthIndex, 1);
-          const from = date.from
-            ? startOfDay(toDate(date.from, { timeZone }))
-            : startOfMonth(toDate(newMonth, { timeZone }));
-          const to =
-            numberOfMonths === 2
-              ? endOfMonth(toDate(newMonth, { timeZone }))
-              : from;
-          if (from <= to) {
-            onDateSelect({ from, to });
-            setMonthTo(newMonth);
-            setMonthFrom(date.from);
-          }
-        }
+        setMonthTo(newMonth);
+        setMonthFrom(date.from);
       }
     };
 
     const handleYearChange = (newYear: number, part: string) => {
       setSelectedRange(null);
-      if (part === "from") {
-        if (years.includes(newYear)) {
-          const newMonth = monthFrom
-            ? new Date(newYear, monthFrom ? monthFrom.getMonth() : 0, 1)
-            : new Date(newYear, 0, 1);
-          const from =
-            numberOfMonths === 2
-              ? startOfMonth(toDate(newMonth, { timeZone }))
-              : date.from
-                ? new Date(newYear, newMonth.getMonth(), date.from.getDate())
-                : newMonth;
-          const to =
-            numberOfMonths === 2
-              ? date.to
-                ? endOfDay(toDate(date.to, { timeZone }))
-                : endOfMonth(toDate(newMonth, { timeZone }))
-              : from;
-          if (from <= to) {
-            onDateSelect({ from, to });
-            setYearFrom(newYear);
-            setMonthFrom(newMonth);
-            setYearTo(date.to?.getFullYear());
-            setMonthTo(date.to);
-          }
-        }
+
+      const isFrom = part === "from";
+      const month = isFrom ? monthFrom : monthTo;
+      const isRange = numberOfMonths === 2;
+
+      if (!years.includes(newYear)) return;
+
+      const newMonth = month
+        ? new Date(newYear, month.getMonth(), 1)
+        : new Date(newYear, 0, 1);
+
+      const from = isFrom
+        ? isRange
+          ? startOfMonth(toDate(newMonth, { timeZone }))
+          : date.from
+            ? new Date(newYear, newMonth.getMonth(), date.from.getDate())
+            : newMonth
+        : date.from
+          ? startOfDay(toDate(date.from, { timeZone }))
+          : startOfMonth(toDate(newMonth, { timeZone }));
+
+      const to = isFrom
+        ? isRange
+          ? date.to
+            ? endOfDay(toDate(date.to, { timeZone }))
+            : endOfMonth(toDate(newMonth, { timeZone }))
+          : from
+        : isRange
+          ? endOfMonth(toDate(newMonth, { timeZone }))
+          : from;
+
+      if (from > to) return;
+
+      onDateSelect({ from, to });
+
+      if (isFrom) {
+        setYearFrom(newYear);
+        setMonthFrom(newMonth);
+        setYearTo(date.to?.getFullYear());
+        setMonthTo(date.to);
       } else {
-        if (years.includes(newYear)) {
-          const newMonth = monthTo
-            ? new Date(newYear, monthTo.getMonth(), 1)
-            : new Date(newYear, 0, 1);
-          const from = date.from
-            ? startOfDay(toDate(date.from, { timeZone }))
-            : startOfMonth(toDate(newMonth, { timeZone }));
-          const to =
-            numberOfMonths === 2
-              ? endOfMonth(toDate(newMonth, { timeZone }))
-              : from;
-          if (from <= to) {
-            onDateSelect({ from, to });
-            setYearTo(newYear);
-            setMonthTo(newMonth);
-            setYearFrom(date.from?.getFullYear());
-            setMonthFrom(date.from);
-          }
-        }
+        setYearTo(newYear);
+        setMonthTo(newMonth);
+        setYearFrom(date.from?.getFullYear());
+        setMonthFrom(date.from);
       }
     };
 
@@ -303,56 +312,85 @@ export const CalendarDatePicker = React.forwardRef<
       },
     ];
 
-    const handleMouseOver = (part: string) => {
-      setHighlightedPart(part);
-    };
-
-    const handleMouseLeave = () => {
-      setHighlightedPart(null);
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const handleWheel = (event: React.WheelEvent, part: string) => {
+    const handleWheel = (event: React.WheelEvent) => {
       event.preventDefault();
       setSelectedRange(null);
-      if (highlightedPart === "firstDay") {
-        const newDate = new Date(date.from as Date);
-        const increment = event.deltaY > 0 ? -1 : 1;
-        newDate.setDate(newDate.getDate() + increment);
-        if (newDate <= (date.to as Date)) {
-          if (numberOfMonths === 2) {
-            onDateSelect({ from: newDate, to: new Date(date.to as Date) });
-          } else {
-            onDateSelect({ from: newDate, to: newDate });
-          }
 
-          setMonthFrom(newDate);
-        } else if (newDate > (date.to as Date) && numberOfMonths === 1) {
-          onDateSelect({ from: newDate, to: newDate });
-          setMonthFrom(newDate);
-        }
-      } else if (highlightedPart === "firstMonth") {
-        const currentMonth = monthFrom ? monthFrom.getMonth() : 0;
-        const newMonthIndex = currentMonth + (event.deltaY > 0 ? -1 : 1);
-        handleMonthChange(newMonthIndex, "from");
-      } else if (highlightedPart === "firstYear" && yearFrom !== undefined) {
-        const newYear = yearFrom + (event.deltaY > 0 ? -1 : 1);
-        handleYearChange(newYear, "from");
-      } else if (highlightedPart === "secondDay") {
-        const newDate = new Date(date.to as Date);
-        const increment = event.deltaY > 0 ? -1 : 1;
+      const increment = event.deltaY > 0 ? -1 : 1;
+
+      const updateDate = (currentDate: Date) => {
+        const newDate = new Date(currentDate);
         newDate.setDate(newDate.getDate() + increment);
-        if (newDate >= (date.from as Date)) {
-          onDateSelect({ from: new Date(date.from as Date), to: newDate });
-          setMonthTo(newDate);
-        }
-      } else if (highlightedPart === "secondMonth") {
-        const currentMonth = monthTo ? monthTo.getMonth() : 0;
-        const newMonthIndex = currentMonth + (event.deltaY > 0 ? -1 : 1);
-        handleMonthChange(newMonthIndex, "to");
-      } else if (highlightedPart === "secondYear" && yearTo !== undefined) {
-        const newYear = yearTo + (event.deltaY > 0 ? -1 : 1);
-        handleYearChange(newYear, "to");
+        return newDate;
+      };
+
+      const selectDate = (from: Date, to: Date) => {
+        onDateSelect({ from, to });
+        return from;
+      };
+
+      switch (highlightedPart) {
+        case "firstDay":
+          if (date?.from && date?.to) {
+            const newDate = updateDate(date.from);
+            const isRange = numberOfMonths === 2;
+
+            if (newDate <= date.to) {
+              if (isRange) {
+                selectDate(newDate, date.to);
+              } else {
+                selectDate(newDate, newDate);
+              }
+
+              setMonthFrom(newDate);
+            } else if (newDate > date.to && !isRange) {
+              selectDate(newDate, newDate);
+              setMonthFrom(newDate);
+            }
+          }
+          break;
+
+        case "firstMonth":
+          if (monthFrom) {
+            const newMonthIndex = monthFrom.getMonth() + increment;
+            handleMonthChange(newMonthIndex, "from");
+          }
+          break;
+
+        case "firstYear":
+          if (yearFrom !== undefined) {
+            const newYear = yearFrom + increment;
+            handleYearChange(newYear, "from");
+          }
+          break;
+
+        case "secondDay":
+          if (date?.from && date?.to) {
+            const newDate = updateDate(date.to);
+
+            if (newDate >= date.from) {
+              selectDate(date.from, newDate);
+              setMonthTo(newDate);
+            }
+          }
+          break;
+
+        case "secondMonth":
+          if (monthTo) {
+            const newMonthIndex = monthTo.getMonth() + increment;
+            handleMonthChange(newMonthIndex, "to");
+          }
+          break;
+
+        case "secondYear":
+          if (yearTo !== undefined) {
+            const newYear = yearTo + increment;
+            handleYearChange(newYear, "to");
+          }
+          break;
+
+        default:
+          break;
       }
     };
 
@@ -399,9 +437,6 @@ export const CalendarDatePicker = React.forwardRef<
       };
     }, [highlightedPart, date]);
 
-    const formatWithTz = (date: Date, fmt: string) =>
-      formatInTimeZone(date, timeZone, fmt);
-
     return (
       <>
         <style>
@@ -430,122 +465,89 @@ export const CalendarDatePicker = React.forwardRef<
                 {date?.from ? (
                   date.to ? (
                     <>
-                      <span
+                      <DatePart
                         id={`firstDay-${id}`}
-                        className={cn(
-                          "date-part text-[#e4e2e2]",
-                          highlightedPart === "firstDay" &&
-                            "font-bold underline",
-                        )}
-                        onMouseOver={() => handleMouseOver("firstDay")}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        {formatWithTz(date.from, "dd")}
-                      </span>{" "}
-                      <span
+                        date={date}
+                        part="firstDay"
+                        highlightedPart={highlightedPart}
+                        setHighlightedPart={setHighlightedPart}
+                        orientation="from"
+                      />{" "}
+                      <DatePart
                         id={`firstMonth-${id}`}
-                        className={cn(
-                          "date-part text-[#e4e2e2]",
-                          highlightedPart === "firstMonth" &&
-                            "font-bold underline",
-                        )}
-                        onMouseOver={() => handleMouseOver("firstMonth")}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        {formatWithTz(date.from, "LLL")}
-                      </span>
+                        date={date}
+                        part="firstMonth"
+                        highlightedPart={highlightedPart}
+                        setHighlightedPart={setHighlightedPart}
+                        orientation="from"
+                      />
                       ,{" "}
-                      <span
+                      <DatePart
                         id={`firstYear-${id}`}
-                        className={cn(
-                          "date-part text-[#e4e2e2]",
-                          highlightedPart === "firstYear" &&
-                            "font-bold underline",
-                        )}
-                        onMouseOver={() => handleMouseOver("firstYear")}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        {formatWithTz(date.from, "y")}
-                      </span>
+                        date={date}
+                        part="firstYear"
+                        highlightedPart={highlightedPart}
+                        setHighlightedPart={setHighlightedPart}
+                        orientation="from"
+                      />
                       {numberOfMonths === 2 && (
                         <>
                           {" - "}
-                          <span
+                          <DatePart
                             id={`secondDay-${id}`}
-                            className={cn(
-                              "date-part text-[#e4e2e2]",
-                              highlightedPart === "secondDay" &&
-                                "font-bold underline",
-                            )}
-                            onMouseOver={() => handleMouseOver("secondDay")}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            {formatWithTz(date.to, "dd")}
-                          </span>{" "}
-                          <span
+                            date={date}
+                            part="secondDay"
+                            highlightedPart={highlightedPart}
+                            setHighlightedPart={setHighlightedPart}
+                            orientation="to"
+                          />{" "}
+                          <DatePart
                             id={`secondMonth-${id}`}
-                            className={cn(
-                              "date-part text-[#e4e2e2]",
-                              highlightedPart === "secondMonth" &&
-                                "font-bold underline",
-                            )}
-                            onMouseOver={() => handleMouseOver("secondMonth")}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            {formatWithTz(date.to, "LLL")}
-                          </span>
+                            date={date}
+                            part="secondMonth"
+                            highlightedPart={highlightedPart}
+                            setHighlightedPart={setHighlightedPart}
+                            orientation="to"
+                          />
                           ,{" "}
-                          <span
+                          <DatePart
                             id={`secondYear-${id}`}
-                            className={cn(
-                              "date-part text-[#e4e2e2]",
-                              highlightedPart === "secondYear" &&
-                                "font-bold underline",
-                            )}
-                            onMouseOver={() => handleMouseOver("secondYear")}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            {formatWithTz(date.to, "y")}
-                          </span>
+                            date={date}
+                            part="secondYear"
+                            highlightedPart={highlightedPart}
+                            setHighlightedPart={setHighlightedPart}
+                            orientation="to"
+                          />
                         </>
                       )}
                     </>
                   ) : (
                     <>
-                      <span
+                      <DatePart
                         id="day"
-                        className={cn(
-                          "date-part",
-                          highlightedPart === "day" && "font-bold underline",
-                        )}
-                        onMouseOver={() => handleMouseOver("day")}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        {formatWithTz(date.from, "dd")}
-                      </span>{" "}
-                      <span
+                        date={date}
+                        part="day"
+                        highlightedPart={highlightedPart}
+                        setHighlightedPart={setHighlightedPart}
+                        orientation="from"
+                      />{" "}
+                      <DatePart
                         id="month"
-                        className={cn(
-                          "date-part",
-                          highlightedPart === "month" && "font-bold underline",
-                        )}
-                        onMouseOver={() => handleMouseOver("month")}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        {formatWithTz(date.from, "LLL")}
-                      </span>
+                        date={date}
+                        part="month"
+                        highlightedPart={highlightedPart}
+                        setHighlightedPart={setHighlightedPart}
+                        orientation="from"
+                      />
                       ,{" "}
-                      <span
+                      <DatePart
                         id="year"
-                        className={cn(
-                          "date-part",
-                          highlightedPart === "year" && "font-bold underline",
-                        )}
-                        onMouseOver={() => handleMouseOver("year")}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        {formatWithTz(date.from, "y")}
-                      </span>
+                        date={date}
+                        part="year"
+                        highlightedPart={highlightedPart}
+                        setHighlightedPart={setHighlightedPart}
+                        orientation="from"
+                      />
                     </>
                   )
                 ) : (
