@@ -1,5 +1,6 @@
 import { cn } from "@/app/_lib/utils";
 import { formatInTimeZone } from "date-fns-tz";
+import { ptBR } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
 
 interface iDatePartProps {
@@ -39,7 +40,7 @@ export const DatePart = ({
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const formatWithTz = (date: Date, fmt: string) =>
-    formatInTimeZone(date, timeZone, fmt);
+    formatInTimeZone(date, timeZone, fmt, { locale: ptBR });
 
   return (
     <span

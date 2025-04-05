@@ -33,6 +33,7 @@ import {
 } from "@/app/_components/ui/select";
 import { Calendar } from "../ui/calendar";
 import { DatePart } from "./date-part";
+import { ptBR } from "date-fns/locale";
 
 const months = [
   "Janeiro",
@@ -103,7 +104,7 @@ export const CalendarDatePicker = React.forwardRef<
   ) => {
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [selectedRange, setSelectedRange] = React.useState<string | null>(
-      numberOfMonths === 2 ? "This Year" : "Today",
+      numberOfMonths === 2 ? "Esse ano" : "Hoje",
     );
     const [monthFrom, setMonthFrom] = React.useState<Date | undefined>(
       date?.from,
@@ -281,32 +282,32 @@ export const CalendarDatePicker = React.forwardRef<
     );
 
     const dateRanges = [
-      { label: "Today", start: today, end: today },
-      { label: "Yesterday", start: subDays(today, 1), end: subDays(today, 1) },
+      { label: "Hoje", start: today, end: today },
+      { label: "Ontem", start: subDays(today, 1), end: subDays(today, 1) },
       {
-        label: "This Week",
+        label: "Essa semana",
         start: startOfWeek(today, { weekStartsOn: 1 }),
         end: endOfWeek(today, { weekStartsOn: 1 }),
       },
       {
-        label: "Last Week",
+        label: "Semana passada",
         start: subDays(startOfWeek(today, { weekStartsOn: 1 }), 7),
         end: subDays(endOfWeek(today, { weekStartsOn: 1 }), 7),
       },
-      { label: "Last 7 Days", start: subDays(today, 6), end: today },
+      { label: "Últimos 7 dias", start: subDays(today, 6), end: today },
       {
-        label: "This Month",
+        label: "Esse mês",
         start: startOfMonth(today),
         end: endOfMonth(today),
       },
       {
-        label: "Last Month",
+        label: "Mês passado",
         start: startOfMonth(subDays(today, today.getDate())),
         end: endOfMonth(subDays(today, today.getDate())),
       },
-      { label: "This Year", start: startOfYear(today), end: endOfYear(today) },
+      { label: "Esse ano", start: startOfYear(today), end: endOfYear(today) },
       {
-        label: "Last Year",
+        label: "Ano passado",
         start: startOfYear(subDays(today, 365)),
         end: endOfYear(subDays(today, 365)),
       },
@@ -565,6 +566,7 @@ export const CalendarDatePicker = React.forwardRef<
                     numberOfMonths={numberOfMonths}
                     showOutsideDays={false}
                     className={className}
+                    locale={ptBR}
                   />
                 </div>
               </div>

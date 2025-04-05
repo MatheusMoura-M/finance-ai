@@ -14,6 +14,7 @@ import { DataTableViewOptions } from "./data-table-view-options";
 import { FilterSheet } from "@/app/_components/filter-sheet";
 import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
 import { Filter } from "lucide-react";
+import { iFirstAndLastTransactionDate } from "@/app/_components/ui/data-table";
 
 export interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -21,12 +22,14 @@ export interface DataTableToolbarProps<TData> {
 
 export function DataTableToolbar<TData>({
   table,
-}: DataTableToolbarProps<TData>) {
+  newestTransaction,
+  oldestTransaction,
+}: DataTableToolbarProps<TData> & iFirstAndLastTransactionDate) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
-    from: new Date(new Date().getFullYear(), 0, 1),
-    to: new Date(),
+    from: oldestTransaction,
+    to: newestTransaction,
   });
 
   const handleDateSelect = ({ from, to }: { from: Date; to: Date }) => {

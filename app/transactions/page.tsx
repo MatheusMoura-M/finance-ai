@@ -27,6 +27,22 @@ const TransactionsPage = async () => {
     },
   });
 
+  const oldestTransaction = await db.transaction.findFirst({
+    orderBy: { date: "asc" },
+    select: { date: true },
+  });
+
+  const newestTransaction = await db.transaction.findFirst({
+    orderBy: { date: "desc" },
+    select: { date: true },
+  });
+
+  const firstAndLastTransactionDate = {
+    oldestTransaction:
+      oldestTransaction?.date ?? new Date(new Date().getFullYear(), 0, 1),
+    newestTransaction: newestTransaction?.date ?? new Date(),
+  };
+
   const userCanAddTransaction = await canUserAddTransaction();
 
   return (
@@ -43,6 +59,7 @@ const TransactionsPage = async () => {
         <DataTable
           columns={transactionsColumns}
           data={JSON.parse(JSON.stringify(transaction))}
+          firstAndLastTransactionDate={firstAndLastTransactionDate}
         />
       </div>
     </>

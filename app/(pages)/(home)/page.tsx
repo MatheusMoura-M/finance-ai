@@ -56,9 +56,11 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
       <ScrollArea>
         <div className="flex h-full flex-col space-y-5 p-4 pb-4 pt-3 sm:p-6 sm:py-4">
           <div className="flex justify-between">
-            <h1 className="text-2xl font-bold lg:text-3xl">Dashboard</h1>
+            <h1 className="content-center text-2xl font-bold lg:text-3xl">
+              Dashboard
+            </h1>
 
-            <div className="flex items-center gap-1 xs:gap-3">
+            <div className="flex flex-col items-center gap-1 xs:flex-row xs:gap-3">
               <AiReportButton
                 month={month}
                 hasPremiumPlan={

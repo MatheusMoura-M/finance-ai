@@ -28,14 +28,21 @@ import { DataTablePagination } from "@/app/transactions/_components/data-table-c
 import { DataTableToolbar } from "@/app/transactions/_components/data-table-components/data-table-toolbar";
 import { ScrollArea } from "./scroll-area";
 
+export interface iFirstAndLastTransactionDate {
+  oldestTransaction: Date;
+  newestTransaction: Date;
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  firstAndLastTransactionDate: iFirstAndLastTransactionDate;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  firstAndLastTransactionDate,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -66,7 +73,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="h-[75vh] space-y-3 overflow-hidden">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} {...firstAndLastTransactionDate} />
 
       <ScrollArea className="h-full max-h-[75%] sm:max-h-[80%] [&>div]:!overflow-auto">
         <div className="min-w-[1080px] rounded-md border">

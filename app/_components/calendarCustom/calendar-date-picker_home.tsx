@@ -108,7 +108,7 @@ export const CalendarDatePickerTest = React.forwardRef<
     const handleTogglePopover = () => setIsPopoverOpen((prev) => !prev);
 
     const handleMonthChange = (newMonthIndex: number) => {
-      const year = yearFrom;
+      const year = yearUrl;
       if (year === undefined) return;
       if (newMonthIndex < 0 || newMonthIndex > yearsRange + 1) return;
 
