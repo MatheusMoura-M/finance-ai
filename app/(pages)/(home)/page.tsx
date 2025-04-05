@@ -11,6 +11,7 @@ import LastTransactions from "./_components/last-transactions";
 import SummaryCards from "./_components/summary-cards";
 import TimeSelect from "./_components/time-select";
 import TransactionsPieChart from "./_components/transactions-pie-chart";
+import { getAvailableYears } from "@/app/_data/get-available-years";
 
 export const metadata = {
   title: "Painel",
@@ -19,10 +20,11 @@ export const metadata = {
 interface HomeProps {
   searchParams: {
     month: string;
+    year: string;
   };
 }
 
-const Home = async ({ searchParams: { month } }: HomeProps) => {
+const Home = async ({ searchParams: { month, year } }: HomeProps) => {
   const { userId } = auth();
 
   if (!userId) {
@@ -30,17 +32,22 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
   }
 
   const monthIsInvalid = !month || !isMatch(month, "MM");
+  const currentYear = new Date().getFullYear();
+  const selectedYear = year ? parseInt(year) : currentYear;
 
   if (monthIsInvalid) {
     const dateFormatted = String(new Date().getMonth() + 1).padStart(2, "0");
 
-    redirect(`?month=${dateFormatted}`);
+    redirect(`?month=${dateFormatted}&year=${selectedYear}`);
   }
 
-  const dashboard = await getDashboard(month);
-
-  const userCanAddTransaction = await canUserAddTransaction();
-  const user = await clerkClient().users.getUser(userId);
+  const [dashboard, userCanAddTransaction, user, availableYears] =
+    await Promise.all([
+      getDashboard(month, selectedYear),
+      canUserAddTransaction(),
+      clerkClient().users.getUser(userId),
+      getAvailableYears(),
+    ]);
 
   return (
     <>
@@ -59,7 +66,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
                 }
               />
 
-              <TimeSelect />
+              <TimeSelect availableYears={availableYears} />
             </div>
           </div>
 

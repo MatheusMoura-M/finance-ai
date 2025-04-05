@@ -1,56 +1,62 @@
 "use client";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/app/_components/ui/select";
-import { useRouter, useSearchParams } from "next/navigation";
+import { CalendarDatePickerTest } from "@/app/_components/calendarCustom/calendar-date-picker_home";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
-const MONTH_OPTIONS = [
-  { value: "01", label: "Janeiro" },
-  { value: "02", label: "Fevereiro" },
-  { value: "03", label: "Março" },
-  { value: "04", label: "Abril" },
-  { value: "05", label: "Maio" },
-  { value: "06", label: "Junho" },
-  { value: "07", label: "Julho" },
-  { value: "08", label: "Agosto" },
-  { value: "09", label: "Setembro" },
-  { value: "10", label: "Outubro" },
-  { value: "11", label: "Novembro" },
-  { value: "12", label: "Dezembro" },
-];
+interface TimeSelectProps {
+  availableYears: number[];
+}
 
-const TimeSelect = () => {
+const debounceDelay = 2000;
+
+const TimeSelect = ({ availableYears }: TimeSelectProps) => {
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const { push } = useRouter();
 
-  const searchParams = useSearchParams();
-  const month = searchParams.get("month");
+  const callCountRef = useRef(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMonthChange = (month: string) => {
-    push(`/?month=${month}`);
+  const handleDateChange = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+
+    const currentMonth = selectedDate
+      ? String(selectedDate.getMonth() + 1).padStart(2, "0")
+      : "N/A";
+
+    const currentYear = selectedDate?.getFullYear();
+
+    callCountRef.current += 1;
+
+    if (callCountRef.current >= 2) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      push(`/?month=${currentMonth}&year=${currentYear}`);
+
+      setTimeout(() => {
+        callCountRef.current = 0;
+      }, 5000);
+    } else {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        push(`/?month=${currentMonth}&year=${currentYear}`);
+        callCountRef.current = 0;
+      }, debounceDelay);
+    }
   };
 
   return (
-    <Select
-      onValueChange={(value) => handleMonthChange(value)}
-      defaultValue={month ?? ""}
-    >
-      <SelectTrigger className="rounded-full sm:!w-[150px] xs:w-[120px]">
-        <SelectValue placeholder="Mês" />
-      </SelectTrigger>
-
-      <SelectContent>
-        {MONTH_OPTIONS.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <CalendarDatePickerTest
+      date={date}
+      onDateSelect={handleDateChange}
+      className="h-8 w-[180px]"
+      variant="outline"
+      availableYears={availableYears}
+    />
   );
 };
 
