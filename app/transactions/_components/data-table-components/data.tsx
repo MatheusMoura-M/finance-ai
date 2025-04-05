@@ -42,17 +42,17 @@ export const categories = [
 export const incomeType = [
   {
     label: "Depósito",
-    value: "Deposit",
+    value: "deposit",
     icon: ArrowUpIcon,
   },
   {
     label: "Despesa",
-    value: "Expense",
+    value: "expense",
     icon: ArrowDownIcon,
   },
   {
     label: "Investimento",
-    value: "Investment",
+    value: "investment",
     icon: ArrowDownIcon,
   },
 ];

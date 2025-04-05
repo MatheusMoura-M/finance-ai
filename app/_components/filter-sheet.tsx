@@ -47,7 +47,7 @@ export const FilterSheet = <TData,>({
         {table.getColumn("category") && (
           <DataTableFacetedFilter
             column={table.getColumn("category")}
-            title="Category"
+            title="Categoria"
             options={categories}
           />
         )}
@@ -55,7 +55,7 @@ export const FilterSheet = <TData,>({
         {table.getColumn("type") && (
           <DataTableFacetedFilter
             column={table.getColumn("type")}
-            title="Type"
+            title="Tipo"
             options={incomeType}
           />
         )}

@@ -26,6 +26,14 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     cell: ({ row: { original: transaction } }) => (
       <TransactionTypeBadge transaction={transaction} />
     ),
+    filterFn: (row, id, value) => {
+      const cellValue = row.getValue(id);
+
+      console.log("CELL VALUE", cellValue);
+      console.log("VALUE", value);
+
+      return value.includes(String(cellValue).toLowerCase());
+    },
   },
   {
     accessorKey: "category",
@@ -34,6 +42,11 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     ),
     cell: ({ row: { original: transaction } }) =>
       TRANSACTION_CATEGORY_LABELS[transaction.category],
+    filterFn: (row, id, value) => {
+      const cellValue = row.getValue(id);
+
+      return value.includes(String(cellValue).toLowerCase());
+    },
   },
   {
     accessorKey: "paymentMethod",

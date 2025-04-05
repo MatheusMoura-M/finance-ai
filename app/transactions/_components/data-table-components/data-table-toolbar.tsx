@@ -39,8 +39,8 @@ export function DataTableToolbar<TData>({
 
   const handleResetFilters = () => {
     setDateRange({
-      from: new Date(new Date().getFullYear(), 0, 1),
-      to: new Date(),
+      from: oldestTransaction,
+      to: newestTransaction,
     });
 
     table.resetColumnFilters();
@@ -50,7 +50,7 @@ export function DataTableToolbar<TData>({
     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0">
       <div className="flex w-full items-center gap-2 pt-[3px] sm:w-auto [&:has(input:focus-visible)]:pl-[3px]">
         <Input
-          placeholder="Filter labels..."
+          placeholder="Filtre por nome..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => {
             table.getColumn("name")?.setFilterValue(event.target.value);
@@ -62,7 +62,7 @@ export function DataTableToolbar<TData>({
           {table.getColumn("category") && (
             <DataTableFacetedFilter
               column={table.getColumn("category")}
-              title="Category"
+              title="Categoria"
               options={categories}
             />
           )}
@@ -70,7 +70,7 @@ export function DataTableToolbar<TData>({
           {table.getColumn("type") && (
             <DataTableFacetedFilter
               column={table.getColumn("type")}
-              title="Type"
+              title="Tipo"
               options={incomeType}
             />
           )}
