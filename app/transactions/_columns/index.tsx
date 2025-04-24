@@ -17,6 +17,19 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nome" />
     ),
+    filterFn: (row, columnId, filterValue) => {
+      const normalize = (str: string) =>
+        str
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
+      const cellValue = normalize(String(row.getValue(columnId)));
+      const search = normalize(String(filterValue));
+
+      return cellValue.split(" ").some((word) => word.startsWith(search));
+    },
+    sortingFn: "alphanumeric",
   },
   {
     accessorKey: "type",
@@ -28,9 +41,6 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     ),
     filterFn: (row, id, value) => {
       const cellValue = row.getValue(id);
-
-      console.log("CELL VALUE", cellValue);
-      console.log("VALUE", value);
 
       return value.includes(String(cellValue).toLowerCase());
     },

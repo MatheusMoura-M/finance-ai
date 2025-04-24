@@ -56,7 +56,7 @@ export function DataTableFacetedFilter<TData, TValue>({
           <CommandInput placeholder={title} />
 
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>Sem resultados</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
