@@ -93,6 +93,12 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
         style: "currency",
         currency: "BRL",
       }).format(Number(transaction.amount)),
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = Number(rowA.getValue(columnId));
+      const b = Number(rowB.getValue(columnId));
+
+      return a - b;
+    },
   },
   {
     accessorKey: "actions",
