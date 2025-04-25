@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
 import { db } from "@/app/_lib/prisma";
@@ -32,46 +33,47 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
 
     return DUMMY_REPORT;
   }
+  return DUMMY_REPORT;
 
-  const openAi = new OpenAi({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+  // const openAi = new OpenAi({
+  //   apiKey: process.env.OPENAI_API_KEY,
+  // });
 
-  //Pegar as transações do mês recebido
-  const transactions = await db.transaction.findMany({
-    where: {
-      date: {
-        gte: new Date(`${new Date().getFullYear()}-${month}-01`),
-        lt: new Date(`${new Date().getFullYear()}-${month}-31`),
-      },
-    },
-  });
+  // //Pegar as transações do mês recebido
+  // const transactions = await db.transaction.findMany({
+  //   where: {
+  //     date: {
+  //       gte: new Date(`${new Date().getFullYear()}-${month}-01`),
+  //       lt: new Date(`${new Date().getFullYear()}-${month}-31`),
+  //     },
+  //   },
+  // });
 
-  //Mandar as transações para o ChatGPT e pedir pra ele gerar o relatório
-  const content = `Gere um relatório com insights sobre as minhas finanças, com dicas e orientações de como melhorar minha vida financeira. As transações estão divididas por ponto e vírgula. A estrutura de cada uma é {DATA}-{TIPO}-{VALOR}-{CATEGORIA}. Sempre traduza os nomes das categorias para português do Brasil. São elas:
- 
-  ${transactions
-    .map(
-      (transaction) =>
-        `${transaction.date.toLocaleDateString("pt-BR")}-${transaction.type}-R$${transaction.amount}-${transaction.category}`,
-    )
-    .join(";")}`;
+  // //Mandar as transações para o ChatGPT e pedir pra ele gerar o relatório
+  // const content = `Gere um relatório com insights sobre as minhas finanças, com dicas e orientações de como melhorar minha vida financeira. As transações estão divididas por ponto e vírgula. A estrutura de cada uma é {DATA}-{TIPO}-{VALOR}-{CATEGORIA}. Sempre traduza os nomes das categorias para português do Brasil. São elas:
 
-  const completion = await openAi.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "system",
-        content:
-          "Você é um especialista em gestão e organização de finanças pessoais. Você ajuda as pessoas a organizarem melhor as suas finanças.",
-      },
-      {
-        role: "user",
-        content,
-      },
-    ],
-  });
+  // ${transactions
+  //   .map(
+  //     (transaction) =>
+  //       `${transaction.date.toLocaleDateString("pt-BR")}-${transaction.type}-R$${transaction.amount}-${transaction.category}`,
+  //   )
+  //   .join(";")}`;
 
-  //Pegar o relatório e retornar ao usuário
-  return completion.choices[0].message.content;
+  // const completion = await openAi.chat.completions.create({
+  //   model: "gpt-4o-mini",
+  //   messages: [
+  //     {
+  //       role: "system",
+  //       content:
+  //         "Você é um especialista em gestão e organização de finanças pessoais. Você ajuda as pessoas a organizarem melhor as suas finanças.",
+  //     },
+  //     {
+  //       role: "user",
+  //       content,
+  //     },
+  //   ],
+  // });
+
+  // //Pegar o relatório e retornar ao usuário
+  // return completion.choices[0].message.content;
 };
