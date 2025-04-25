@@ -15,14 +15,18 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
     throw new Error("Unauthorized");
   }
 
+  console.log("USERID", userId);
+
   const user = await clerkClient().users.getUser(userId);
 
   const hasPremiumPlan = user.publicMetadata.subscriptionPlan === "premium";
+  console.log("hasPremiumPlan", hasPremiumPlan);
 
   if (!hasPremiumPlan) {
     throw new Error("You need a premium plan to generate AI reports");
   }
 
+  console.log("env", process.env.OPENAI_API_KEY);
   if (!process.env.OPENAI_API_KEY) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
