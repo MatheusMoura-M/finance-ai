@@ -46,6 +46,8 @@ const LoginPage = () => {
           src="/login.png"
           alt="Faça login"
           fill
+          sizes="100%"
+          priority
           className="object-cover"
         />
       </div>
