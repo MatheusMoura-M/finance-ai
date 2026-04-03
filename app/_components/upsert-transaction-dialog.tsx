@@ -244,7 +244,7 @@ const UpsertTransactionDialog = ({
               name="date"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Data 1</FormLabel>
+                  <FormLabel>Data 2</FormLabel>
 
                   <DatePicker value={field.value} onChange={field.onChange} />
 
