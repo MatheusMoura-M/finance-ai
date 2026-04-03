@@ -93,9 +93,8 @@ const UpsertTransactionDialog = ({
       open={isOpen}
       onOpenChange={(open) => {
         setIsOpen(open);
-        if (!open) {
-          form.reset();
-        }
+
+        if (!open) form.reset();
       }}
     >
       <DialogContent className="scrollbar-custom max-h-[95%] overflow-y-auto sm-max:max-w-[95%]">
