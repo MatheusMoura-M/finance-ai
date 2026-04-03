@@ -18,9 +18,8 @@ interface DatePickerProps {
 export const DatePicker = ({ value, onChange }: DatePickerProps) => {
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
-          type="button"
           variant="outline"
           className={cn(
             "w-full justify-start text-left font-normal",
