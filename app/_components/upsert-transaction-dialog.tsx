@@ -241,21 +241,15 @@ const UpsertTransactionDialog = ({
             <FormField
               control={form.control}
               name="date"
-              render={({ field }) => {
-                console.log("FIELD =>", field.value);
-                console.log("TYPE =>", typeof field.value);
-                console.log("INSTANCE =>", field.value instanceof Date);
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Data</FormLabel>
 
-                return (
-                  <FormItem>
-                    <FormLabel>Data</FormLabel>
+                  <DatePicker value={field.value} onChange={field.onChange} />
 
-                    <DatePicker value={field.value} onChange={field.onChange} />
-
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
             <DialogFooter>
