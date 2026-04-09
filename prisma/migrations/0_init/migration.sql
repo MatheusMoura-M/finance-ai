@@ -1,3 +1,6 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
 -- CreateEnum
 CREATE TYPE "TransactionType" AS ENUM ('DEPOSIT', 'EXPENSE', 'INVESTMENT');
 
@@ -22,3 +25,4 @@ CREATE TABLE "Transaction" (
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
 );
+

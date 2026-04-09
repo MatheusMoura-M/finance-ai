@@ -23,6 +23,7 @@ export const TRANSACTION_CATEGORY_LABELS = {
   OTHER: "Outros",
   SALARY: "Salário",
   TRANSPORTATION: "Transporte",
+  CLOTHING: "Vestuário",
   UTILITY: "Utilidades",
 };
 
@@ -108,10 +109,6 @@ export const TRANSACTION_CATEGORY_OPTIONS = [
     label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.HOUSING],
   },
   {
-    value: TransactionCategory.OTHER,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.OTHER],
-  },
-  {
     value: TransactionCategory.SALARY,
     label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.SALARY],
   },
@@ -122,5 +119,13 @@ export const TRANSACTION_CATEGORY_OPTIONS = [
   {
     value: TransactionCategory.UTILITY,
     label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.UTILITY],
+  },
+  {
+    value: TransactionCategory.OTHER,
+    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.OTHER],
+  },
+  {
+    value: TransactionCategory.CLOTHING,
+    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.CLOTHING],
   },
 ];

@@ -37,6 +37,10 @@ export const categories = [
     value: "other",
     label: "Outros",
   },
+  {
+    value: "clothing",
+    label: "Vestuário",
+  },
 ];
 
 export const incomeType = [
