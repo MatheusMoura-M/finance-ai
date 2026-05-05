@@ -203,6 +203,7 @@ const UpsertTransactionDialog = ({
                       ))}
                     </SelectContent>
                   </Select>
+
                   <FormMessage />
                 </FormItem>
               )}

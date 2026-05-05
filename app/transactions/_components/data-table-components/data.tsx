@@ -6,12 +6,40 @@ export const categories = [
     label: "Alimentação",
   },
   {
-    value: "utilities",
-    label: "Utilidades",
+    value: "subscriptions",
+    label: "Assinaturas",
+  },
+  {
+    value: "education",
+    label: "Educação",
+  },
+  {
+    value: "emergency",
+    label: "Emergência",
+  },
+  {
+    value: "entertainment",
+    label: "Entretenimento",
+  },
+  {
+    value: "loan",
+    label: "Empréstimo",
+  },
+  {
+    value: "invoice",
+    label: "Fatura",
+  },
+  {
+    value: "investments",
+    label: "Investimentos",
   },
   {
     value: "housing",
     label: "Moradia",
+  },
+  {
+    value: "salary",
+    label: "Salário",
   },
   {
     value: "health",
@@ -22,24 +50,20 @@ export const categories = [
     label: "Transporte",
   },
   {
-    value: "salary",
-    label: "Salário",
-  },
-  {
-    value: "entertainment",
-    label: "Entretenimento",
-  },
-  {
-    value: "education",
-    label: "Educação",
-  },
-  {
-    value: "other",
-    label: "Outros",
+    value: "utilities",
+    label: "Utilidades",
   },
   {
     value: "clothing",
     label: "Vestuário",
+  },
+  {
+    value: "travel",
+    label: "Viagem",
+  },
+  {
+    value: "other",
+    label: "Outros",
   },
 ];
 
