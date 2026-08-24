@@ -11,6 +11,7 @@ export const TRANSACTION_PAYMENT_METHOD_ICONS = {
   [TransactionPaymentMethod.CASH]: "money.svg",
   [TransactionPaymentMethod.PIX]: "pix.svg",
   [TransactionPaymentMethod.BANK_SLIP]: "bank-slip.svg",
+  [TransactionPaymentMethod.FOOD_VOUCHER]: "food-voucher.svg",
   [TransactionPaymentMethod.OTHER]: "other.svg",
 };
 
@@ -21,6 +22,7 @@ export const TRANSACTION_PAYMENT_METHOD_LABELS = {
   CASH: "Dinheiro",
   PIX: "Pix",
   BANK_TRANSFER: "Transferência Bancária",
+  FOOD_VOUCHER: "Vale-alimentação",
   OTHER: "Outros",
 };
 
@@ -52,6 +54,11 @@ export const TRANSACTION_PAYMENT_METHOD_OPTIONS = [
     value: TransactionPaymentMethod.BANK_TRANSFER,
     label:
       TRANSACTION_PAYMENT_METHOD_LABELS[TransactionPaymentMethod.BANK_TRANSFER],
+  },
+  {
+    value: TransactionPaymentMethod.FOOD_VOUCHER,
+    label:
+      TRANSACTION_PAYMENT_METHOD_LABELS[TransactionPaymentMethod.FOOD_VOUCHER],
   },
   {
     value: TransactionPaymentMethod.OTHER,
