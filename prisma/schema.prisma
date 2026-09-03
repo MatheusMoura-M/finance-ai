@@ -54,3 +54,10 @@ enum TransactionPaymentMethod {
   FOOD_VOUCHER
   OTHER
 }
+
+model KeepAlive {
+  id        String   @id
+  pingCount Int      @default(0)
+  pingedAt  DateTime @default(now())
+  source    String?
+}
