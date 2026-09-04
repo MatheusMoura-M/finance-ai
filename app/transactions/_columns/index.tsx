@@ -65,6 +65,11 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     ),
     cell: ({ row: { original: transaction } }) =>
       TRANSACTION_PAYMENT_METHOD_LABELS[transaction.paymentMethod],
+    filterFn: (row, id, value) => {
+      const cellValue = row.getValue(id);
+
+      return value.includes(String(cellValue).toLowerCase());
+    },
   },
   {
     accessorKey: "date",
