@@ -5,7 +5,7 @@ import { Table } from "@tanstack/react-table";
 
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
-import { incomeType, categories } from "./data";
+import { incomeType, categories, paymentMethods } from "./data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 // import { DataTableViewOptions } from "@/app/_components/ui/data-table-view-options";
 import { CalendarDatePicker } from "@/app/_components/calendarCustom/calendar-date-picker";
@@ -72,6 +72,14 @@ export function DataTableToolbar<TData>({
               column={table.getColumn("type")}
               title="Tipo"
               options={incomeType}
+            />
+          )}
+
+          {table.getColumn("paymentMethod") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("paymentMethod")}
+              title="Método de Pagamento"
+              options={paymentMethods}
             />
           )}
 

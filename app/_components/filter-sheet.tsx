@@ -12,6 +12,7 @@ import { DataTableFacetedFilter } from "../transactions/_components/data-table-c
 import {
   categories,
   incomeType,
+  paymentMethods,
 } from "../transactions/_components/data-table-components/data";
 import { CalendarDatePicker } from "./calendarCustom/calendar-date-picker";
 import { DataTableViewOptions } from "../transactions/_components/data-table-components/data-table-view-options";
@@ -57,6 +58,14 @@ export const FilterSheet = <TData,>({
             column={table.getColumn("type")}
             title="Tipo"
             options={incomeType}
+          />
+        )}
+
+        {table.getColumn("paymentMethod") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("paymentMethod")}
+            title="Método de Pagamento"
+            options={paymentMethods}
           />
         )}
 

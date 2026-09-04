@@ -84,3 +84,38 @@ export const incomeType = [
     icon: ArrowDownIcon,
   },
 ];
+
+export const paymentMethods = [
+  {
+    value: "bank_slip",
+    label: "Boleto Bancário",
+  },
+  {
+    value: "debit_card",
+    label: "Cartão de Débito",
+  },
+  {
+    value: "credit_card",
+    label: "Cartão de Crédito",
+  },
+  {
+    value: "cash",
+    label: "Dinheiro",
+  },
+  {
+    value: "pix",
+    label: "Pix",
+  },
+  {
+    value: "bank_transfer",
+    label: "Transferência Bancária",
+  },
+  {
+    value: "food_voucher",
+    label: "Vale-alimentação",
+  },
+  {
+    value: "other",
+    label: "Outros",
+  },
+];
