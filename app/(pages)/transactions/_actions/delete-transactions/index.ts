@@ -10,7 +10,7 @@ export const deleteTransaction = async (params: DeleteTransactionSchema) =>
   runAction(async () => {
     const { transactionId } = deleteTransactionsSchema.parse(params);
 
-    const { userId } = auth();
+    const { userId } = await auth();
 
     if (!userId) {
       throw new ActionError("Você precisa estar logado.");

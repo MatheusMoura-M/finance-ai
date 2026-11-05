@@ -9,7 +9,7 @@ const calculatePercentage = (part: number, total: number): number => {
 };
 
 export const getDashboard = async (month: string, year: number) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     throw new Error("Unauthorized");

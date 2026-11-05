@@ -26,7 +26,7 @@ interface HomeProps {
 }
 
 const Home = async ({ searchParams: { month, year } }: HomeProps) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     redirect("/login");

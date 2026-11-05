@@ -2,7 +2,7 @@ import { db } from "@/app/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 
 export const getAvailableYears = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     throw new Error("Unauthorized");

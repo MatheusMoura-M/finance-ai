@@ -15,7 +15,7 @@ import { getDashboard } from "./index";
 
 describe("getDashboard", () => {
   beforeEach(() => {
-    mocks.auth.mockReturnValue({ userId: "user_1" });
+    mocks.auth.mockResolvedValue({ userId: "user_1" });
     mocks.findMany.mockResolvedValue([]);
   });
 

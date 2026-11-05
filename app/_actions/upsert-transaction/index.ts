@@ -33,7 +33,7 @@ export const upsertTransaction = async ({
     const transactionId = transactionIdSchema.parse(id);
     const data = addTransactionSchema.parse(params);
 
-    const { userId } = auth();
+    const { userId } = await auth();
 
     if (!userId) {
       throw new ActionError("Você precisa estar logado.");

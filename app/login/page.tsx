@@ -5,8 +5,8 @@ import { SignInButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-const LoginPage = () => {
-  const { userId } = auth();
+const LoginPage = async () => {
+  const { userId } = await auth();
 
   if (userId) {
     redirect("/");
