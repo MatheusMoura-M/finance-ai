@@ -4,36 +4,31 @@ import AddTransactionButton from "@/app/_components/add-transaction-button";
 import Navbar from "@/app/_components/navbar";
 import { DataTable } from "@/app/_components/ui/data-table";
 import { canUserAddTransaction } from "@/app/_data/can-user-add-transaction";
-import { db } from "@/app/_lib/prisma";
+import { getTransactions } from "@/app/_data/get-transactions";
+import { parseTransactionsSearchParams } from "@/app/_data/get-transactions/search-params";
 import { transactionsColumns } from "./_columns";
 
 export const metadata = {
   title: "Transações",
 };
 
-const TransactionsPage = async () => {
+interface TransactionsPageProps {
+  searchParams: Record<string, string | string[] | undefined>;
+}
+
+const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
   const { userId } = await auth();
 
   if (!userId) {
     redirect("/login");
   }
 
-  const transactions = await db.transaction.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      date: "desc",
-    },
-  });
+  const query = parseTransactionsSearchParams(searchParams);
 
-  const firstAndLastTransactionDate = {
-    oldestTransaction:
-      transactions.at(-1)?.date ?? new Date(new Date().getFullYear(), 0, 1),
-    newestTransaction: transactions[0]?.date ?? new Date(),
-  };
-
-  const userCanAddTransaction = await canUserAddTransaction();
+  const [result, userCanAddTransaction] = await Promise.all([
+    getTransactions(query),
+    canUserAddTransaction(),
+  ]);
 
   return (
     <>
@@ -48,8 +43,15 @@ const TransactionsPage = async () => {
 
         <DataTable
           columns={transactionsColumns}
-          data={JSON.parse(JSON.stringify(transactions))}
-          firstAndLastTransactionDate={firstAndLastTransactionDate}
+          data={result.transactions}
+          total={result.total}
+          pageCount={result.pageCount}
+          query={{ ...query, page: result.page }}
+          facets={result.facets}
+          firstAndLastTransactionDate={{
+            oldestTransaction: result.oldestTransactionDate,
+            newestTransaction: result.newestTransactionDate,
+          }}
         />
       </div>
     </>

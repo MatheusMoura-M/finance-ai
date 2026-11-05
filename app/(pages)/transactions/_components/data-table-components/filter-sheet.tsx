@@ -23,6 +23,7 @@ interface FilterSheetProps {
 
 export const FilterSheet = <TData,>({
   table,
+  facets,
   dateRange,
   handleDateSelect,
 }: FilterSheetProps & DataTableToolbarProps<TData>) => {
@@ -46,6 +47,7 @@ export const FilterSheet = <TData,>({
             column={table.getColumn("category")}
             title="Categoria"
             options={categories}
+            counts={facets.category}
           />
         )}
 
@@ -54,6 +56,7 @@ export const FilterSheet = <TData,>({
             column={table.getColumn("type")}
             title="Tipo"
             options={incomeType}
+            counts={facets.type}
           />
         )}
 
@@ -62,6 +65,7 @@ export const FilterSheet = <TData,>({
             column={table.getColumn("paymentMethod")}
             title="Método de Pagamento"
             options={paymentMethods}
+            counts={facets.paymentMethod}
           />
         )}
 
