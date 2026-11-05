@@ -33,7 +33,11 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
 
   const monthIsInvalid = !month || !isMatch(month, "MM");
   const currentYear = new Date().getFullYear();
-  const selectedYear = year ? parseInt(year) : currentYear;
+  const parsedYear = Number(year);
+  const selectedYear =
+    Number.isInteger(parsedYear) && parsedYear >= 1900 && parsedYear <= 2100
+      ? parsedYear
+      : currentYear;
 
   if (monthIsInvalid) {
     const dateFormatted = String(new Date().getMonth() + 1).padStart(2, "0");
@@ -63,6 +67,7 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
             <div className="flex flex-col items-center gap-1 xs:flex-row xs:gap-3">
               <AiReportButton
                 month={month}
+                year={selectedYear}
                 hasPremiumPlan={
                   user.publicMetadata.subscriptionPlan === "premium"
                 }
