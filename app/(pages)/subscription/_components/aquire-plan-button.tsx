@@ -1,48 +1,54 @@
 "use client";
 
 import { Button } from "@/app/_components/ui/button";
+import { Loader2Icon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { createStripeCheckout } from "../_actions/create-stripe-checkout";
-import { loadStripe } from "@stripe/stripe-js";
-import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
+import { createStripePortalSession } from "../_actions/create-stripe-portal-session";
 
-const AquirePlanButton = () => {
-  const { user } = useUser();
+interface AquirePlanButtonProps {
+  hasPremiumPlan: boolean;
+}
 
-  const handleAquirePlanClick = async () => {
-    const { sessionId } = await createStripeCheckout();
+const AquirePlanButton = ({ hasPremiumPlan }: AquirePlanButtonProps) => {
+  const [isLoading, setIsLoading] = useState(false);
 
-    if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-      throw new Error("Stripe publishabe key not found");
+  const redirectTo = async (getUrl: () => Promise<{ url: string }>) => {
+    try {
+      setIsLoading(true);
+
+      const { url } = await getUrl();
+
+      window.location.href = url;
+    } catch (error) {
+      console.error(error);
+      toast.error("Não foi possível abrir o Stripe. Tente novamente.");
+      setIsLoading(false);
     }
-
-    const stripe = await loadStripe(
-      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-    );
-
-    if (!stripe) {
-      throw new Error("Stripe not found");
-    }
-
-    await stripe.redirectToCheckout({ sessionId });
   };
-
-  const hasPremiumPlan = user?.publicMetadata.subscriptionPlan === "premium";
 
   if (hasPremiumPlan) {
     return (
-      <Button className="w-full rounded-full" variant="link">
-        <Link
-          href={`${process.env.NEXT_PUBLIC_STRIPE_COSTUMER_PORTAL_URL as string}?prefilled_email=${user.emailAddresses[0].emailAddress}`}
-        >
-          Gerenciar Plano
-        </Link>
+      <Button
+        className="w-full rounded-full"
+        variant="link"
+        disabled={isLoading}
+        onClick={() => redirectTo(createStripePortalSession)}
+      >
+        {isLoading && <Loader2Icon className="animate-spin" />}
+        Gerenciar Plano
       </Button>
     );
   }
 
   return (
-    <Button className="w-full rounded-full" onClick={handleAquirePlanClick}>
+    <Button
+      className="w-full rounded-full"
+      disabled={isLoading}
+      onClick={() => redirectTo(createStripeCheckout)}
+    >
+      {isLoading && <Loader2Icon className="animate-spin" />}
       Adquirir Plano
     </Button>
   );
