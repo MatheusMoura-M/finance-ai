@@ -1,5 +1,6 @@
 "use server";
 
+import { canUserAddTransaction } from "@/app/_data/can-user-add-transaction";
 import { db } from "@/app/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import {
@@ -8,7 +9,7 @@ import {
   TransactionType,
 } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { addTransactionSchema } from "./schema";
+import { addTransactionSchema, transactionIdSchema } from "./schema";
 
 interface upsertTransactionProps {
   id?: string;
@@ -20,8 +21,12 @@ interface upsertTransactionProps {
   date: Date;
 }
 
-export const upsertTransaction = async (params: upsertTransactionProps) => {
-  addTransactionSchema.parse(params);
+export const upsertTransaction = async ({
+  id,
+  ...params
+}: upsertTransactionProps) => {
+  const transactionId = transactionIdSchema.parse(id);
+  const data = addTransactionSchema.parse(params);
 
   const { userId } = auth();
 
@@ -29,13 +34,27 @@ export const upsertTransaction = async (params: upsertTransactionProps) => {
     throw new Error("Unauthorized");
   }
 
-  await db.transaction.upsert({
-    update: { ...params, userId },
-    create: { ...params, userId },
-    where: {
-      id: params?.id ?? "",
-    },
-  });
+  if (transactionId) {
+    // updateMany com userId garante que só o dono consegue editar a transação.
+    const { count } = await db.transaction.updateMany({
+      where: { id: transactionId, userId },
+      data,
+    });
+
+    if (count === 0) {
+      throw new Error("Transaction not found");
+    }
+  } else {
+    // O limite do plano grátis precisa valer no servidor, não só na interface.
+    if (!(await canUserAddTransaction())) {
+      throw new Error("Monthly transaction limit reached");
+    }
+
+    await db.transaction.create({
+      data: { ...data, userId },
+    });
+  }
 
   revalidatePath("/transactions");
+  revalidatePath("/");
 };

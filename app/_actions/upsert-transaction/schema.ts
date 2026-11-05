@@ -13,3 +13,5 @@ export const addTransactionSchema = z.object({
   paymentMethod: z.nativeEnum(TransactionPaymentMethod),
   date: z.date(),
 });
+
+export const transactionIdSchema = z.string().uuid().optional();

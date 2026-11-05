@@ -5,9 +5,10 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import OpenAi from "openai";
 import { generateAiReportSchema, GenerateAiReportSchema } from "./schema";
 import { DUMMY_REPORT } from "./dummy-report";
+import { getMonthDateRange } from "@/app/_utils/date";
 
-export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
-  generateAiReportSchema.parse({ month });
+export const generateAiReport = async (params: GenerateAiReportSchema) => {
+  const { month, year } = generateAiReportSchema.parse(params);
 
   const { userId } = auth();
 
@@ -33,13 +34,11 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
     apiKey: process.env.OPENAI_API_KEY,
   });
 
-  //Pegar as transações do mês recebido
+  //Pegar as transações do usuário no mês/ano recebidos
   const transactions = await db.transaction.findMany({
     where: {
-      date: {
-        gte: new Date(`${new Date().getFullYear()}-${month}-01`),
-        lt: new Date(`${new Date().getFullYear()}-${month}-31`),
-      },
+      userId,
+      date: getMonthDateRange(month, year),
     },
   });
 
