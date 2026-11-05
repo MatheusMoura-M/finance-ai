@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: "Home",
     template: "%s | Finance AI",
   },
-  icons: [{ url: "logo-icon.svg" }],
+  icons: [{ url: "/logo-icon.svg" }],
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body className={`${mulish.className} dark antialiased`}>
         <ClerkProvider
           appearance={{

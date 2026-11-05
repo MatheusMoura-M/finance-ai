@@ -11,7 +11,7 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { CalendarDatePicker } from "@/app/_components/calendarCustom/calendar-date-picker";
 import { useState } from "react";
 import { DataTableViewOptions } from "./data-table-view-options";
-import { FilterSheet } from "@/app/_components/filter-sheet";
+import { FilterSheet } from "./filter-sheet";
 import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
 import { Filter } from "lucide-react";
 import { iFirstAndLastTransactionDate } from "@/app/_components/ui/data-table";
