@@ -4,11 +4,21 @@ import { MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 const Navbar = () => {
   const pathname = usePathname();
+
+  // O UserButton renderiza `null` no servidor, mas no cliente pode renderizar
+  // um <div> já na hidratação se o Clerk carregar antes do React — o que causa
+  // "Hydration failed". Só exibimos o botão depois que o componente montou.
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <nav className="flex justify-between border-b border-solid px-4 py-8 sm:px-6">
@@ -104,7 +114,7 @@ const Navbar = () => {
       </div>
 
       {/* DIREITA */}
-      <UserButton showName />
+      {isMounted && <UserButton showName />}
     </nav>
   );
 };

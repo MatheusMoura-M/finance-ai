@@ -1,9 +1,3 @@
-export const getAppUrl = () => {
-  const appUrl = process.env.APP_URL;
+import { getServerEnv } from "./env";
 
-  if (!appUrl) {
-    throw new Error("APP_URL not found");
-  }
-
-  return appUrl.replace(/\/+$/, "");
-};
+export const getAppUrl = () => getServerEnv().APP_URL.replace(/\/+$/, "");

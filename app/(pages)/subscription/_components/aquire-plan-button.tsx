@@ -1,6 +1,10 @@
 "use client";
 
 import { Button } from "@/app/_components/ui/button";
+import {
+  ActionResult,
+  UNEXPECTED_ERROR_MESSAGE,
+} from "@/app/_lib/action-result";
 import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -14,16 +18,24 @@ interface AquirePlanButtonProps {
 const AquirePlanButton = ({ hasPremiumPlan }: AquirePlanButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const redirectTo = async (getUrl: () => Promise<{ url: string }>) => {
+  const redirectTo = async (
+    getUrl: () => Promise<ActionResult<{ url: string }>>,
+  ) => {
+    setIsLoading(true);
+
     try {
-      setIsLoading(true);
+      const result = await getUrl();
 
-      const { url } = await getUrl();
+      if (!result.success) {
+        toast.error(result.error);
+        setIsLoading(false);
+        return;
+      }
 
-      window.location.href = url;
+      window.location.href = result.data.url;
     } catch (error) {
       console.error(error);
-      toast.error("Não foi possível abrir o Stripe. Tente novamente.");
+      toast.error(UNEXPECTED_ERROR_MESSAGE);
       setIsLoading(false);
     }
   };

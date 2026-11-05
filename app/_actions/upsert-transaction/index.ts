@@ -1,6 +1,10 @@
 "use server";
 
-import { canUserAddTransaction } from "@/app/_data/can-user-add-transaction";
+import {
+  FREE_PLAN_MONTHLY_TRANSACTIONS_LIMIT,
+  canUserAddTransaction,
+} from "@/app/_data/can-user-add-transaction";
+import { ActionError, runAction } from "@/app/_lib/action-result";
 import { db } from "@/app/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import {
@@ -24,37 +28,40 @@ interface upsertTransactionProps {
 export const upsertTransaction = async ({
   id,
   ...params
-}: upsertTransactionProps) => {
-  const transactionId = transactionIdSchema.parse(id);
-  const data = addTransactionSchema.parse(params);
+}: upsertTransactionProps) =>
+  runAction(async () => {
+    const transactionId = transactionIdSchema.parse(id);
+    const data = addTransactionSchema.parse(params);
 
-  const { userId } = auth();
+    const { userId } = auth();
 
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-
-  if (transactionId) {
-    // updateMany com userId garante que só o dono consegue editar a transação.
-    const { count } = await db.transaction.updateMany({
-      where: { id: transactionId, userId },
-      data,
-    });
-
-    if (count === 0) {
-      throw new Error("Transaction not found");
-    }
-  } else {
-    // O limite do plano grátis precisa valer no servidor, não só na interface.
-    if (!(await canUserAddTransaction())) {
-      throw new Error("Monthly transaction limit reached");
+    if (!userId) {
+      throw new ActionError("Você precisa estar logado.");
     }
 
-    await db.transaction.create({
-      data: { ...data, userId },
-    });
-  }
+    if (transactionId) {
+      // updateMany com userId garante que só o dono consegue editar a transação.
+      const { count } = await db.transaction.updateMany({
+        where: { id: transactionId, userId },
+        data,
+      });
 
-  revalidatePath("/transactions");
-  revalidatePath("/");
-};
+      if (count === 0) {
+        throw new ActionError("Transação não encontrada.");
+      }
+    } else {
+      // O limite do plano grátis precisa valer no servidor, não só na interface.
+      if (!(await canUserAddTransaction())) {
+        throw new ActionError(
+          `Você atingiu o limite de ${FREE_PLAN_MONTHLY_TRANSACTIONS_LIMIT} transações deste mês. Assine o Premium para ter transações ilimitadas.`,
+        );
+      }
+
+      await db.transaction.create({
+        data: { ...data, userId },
+      });
+    }
+
+    revalidatePath("/transactions");
+    revalidatePath("/");
+  });

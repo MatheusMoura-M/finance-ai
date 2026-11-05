@@ -17,6 +17,8 @@ model Transaction {
   createdAt     DateTime                 @default(now())
   updatedAt     DateTime                 @updatedAt
   userId        String
+
+  @@index([userId, date])
 }
 
 enum TransactionType {

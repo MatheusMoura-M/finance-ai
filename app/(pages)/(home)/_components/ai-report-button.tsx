@@ -36,9 +36,14 @@ const AiReportButton = ({
     try {
       setReportIsLoading(true);
 
-      const aiReport = await generateAiReport({ month, year });
+      const result = await generateAiReport({ month, year });
 
-      setReport(aiReport);
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+
+      setReport(result.data);
     } catch (error) {
       console.error(error);
       toast.error("Não foi possível gerar o relatório. Tente novamente.");

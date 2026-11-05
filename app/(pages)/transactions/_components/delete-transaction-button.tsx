@@ -23,7 +23,13 @@ const DeleteTransactionButton = ({
 }: DeleteTransactionButtonProps) => {
   const handleConfirmDeleteClick = async () => {
     try {
-      await deleteTransaction({ transactionId });
+      const result = await deleteTransaction({ transactionId });
+
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+
       toast.success("Transação deletada com sucesso!");
     } catch (error) {
       toast.error("Ocorreu um erro ao deletar transação.");

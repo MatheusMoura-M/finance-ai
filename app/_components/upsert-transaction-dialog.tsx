@@ -82,7 +82,13 @@ const UpsertTransactionDialog = ({
 
   const onSubmit = async (data: tFormSchema) => {
     try {
-      await upsertTransaction({ ...data, id: transactionId });
+      const result = await upsertTransaction({ ...data, id: transactionId });
+
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+
       setIsOpen(false);
       form.reset();
       toast.success(
