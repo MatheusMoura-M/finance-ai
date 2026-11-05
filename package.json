@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky && prisma generate"
+    "prepare": "husky && prisma generate",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.7.5",
@@ -33,9 +36,6 @@
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.2.0",
-    "dotenv": "^17.3.1",
-    "finance-ai": "file:",
-    "git-commit-msg-linter": "^5.0.8",
     "lucide-react": "^0.477.0",
     "next": "14.2.35",
     "next-themes": "^0.4.6",
@@ -60,8 +60,10 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv": "^17.3.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
+    "git-commit-msg-linter": "^5.0.8",
     "husky": "^9.1.6",
     "lint-staged": "^12.3.2",
     "postcss": "^8",
@@ -69,6 +71,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "prisma": "^7.6.0",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }

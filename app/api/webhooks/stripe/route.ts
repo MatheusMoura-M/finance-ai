@@ -1,3 +1,4 @@
+import { getServerEnv } from "@/app/_lib/env";
 import { getStripe } from "@/app/_lib/stripe";
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
@@ -35,12 +36,12 @@ const revokePremium = async (clerkUserId: string) => {
 };
 
 export const POST = async (request: Request) => {
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  let webhookSecret: string;
 
-  if (!webhookSecret || !process.env.STRIPE_SECRET_KEY) {
-    console.error(
-      "[stripe-webhook] STRIPE_SECRET_KEY/STRIPE_WEBHOOK_SECRET ausentes",
-    );
+  try {
+    webhookSecret = getServerEnv().STRIPE_WEBHOOK_SECRET;
+  } catch (error) {
+    console.error("[stripe-webhook]", error);
 
     return NextResponse.json(
       { error: "Webhook not configured" },

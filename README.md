@@ -43,7 +43,7 @@ Este projeto utiliza um conjunto robusto de tecnologias modernas:
 
 ### **Frontend**
 
-- **[Next.js](https://nextjs.org/)** (14.2.16): Framework baseado em React para aplicações web rápidas e escaláveis.
+- **[Next.js](https://nextjs.org/)** (14.2.35): Framework baseado em React para aplicações web rápidas e escaláveis.
 - **[Tailwind CSS](https://tailwindcss.com/)** (3.4.1): Framework CSS com foco em utilitários para estilização.
 - **[ShadCN](https://ui.shadcn.com/)**: Componentes visualmente atraentes e reutilizáveis.
 - **[React Hook Form](https://react-hook-form.com/)**: Manejo simplificado de formulários.
@@ -52,9 +52,9 @@ Este projeto utiliza um conjunto robusto de tecnologias modernas:
 
 ### **Backend**
 
-- **[Prisma](https://www.prisma.io/)** (5.21.1): ORM para consultas e migrações de banco de dados.
+- **[Prisma](https://www.prisma.io/)** (7.x): ORM para consultas e migrações de banco de dados (driver adapter `pg`).
 - **[OpenAI API](https://openai.com/api/)**: Integração com ChatGPT para insights financeiros com IA.
-- **[Neon](https://neon.tech/)**: Infraestrutura rápida para Postgres.
+- **[Supabase](https://supabase.com/)**: Postgres gerenciado (com cron de keepalive para o plano grátis não pausar).
 - **[Stripe](https://stripe.com/)**: Gateway de pagamentos para gerenciar assinaturas.
 
 ### **Autenticação**
@@ -66,7 +66,9 @@ Este projeto utiliza um conjunto robusto de tecnologias modernas:
 - **TypeScript** (5.x): Tipagem estática para código escalável.
 - **Husky** (9.1.6): Hooks do Git para manter a qualidade do código.
 - **Lint-Staged** (12.3.2): Verificações pré-commit para linting.
-- **Prettier** (3.3.3): Formatação de código.
+- **Prettier** (3.x): Formatação de código.
+- **Vitest** (3.x): Testes unitários.
+- **GitHub Actions**: CI com lint, typecheck e testes em cada PR.
 - **ESLint** (8.x): Linter para JavaScript.
 - **Tailwind Merge**: Utilitário para mesclar classes do Tailwind de forma eficiente.
 
@@ -113,47 +115,69 @@ Este projeto utiliza um conjunto robusto de tecnologias modernas:
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/yourusername/finance-ai.git
+   git clone https://github.com/MatheusMoura-M/finance-ai.git
    cd finance-ai
-
    ```
 
-2. Instale as dependências:
+2. Instale as dependências (isso também gera o Prisma Client e configura os hooks do Husky):
 
    ```bash
    npm install
-
    ```
 
-3. Configure as variáveis de ambiente:
+3. Configure as variáveis de ambiente copiando o exemplo e preenchendo os valores:
 
    ```bash
-   NEXT_PUBLIC_CLERK_FRONTEND_API=seu_clerk_frontend_api
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=seu_clerk_publishable_key
-   CLERK_API_KEY=seu_clerk_api_key
-   CLERK_SECRET_KEY=seu_clerk_secret_key
-   STRIPE_PREMIUM_PLAN_PRICE_ID=seu_stripe_id_plan
-   STRIPE_SECRET_KEY=seu_stripe_secret_key
-   STRIPE_PUBLIC_KEY=seu_stripe_public_key
-   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=seu_next_public_stripe_publishable_key
-   OPENAI_API_KEY=sua_openai_api_key
-   DATABASE_URL=sua_database_url
-   APP_URL=a_url_para_implantacao
-
+   cp .env.example .env
    ```
 
-4. Inicie o servidor de desenvolvimento:
+   | Variável | Obrigatória | Descrição |
+   | --- | --- | --- |
+   | `DATABASE_URL` | ✅ | Conexão Postgres (Supabase, via pooler) |
+   | `DIRECT_URL` | — | Conexão direta ao Postgres |
+   | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | ✅ | Chave pública do Clerk |
+   | `CLERK_SECRET_KEY` | ✅ | Chave secreta do Clerk |
+   | `STRIPE_SECRET_KEY` | ✅ | Chave secreta do Stripe |
+   | `STRIPE_PREMIUM_PLAN_PRICE_ID` | ✅ | ID do preço do Plano Premium |
+   | `STRIPE_WEBHOOK_SECRET` | ✅ | Segredo do endpoint de webhook (`whsec_...`) |
+   | `APP_URL` | ✅ | URL pública do app (ex.: `http://localhost:3000`) |
+   | `OPENAI_API_KEY` | — | Sem ela, o relatório de IA retorna um exemplo |
+   | `CRON_SECRET` | — | Protege a rota `/api/keepalive` |
+
+   As variáveis são validadas em `app/_lib/env.ts`; se faltar alguma, o servidor avisa no log ao iniciar.
+
+4. Aplique as migrations no banco:
+
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+5. Inicie o servidor de desenvolvimento:
 
    ```bash
    npm run dev
    ```
 
+### Stripe (assinaturas)
+
+- O webhook fica em `/api/webhooks/stripe` e usa os eventos `invoice.paid`, `invoice.payment_failed`, `customer.subscription.updated` e `customer.subscription.deleted`.
+- Para testar localmente:
+
+  ```bash
+  stripe listen --forward-to localhost:3000/api/webhooks/stripe
+  ```
+
+- O botão "Gerenciar Plano" abre o portal do cliente do Stripe, que precisa ter uma configuração salva em *Settings → Billing → Customer portal*.
+
 ## 🧑‍💻 Scripts
 
-- **`npm run dev`** Inicia o servidor de desenvolvimento.
+- **`npm run dev`**: Inicia o servidor de desenvolvimento.
 - **`npm run build`**: Gera a aplicação para produção.
 - **`npm run start`**: Inicia o servidor em produção.
-- **`npm run prepare`**: Prepara o projeto gerando o cliente Prisma e configurando os hooks do Husky.
+- **`npm run lint`**: Roda o ESLint.
+- **`npm run typecheck`**: Verifica os tipos com o TypeScript.
+- **`npm test`**: Roda os testes (Vitest). Use `npm run test:watch` durante o desenvolvimento.
+- **`npm run prepare`**: Gera o cliente Prisma e configura os hooks do Husky (roda sozinho no `npm install`).
 
 ## 🌟 Melhorias Futuras
 

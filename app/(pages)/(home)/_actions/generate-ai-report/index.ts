@@ -6,36 +6,43 @@ import OpenAi from "openai";
 import { generateAiReportSchema, GenerateAiReportSchema } from "./schema";
 import { DUMMY_REPORT } from "./dummy-report";
 import { getMonthDateRange } from "@/app/_utils/date";
+import { ActionError, runAction } from "@/app/_lib/action-result";
+import { getServerEnv } from "@/app/_lib/env";
 
-export const generateAiReport = async (params: GenerateAiReportSchema) => {
-  const { month, year } = generateAiReportSchema.parse(params);
+export const generateAiReport = async (params: GenerateAiReportSchema) =>
+  runAction(async () => {
+    const { month, year } = generateAiReportSchema.parse(params);
 
-  const { userId, hasPremiumPlan } = await getUserSubscription();
+    const { userId, hasPremiumPlan } = await getUserSubscription();
 
-  if (!hasPremiumPlan) {
-    throw new Error("You need a premium plan to generate AI reports");
-  }
+    if (!hasPremiumPlan) {
+      throw new ActionError(
+        "Você precisa do Plano Premium para gerar relatórios com IA.",
+      );
+    }
 
-  if (!process.env.OPENAI_API_KEY) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const { OPENAI_API_KEY } = getServerEnv();
 
-    return DUMMY_REPORT;
-  }
+    if (!OPENAI_API_KEY) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  const openAi = new OpenAi({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+      return DUMMY_REPORT;
+    }
 
-  //Pegar as transações do usuário no mês/ano recebidos
-  const transactions = await db.transaction.findMany({
-    where: {
-      userId,
-      date: getMonthDateRange(month, year),
-    },
-  });
+    const openAi = new OpenAi({
+      apiKey: OPENAI_API_KEY,
+    });
 
-  //Mandar as transações para o ChatGPT e pedir pra ele gerar o relatório
-  const content = `Gere um relatório com insights sobre as minhas finanças, com dicas e orientações de como melhorar minha vida financeira. As transações estão divididas por ponto e vírgula. A estrutura de cada uma é {DATA}-{TIPO}-{VALOR}-{CATEGORIA}. Sempre traduza os nomes das categorias para português do Brasil. São elas:
+    //Pegar as transações do usuário no mês/ano recebidos
+    const transactions = await db.transaction.findMany({
+      where: {
+        userId,
+        date: getMonthDateRange(month, year),
+      },
+    });
+
+    //Mandar as transações para o ChatGPT e pedir pra ele gerar o relatório
+    const content = `Gere um relatório com insights sobre as minhas finanças, com dicas e orientações de como melhorar minha vida financeira. As transações estão divididas por ponto e vírgula. A estrutura de cada uma é {DATA}-{TIPO}-{VALOR}-{CATEGORIA}. Sempre traduza os nomes das categorias para português do Brasil. São elas:
  
   ${transactions
     .map(
@@ -44,21 +51,21 @@ export const generateAiReport = async (params: GenerateAiReportSchema) => {
     )
     .join(";")}`;
 
-  const completion = await openAi.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "system",
-        content:
-          "Você é um especialista em gestão e organização de finanças pessoais. Você ajuda as pessoas a organizarem melhor as suas finanças.",
-      },
-      {
-        role: "user",
-        content,
-      },
-    ],
-  });
+    const completion = await openAi.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "Você é um especialista em gestão e organização de finanças pessoais. Você ajuda as pessoas a organizarem melhor as suas finanças.",
+        },
+        {
+          role: "user",
+          content,
+        },
+      ],
+    });
 
-  //Pegar o relatório e retornar ao usuário
-  return completion.choices[0].message.content;
-};
+    //Pegar o relatório e retornar ao usuário
+    return completion.choices[0].message.content ?? "";
+  });
