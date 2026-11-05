@@ -64,7 +64,6 @@ interface CalendarDatePickerProps
   id?: string;
   className?: string;
   date: Date | undefined;
-  yearsRange?: number;
   availableYears: number[];
   onDateSelect: (selectedDate: Date | undefined) => void;
 }
@@ -78,7 +77,6 @@ export const CalendarDatePickerTest = React.forwardRef<
       id = "calendar-date-picker",
       className,
       date,
-      yearsRange = 10,
       availableYears,
       onDateSelect,
       variant,
@@ -91,14 +89,15 @@ export const CalendarDatePickerTest = React.forwardRef<
     const yearUrl = Number(searchParams.get("year"));
     const today = new Date();
 
-    const currentDateUrl =
-      monthUrl && yearUrl
-        ? new Date(yearUrl, monthUrl - 1, today.getDate())
-        : new Date();
+    // Mês/ano selecionados vêm sempre da URL (fonte única de verdade).
+    const selectedYear = yearUrl || today.getFullYear();
+    const selectedMonthIndex =
+      monthUrl >= 1 && monthUrl <= 12 ? monthUrl - 1 : today.getMonth();
+
+    // Dia 1 evita que dias 29–31 "virem" o mês seguinte (ex.: 31/02 → março).
+    const currentDateUrl = new Date(selectedYear, selectedMonthIndex, 1);
 
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-    const [monthFrom, setMonthFrom] = React.useState<Date | undefined>();
-    const [yearFrom, setYearFrom] = React.useState<number | undefined>();
     const [highlightedPart, setHighlightedPart] = React.useState<string | null>(
       null,
     );
@@ -108,37 +107,15 @@ export const CalendarDatePickerTest = React.forwardRef<
     const handleTogglePopover = () => setIsPopoverOpen((prev) => !prev);
 
     const handleMonthChange = (newMonthIndex: number) => {
-      const year = yearUrl;
-      if (year === undefined) return;
-      if (newMonthIndex < 0 || newMonthIndex > yearsRange + 1) return;
+      if (newMonthIndex < 0 || newMonthIndex > 11) return;
 
-      const newMonth = new Date(year, newMonthIndex, 1);
-
-      const from = date
-        ? new Date(date.getFullYear(), newMonth.getMonth(), date.getDate())
-        : newMonth;
-
-      onDateSelect(from);
-      setMonthFrom(newMonth);
+      onDateSelect(new Date(selectedYear, newMonthIndex, 1));
     };
 
     const handleYearChange = (newYear: number) => {
-      const month = monthFrom;
-
       if (!availableYears.includes(newYear)) return;
 
-      const newMonth = month
-        ? new Date(newYear, month.getMonth(), 1)
-        : new Date(newYear, 0, 1);
-
-      const from = date
-        ? new Date(newYear, newMonth.getMonth(), date.getDate())
-        : newMonth;
-
-      onDateSelect(from);
-
-      setYearFrom(newYear);
-      setMonthFrom(newMonth);
+      onDateSelect(new Date(newYear, selectedMonthIndex, 1));
     };
 
     return (
@@ -161,7 +138,7 @@ export const CalendarDatePickerTest = React.forwardRef<
                 <>
                   <DatePart
                     id={`firstMonth-${id}`}
-                    date={currentDateUrl ?? date}
+                    date={currentDateUrl}
                     part="firstMonth"
                     highlightedPart={highlightedPart}
                     setHighlightedPart={setHighlightedPart}
@@ -170,7 +147,7 @@ export const CalendarDatePickerTest = React.forwardRef<
                   ,{" "}
                   <DatePart
                     id={`firstYear-${id}`}
-                    date={currentDateUrl ?? date}
+                    date={currentDateUrl}
                     part="firstYear"
                     highlightedPart={highlightedPart}
                     setHighlightedPart={setHighlightedPart}
@@ -178,7 +155,7 @@ export const CalendarDatePickerTest = React.forwardRef<
                   />
                 </>
               ) : (
-                <span>Pick a date</span>
+                <span>Selecione uma data</span>
               )}
             </span>
           </Button>
@@ -197,11 +174,10 @@ export const CalendarDatePickerTest = React.forwardRef<
                 onValueChange={(value) => {
                   handleMonthChange(months.indexOf(value));
                 }}
-                defaultValue={monthUrl ? months[monthUrl - 1] : ""}
-                value={monthFrom ? months[monthFrom.getMonth()] : undefined}
+                value={months[selectedMonthIndex]}
               >
                 <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0">
-                  <SelectValue placeholder="Month" />
+                  <SelectValue placeholder="Mês" />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -217,11 +193,10 @@ export const CalendarDatePickerTest = React.forwardRef<
                 onValueChange={(value) => {
                   handleYearChange(Number(value));
                 }}
-                defaultValue={yearUrl ? yearUrl.toString() : ""}
-                value={yearFrom ? yearFrom.toString() : undefined}
+                value={selectedYear.toString()}
               >
                 <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0">
-                  <SelectValue placeholder="Year" />
+                  <SelectValue placeholder="Ano" />
                 </SelectTrigger>
 
                 <SelectContent>

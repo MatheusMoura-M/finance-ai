@@ -6,16 +6,12 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/app/_components/ui/sheet";
-import { Separator } from "./ui/separator";
-import { DataTableToolbarProps } from "../transactions/_components/data-table-components/data-table-toolbar";
-import { DataTableFacetedFilter } from "../transactions/_components/data-table-components/data-table-faceted-filter";
-import {
-  categories,
-  incomeType,
-  paymentMethods,
-} from "../transactions/_components/data-table-components/data";
-import { CalendarDatePicker } from "./calendarCustom/calendar-date-picker";
-import { DataTableViewOptions } from "../transactions/_components/data-table-components/data-table-view-options";
+import { Separator } from "@/app/_components/ui/separator";
+import { DataTableToolbarProps } from "./data-table-toolbar";
+import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { categories, incomeType, paymentMethods } from "./data";
+import { CalendarDatePicker } from "@/app/_components/calendarCustom/calendar-date-picker";
+import { DataTableViewOptions } from "./data-table-view-options";
 
 interface FilterSheetProps {
   dateRange: {

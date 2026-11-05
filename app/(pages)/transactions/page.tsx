@@ -1,10 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import AddTransactionButton from "../_components/add-transaction-button";
-import Navbar from "../_components/navbar";
-import { DataTable } from "../_components/ui/data-table";
-import { canUserAddTransaction } from "../_data/can-user-add-transaction";
-import { db } from "../_lib/prisma";
+import AddTransactionButton from "@/app/_components/add-transaction-button";
+import Navbar from "@/app/_components/navbar";
+import { DataTable } from "@/app/_components/ui/data-table";
+import { canUserAddTransaction } from "@/app/_data/can-user-add-transaction";
+import { db } from "@/app/_lib/prisma";
 import { transactionsColumns } from "./_columns";
 
 export const metadata = {

@@ -24,8 +24,8 @@ import {
   TableHeader,
   TableRow,
 } from "./table";
-import { DataTablePagination } from "@/app/transactions/_components/data-table-components/data-table-pagination";
-import { DataTableToolbar } from "@/app/transactions/_components/data-table-components/data-table-toolbar";
+import { DataTablePagination } from "@/app/(pages)/transactions/_components/data-table-components/data-table-pagination";
+import { DataTableToolbar } from "@/app/(pages)/transactions/_components/data-table-components/data-table-toolbar";
 import { ScrollArea } from "./scroll-area";
 
 export interface iFirstAndLastTransactionDate {

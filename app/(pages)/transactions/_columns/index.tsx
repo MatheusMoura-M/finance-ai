@@ -1,6 +1,6 @@
 "use client";
 
-import DeleteTransactionButton from "@/app/(pages)/transactions/_components/delete-transaction-button";
+import DeleteTransactionButton from "../_components/delete-transaction-button";
 import {
   TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_PAYMENT_METHOD_LABELS,
@@ -42,7 +42,7 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     filterFn: (row, id, value) => {
       const cellValue = row.getValue(id);
 
-      return value.includes(String(cellValue).toLowerCase());
+      return value.includes(cellValue);
     },
   },
   {
@@ -55,7 +55,7 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     filterFn: (row, id, value) => {
       const cellValue = row.getValue(id);
 
-      return value.includes(String(cellValue).toLowerCase());
+      return value.includes(cellValue);
     },
   },
   {
@@ -68,7 +68,7 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     filterFn: (row, id, value) => {
       const cellValue = row.getValue(id);
 
-      return value.includes(String(cellValue).toLowerCase());
+      return value.includes(cellValue);
     },
   },
   {

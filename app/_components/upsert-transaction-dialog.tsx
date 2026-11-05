@@ -12,7 +12,7 @@ import {
   TRANSACTION_PAYMENT_METHOD_OPTIONS,
   TRANSACTION_TYPE_OPTIONS,
 } from "../_constants/transactions";
-import { formSchema, tFormSchema } from "../transactions/_schema";
+import { formSchema, tFormSchema } from "@/app/(pages)/transactions/_schema";
 import { MoneyInput } from "./money-input";
 import { Button } from "./ui/button";
 import { DatePicker } from "./ui/date-picker";
@@ -42,6 +42,8 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useEffect } from "react";
+import { Loader2Icon } from "lucide-react";
+import { toast } from "sonner";
 
 interface UpsertTransactionDialogProps {
   isOpen: boolean;
@@ -76,17 +78,29 @@ const UpsertTransactionDialog = ({
     }
   }, [isOpen, defaultValues, form]);
 
+  const isUpdate = Boolean(transactionId);
+
   const onSubmit = async (data: tFormSchema) => {
     try {
       await upsertTransaction({ ...data, id: transactionId });
       setIsOpen(false);
       form.reset();
+      toast.success(
+        isUpdate
+          ? "Transação atualizada com sucesso!"
+          : "Transação adicionada com sucesso!",
+      );
     } catch (error) {
       console.error(error);
+      toast.error(
+        isUpdate
+          ? "Ocorreu um erro ao atualizar a transação."
+          : "Ocorreu um erro ao adicionar a transação.",
+      );
     }
   };
 
-  const isUpdate = Boolean(transactionId);
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <Dialog
@@ -260,7 +274,8 @@ const UpsertTransactionDialog = ({
                 </Button>
               </DialogClose>
 
-              <Button type="submit">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2Icon className="animate-spin" />}
                 {isUpdate ? "Atualizar" : "Adicionar"}
               </Button>
             </DialogFooter>

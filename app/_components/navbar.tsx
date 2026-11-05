@@ -52,7 +52,7 @@ const Navbar = () => {
                   : "text-muted-foreground"
               } flex w-full items-center py-2 text-lg font-semibold`}
             >
-              Assinaturas
+              Assinatura
             </Link>
           </div>
         </SheetContent>
