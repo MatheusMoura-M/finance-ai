@@ -22,14 +22,18 @@ const grantPremium = async (
   stripeCustomerId: string | null,
   stripeSubscriptionId: string | null,
 ) => {
-  await clerkClient().users.updateUser(clerkUserId, {
+  const client = await clerkClient();
+
+  await client.users.updateUser(clerkUserId, {
     privateMetadata: { stripeCustomerId, stripeSubscriptionId },
     publicMetadata: { subscriptionPlan: "premium" },
   });
 };
 
 const revokePremium = async (clerkUserId: string) => {
-  await clerkClient().users.updateUser(clerkUserId, {
+  const client = await clerkClient();
+
+  await client.users.updateUser(clerkUserId, {
     privateMetadata: { stripeCustomerId: null, stripeSubscriptionId: null },
     publicMetadata: { subscriptionPlan: null },
   });

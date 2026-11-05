@@ -9,13 +9,14 @@ import { cache } from "react";
  * Só para uso no servidor — `stripeCustomerId` não deve ir para o cliente.
  */
 export const getUserSubscription = cache(async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     throw new Error("Unauthorized");
   }
 
-  const user = await clerkClient().users.getUser(userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
 
   const stripeCustomerId = user.privateMetadata.stripeCustomerId;
 

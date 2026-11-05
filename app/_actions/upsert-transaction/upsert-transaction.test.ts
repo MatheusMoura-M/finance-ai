@@ -34,14 +34,14 @@ const validTransaction = {
 
 describe("upsertTransaction", () => {
   beforeEach(() => {
-    mocks.auth.mockReturnValue({ userId: "user_1" });
+    mocks.auth.mockResolvedValue({ userId: "user_1" });
     mocks.canUserAddTransaction.mockResolvedValue(true);
     mocks.updateMany.mockResolvedValue({ count: 1 });
     mocks.create.mockResolvedValue({});
   });
 
   it("recusa usuário não autenticado", async () => {
-    mocks.auth.mockReturnValue({ userId: null });
+    mocks.auth.mockResolvedValue({ userId: null });
 
     const result = await upsertTransaction(validTransaction);
 

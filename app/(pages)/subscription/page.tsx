@@ -20,7 +20,7 @@ interface SubscriptionPageProps {
 }
 
 const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     redirect("/login");

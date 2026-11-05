@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 const TransactionsPage = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     redirect("/login");
