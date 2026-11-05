@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
-    "@types/node": "^20",
+    "@types/node": "^20.19.43",
     "@types/pg": "^8.20.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -65,7 +65,7 @@
     "eslint-config-next": "14.2.35",
     "git-commit-msg-linter": "^5.0.8",
     "husky": "^9.1.6",
-    "lint-staged": "^12.3.2",
+    "lint-staged": "^15.5.2",
     "postcss": "^8",
     "prettier": "^3.5.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
