@@ -1,7 +1,8 @@
 import { Badge } from "@/app/_components/ui/badge";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { getCurrentMonthTransactions } from "@/app/_data/get-month-transactions";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { getUserSubscription } from "@/app/_data/get-user-subscription";
+import { auth } from "@clerk/nextjs/server";
 import { CheckIcon, XIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import Navbar from "../../_components/navbar";
@@ -12,16 +13,25 @@ export const metadata = {
   title: "Assinatura",
 };
 
-const SubscriptionPage = async () => {
+interface SubscriptionPageProps {
+  searchParams: {
+    checkout?: string;
+  };
+}
+
+const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
   const { userId } = auth();
 
   if (!userId) {
     redirect("/login");
   }
 
-  const user = await clerkClient().users.getUser(userId);
-  const currentMonthTransaction = await getCurrentMonthTransactions();
-  const hasPremiumPlan = user?.publicMetadata.subscriptionPlan === "premium";
+  const [{ hasPremiumPlan }, currentMonthTransaction] = await Promise.all([
+    getUserSubscription(),
+    getCurrentMonthTransactions(),
+  ]);
+
+  const checkoutSucceeded = searchParams.checkout === "success";
 
   return (
     <>
@@ -30,6 +40,14 @@ const SubscriptionPage = async () => {
       <ScrollArea>
         <div className="space-y-4 p-4 sm:space-y-6 sm:p-6 sm:py-4">
           <h1 className="text-2xl font-bold">Assinatura</h1>
+
+          {checkoutSucceeded && (
+            <div className="rounded-md border border-primary/40 bg-primary/10 p-4 text-sm">
+              {hasPremiumPlan
+                ? "Pagamento confirmado! Seu Plano Premium já está ativo."
+                : "Pagamento recebido! A ativação do Plano Premium pode levar alguns segundos — atualize a página em instantes."}
+            </div>
+          )}
 
           <div className="flex flex-wrap justify-center gap-6 md:justify-start">
             <Card className="w-[36.53%] min-w-[345px] max-w-[450px]">
@@ -91,7 +109,7 @@ const SubscriptionPage = async () => {
                   <p>Relatórios de IA</p>
                 </div>
 
-                <AquirePlanButton />
+                <AquirePlanButton hasPremiumPlan={hasPremiumPlan} />
               </CardContent>
             </Card>
           </div>

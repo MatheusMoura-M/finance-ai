@@ -2,7 +2,8 @@ import Navbar from "@/app/_components/navbar";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { canUserAddTransaction } from "@/app/_data/can-user-add-transaction";
 import { getDashboard } from "@/app/_data/get-dashboard";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { getUserSubscription } from "@/app/_data/get-user-subscription";
+import { auth } from "@clerk/nextjs/server";
 import { isMatch } from "date-fns";
 import { redirect } from "next/navigation";
 import AiReportButton from "./_components/ai-report-button";
@@ -45,11 +46,11 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
     redirect(`?month=${dateFormatted}&year=${selectedYear}`);
   }
 
-  const [dashboard, userCanAddTransaction, user, availableYears] =
+  const [dashboard, userCanAddTransaction, { hasPremiumPlan }, availableYears] =
     await Promise.all([
       getDashboard(month, selectedYear),
       canUserAddTransaction(),
-      clerkClient().users.getUser(userId),
+      getUserSubscription(),
       getAvailableYears(),
     ]);
 
@@ -68,9 +69,7 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
               <AiReportButton
                 month={month}
                 year={selectedYear}
-                hasPremiumPlan={
-                  user.publicMetadata.subscriptionPlan === "premium"
-                }
+                hasPremiumPlan={hasPremiumPlan}
               />
 
               <TimeSelect availableYears={availableYears} />
