@@ -1,3 +1,6 @@
+import { MonthTotals } from "@/app/_data/get-dashboard/types";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import {
   PiggyBankIcon,
   TrendingDownIcon,
@@ -12,6 +15,7 @@ interface SummaryCards {
   depositsTotal: number;
   investmentsTotal: number;
   expensesTotal: number;
+  previousMonth: MonthTotals & { month: number; year: number };
   userCanAddTransaction?: boolean;
 }
 
@@ -20,8 +24,17 @@ const SummaryCards = async ({
   depositsTotal,
   investmentsTotal,
   expensesTotal,
+  previousMonth,
   userCanAddTransaction,
 }: SummaryCards) => {
+  // Ex.: "out." — o ano só aparece quando o mês anterior é de outro ano.
+  const previousDate = new Date(previousMonth.year, previousMonth.month - 1, 1);
+  const previousLabel = format(
+    previousDate,
+    previousMonth.month === 12 ? "MMM 'de' yyyy" : "MMM",
+    { locale: ptBR },
+  );
+
   return (
     <div className="space-y-5">
       {/* PRIMEIRO CARD */}
@@ -31,25 +44,49 @@ const SummaryCards = async ({
         amount={balance}
         size="large"
         userCanAddTransaction={userCanAddTransaction}
+        comparison={{
+          previous: previousMonth.balance,
+          previousLabel,
+          mode: "absolute",
+          increaseIsGood: true,
+        }}
       />
 
       {/* OUTROS CARDS */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-5 md:!grid-cols-2 xxs:grid-cols-2 sm2:grid-cols-1 md2:!grid-cols-3">
         <SummaryCard
-          icon={<PiggyBankIcon size={16} />}
+          icon={<PiggyBankIcon size={16} className="text-investment" />}
           title="Investido"
           amount={investmentsTotal}
+          comparison={{
+            previous: previousMonth.investmentsTotal,
+            previousLabel,
+            mode: "percent",
+            increaseIsGood: true,
+          }}
         />
         <SummaryCard
-          icon={<TrendingUpIcon size={16} className="text-primary" />}
+          icon={<TrendingUpIcon size={16} className="text-deposit" />}
           title="Receita"
           amount={depositsTotal}
+          comparison={{
+            previous: previousMonth.depositsTotal,
+            previousLabel,
+            mode: "percent",
+            increaseIsGood: true,
+          }}
         />
         <SummaryCard
-          icon={<TrendingDownIcon size={16} className="text-danger" />}
+          icon={<TrendingDownIcon size={16} className="text-expense" />}
           title="Despesa"
           amount={expensesTotal}
           className="col-span-1 md:!col-span-2 xxs:col-span-2 sm2:col-span-1 md2:!col-span-1"
+          comparison={{
+            previous: previousMonth.expensesTotal,
+            previousLabel,
+            mode: "percent",
+            increaseIsGood: false,
+          }}
         />
       </div>
     </div>

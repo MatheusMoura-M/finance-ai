@@ -22,6 +22,9 @@ const config: Config = {
       },
       colors: {
         danger: "hsl(var(--danger))",
+        deposit: "hsl(var(--deposit))",
+        expense: "hsl(var(--expense))",
+        investment: "hsl(var(--investment))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

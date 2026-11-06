@@ -7,6 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/app/_components/ui/chart";
+import { TRANSACTION_TYPE_COLORS } from "@/app/_constants/transactions";
 import { TransactionPercentagePerType } from "@/app/_data/get-dashboard/types";
 import { TransactionType } from "@prisma/client";
 import { PiggyBankIcon, TrendingDownIcon, TrendingUpIcon } from "lucide-react";
@@ -16,15 +17,15 @@ import PercentageItem from "./percentage-item";
 const chartConfig = {
   [TransactionType.INVESTMENT]: {
     label: "Investimento",
-    color: "text-white",
+    color: TRANSACTION_TYPE_COLORS[TransactionType.INVESTMENT],
   },
   [TransactionType.EXPENSE]: {
     label: "Despesa",
-    color: "text-danger",
+    color: TRANSACTION_TYPE_COLORS[TransactionType.EXPENSE],
   },
   [TransactionType.DEPOSIT]: {
-    label: "Depósito",
-    color: "text-primary",
+    label: "Receita",
+    color: TRANSACTION_TYPE_COLORS[TransactionType.DEPOSIT],
   },
 } satisfies ChartConfig;
 
@@ -50,17 +51,17 @@ const TransactionsPieChart = ({
         {
           type: TransactionType.DEPOSIT,
           amount: depositsTotal,
-          fill: "#55B02E",
+          fill: TRANSACTION_TYPE_COLORS[TransactionType.DEPOSIT],
         },
         {
           type: TransactionType.EXPENSE,
           amount: expensesTotal,
-          fill: "#E93030",
+          fill: TRANSACTION_TYPE_COLORS[TransactionType.EXPENSE],
         },
         {
           type: TransactionType.INVESTMENT,
           amount: investmentsTotal,
-          fill: "#FFFFFF",
+          fill: TRANSACTION_TYPE_COLORS[TransactionType.INVESTMENT],
         },
       ];
 
@@ -82,23 +83,26 @@ const TransactionsPieChart = ({
               dataKey="amount"
               nameKey="type"
               innerRadius={60}
+              // Espaço de 2px na cor do fundo entre as fatias.
+              stroke="hsl(var(--background))"
+              strokeWidth={2}
             />
           </PieChart>
         </ChartContainer>
 
         <div className="w-full space-y-1">
           <PercentageItem
-            icon={<TrendingUpIcon size={16} className="text-primary" />}
+            icon={<TrendingUpIcon size={16} className="text-deposit" />}
             title="Receita"
             value={typesPercentage[TransactionType.DEPOSIT]}
           />
           <PercentageItem
-            icon={<TrendingDownIcon size={16} className="text-danger" />}
+            icon={<TrendingDownIcon size={16} className="text-expense" />}
             title="Despesas"
             value={typesPercentage[TransactionType.EXPENSE]}
           />
           <PercentageItem
-            icon={<PiggyBankIcon size={16} />}
+            icon={<PiggyBankIcon size={16} className="text-investment" />}
             title="Investimentos"
             value={typesPercentage[TransactionType.INVESTMENT]}
           />

@@ -9,3 +9,10 @@ export interface TotalExpensePerCategory {
   totalAmount: number;
   percentageOfTotal: number;
 }
+
+export interface MonthTotals {
+  depositsTotal: number;
+  investmentsTotal: number;
+  expensesTotal: number;
+  balance: number;
+}

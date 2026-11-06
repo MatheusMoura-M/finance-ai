@@ -2,6 +2,7 @@ import AddTransactionButton from "@/app/_components/add-transaction-button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { cn } from "@/app/_lib/utils";
 import { ReactNode } from "react";
+import MonthVariation, { MonthComparison } from "./month-variation";
 
 interface SummaryCardProps {
   icon: ReactNode;
@@ -10,6 +11,7 @@ interface SummaryCardProps {
   size?: "small" | "large";
   userCanAddTransaction?: boolean;
   className?: string;
+  comparison?: MonthComparison;
 }
 const SummaryCard = ({
   icon,
@@ -18,6 +20,7 @@ const SummaryCard = ({
   size = "small",
   userCanAddTransaction,
   className,
+  comparison,
 }: SummaryCardProps) => {
   return (
     <Card
@@ -39,14 +42,18 @@ const SummaryCard = ({
       </CardHeader>
 
       <CardContent className="flex justify-between px-[14px] pb-[18px] sm:flex-row sm:items-stretch sm:space-x-0 md:px-5 lg:px-4 lg2:px-6">
-        <p
-          className={`font-bold ${size === "small" ? "text-lg md:text-xl lg:text-2xl" : "text-xl md:text-2xl lg:text-3xl"}`}
-        >
-          {Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }).format(amount)}
-        </p>
+        <div className="space-y-1">
+          <p
+            className={`font-bold ${size === "small" ? "text-lg md:text-xl lg:text-2xl" : "text-xl md:text-2xl lg:text-3xl"}`}
+          >
+            {Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(amount)}
+          </p>
+
+          {comparison && <MonthVariation current={amount} {...comparison} />}
+        </div>
 
         {size === "large" && (
           <AddTransactionButton
