@@ -121,6 +121,8 @@ body {
     --deposit: 141 64% 34%; /* #1f8f47 (= --primary) */
     --expense: 0 84% 60%; /* #ef4444 (= --danger) */
     --investment: 213 77% 56%; /* #3987e5 */
+    /* Alerta (ex.: orçamento perto do limite). Sempre acompanhado de ícone e texto. */
+    --warning: 45 100% 44%; /* #e0a800 */
   }
 
   .dark {
@@ -154,6 +156,8 @@ body {
     --deposit: 141 64% 34%; /* #1f8f47 (= --primary) */
     --expense: 0 84% 60%; /* #ef4444 (= --danger) */
     --investment: 213 77% 56%; /* #3987e5 */
+    /* Alerta (ex.: orçamento perto do limite). Sempre acompanhado de ícone e texto. */
+    --warning: 45 100% 44%; /* #e0a800 */
   }
 }
 

@@ -5,6 +5,7 @@ import {
   canUserAddTransaction,
 } from "@/app/_data/can-user-add-transaction";
 import { ActionError, runAction } from "@/app/_lib/action-result";
+import { getBudgetAlert } from "@/app/_lib/budgets/alert";
 import { db } from "@/app/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import {
@@ -64,4 +65,7 @@ export const upsertTransaction = async ({
 
     revalidatePath("/transactions");
     revalidatePath("/");
+
+    // Se a despesa fez a categoria passar do orçamento do mês, avisa na tela.
+    return { budgetAlert: await getBudgetAlert(userId, data) };
   });

@@ -21,6 +21,25 @@ model Transaction {
   @@index([userId, date])
 }
 
+/// Orçamento mensal por categoria. Dois tipos de registro:
+/// - onlyThisMonth = false: vale a partir do mês/ano informado, até ser trocado;
+/// - onlyThisMonth = true: vale só naquele mês (substitui o anterior só nele).
+/// amount nulo significa "sem orçamento" (permite remover a partir de um mês).
+model Budget {
+  id            String              @id @default(uuid())
+  userId        String
+  category      TransactionCategory
+  amount        Decimal?            @db.Decimal(10, 2)
+  month         Int
+  year          Int
+  onlyThisMonth Boolean             @default(false)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@unique([userId, category, year, month, onlyThisMonth])
+  @@index([userId, year, month])
+}
+
 enum TransactionType {
   DEPOSIT
   EXPENSE

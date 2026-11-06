@@ -8,10 +8,14 @@ import {
 import { useForm } from "react-hook-form";
 import { upsertTransaction } from "../_actions/upsert-transaction";
 import {
+  TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_CATEGORY_OPTIONS,
   TRANSACTION_PAYMENT_METHOD_OPTIONS,
   TRANSACTION_TYPE_OPTIONS,
 } from "../_constants/transactions";
+import { formatCurrency } from "../_utils/currency";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { formSchema, tFormSchema } from "@/app/(pages)/transactions/_schema";
 import { MoneyInput } from "./money-input";
 import { Button } from "./ui/button";
@@ -91,11 +95,20 @@ const UpsertTransactionDialog = ({
 
       setIsOpen(false);
       form.reset();
-      toast.success(
-        isUpdate
-          ? "Transação atualizada com sucesso!"
-          : "Transação adicionada com sucesso!",
-      );
+
+      const successMessage = isUpdate
+        ? "Transação atualizada com sucesso!"
+        : "Transação adicionada com sucesso!";
+      const { budgetAlert } = result.data;
+
+      if (budgetAlert) {
+        toast.warning(successMessage, {
+          description: `Com ela, ${TRANSACTION_CATEGORY_LABELS[budgetAlert.category]} passou do orçamento de ${format(new Date(budgetAlert.year, budgetAlert.month - 1, 1), "MMMM", { locale: ptBR })}: ${formatCurrency(budgetAlert.spent)} de ${formatCurrency(budgetAlert.budget)}.`,
+          duration: 8000,
+        });
+      } else {
+        toast.success(successMessage);
+      }
     } catch (error) {
       console.error(error);
       toast.error(
