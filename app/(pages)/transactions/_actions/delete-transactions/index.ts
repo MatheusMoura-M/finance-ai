@@ -8,7 +8,7 @@ import { DeleteTransactionSchema, deleteTransactionsSchema } from "./schema";
 
 export const deleteTransaction = async (params: DeleteTransactionSchema) =>
   runAction(async () => {
-    const { transactionId } = deleteTransactionsSchema.parse(params);
+    const { transactionId, scope } = deleteTransactionsSchema.parse(params);
 
     const { userId } = await auth();
 
@@ -16,18 +16,40 @@ export const deleteTransaction = async (params: DeleteTransactionSchema) =>
       throw new ActionError("Você precisa estar logado.");
     }
 
-    // deleteMany com userId garante que só o dono consegue apagar a transação.
-    const { count } = await db.transaction.deleteMany({
-      where: {
-        id: transactionId,
-        userId,
-      },
-    });
+    let deleted: number;
 
-    if (count === 0) {
+    if (scope === "allInstallments") {
+      // Busca o grupo pela própria transação do usuário, para nunca apagar
+      // parcelas de outra pessoa.
+      const transaction = await db.transaction.findFirst({
+        where: { id: transactionId, userId },
+        select: { installmentGroupId: true },
+      });
+
+      if (!transaction) {
+        throw new ActionError("Transação não encontrada.");
+      }
+
+      if (!transaction.installmentGroupId) {
+        throw new ActionError("Esta transação não é parcelada.");
+      }
+
+      ({ count: deleted } = await db.transaction.deleteMany({
+        where: { userId, installmentGroupId: transaction.installmentGroupId },
+      }));
+    } else {
+      // deleteMany com userId garante que só o dono consegue apagar a transação.
+      ({ count: deleted } = await db.transaction.deleteMany({
+        where: { id: transactionId, userId },
+      }));
+    }
+
+    if (deleted === 0) {
       throw new ActionError("Transação não encontrada.");
     }
 
     revalidatePath("/transactions");
     revalidatePath("/");
+
+    return { deleted };
   });

@@ -9,6 +9,8 @@ import { ActionError, runAction } from "@/app/_lib/action-result";
 import { getBudgetAlert } from "@/app/_lib/budgets/alert";
 import { db } from "@/app/_lib/prisma";
 import { generateDueRecurringTransactions } from "@/app/_lib/recurring/generate";
+import { buildInstallments } from "@/app/_lib/installments/split";
+import { randomUUID } from "node:crypto";
 import { auth } from "@clerk/nextjs/server";
 import {
   TransactionCategory,
@@ -16,7 +18,11 @@ import {
   TransactionType,
 } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { addTransactionSchema, transactionIdSchema } from "./schema";
+import {
+  addTransactionSchema,
+  installmentsSchema,
+  transactionIdSchema,
+} from "./schema";
 
 interface upsertTransactionProps {
   id?: string;
@@ -28,16 +34,20 @@ interface upsertTransactionProps {
   date: Date;
   /** Só na criação: cria também uma recorrência mensal (Premium). */
   repeatMonthly?: boolean;
+  /** Só na criação: divide o valor total em N parcelas mensais (cartão de crédito). */
+  installments?: number;
 }
 
 export const upsertTransaction = async ({
   id,
   repeatMonthly = false,
+  installments = 1,
   ...params
 }: upsertTransactionProps) =>
   runAction(async () => {
     const transactionId = transactionIdSchema.parse(id);
     const data = addTransactionSchema.parse(params);
+    const installmentCount = installmentsSchema.parse(installments);
 
     const { userId } = await auth();
 
@@ -63,7 +73,40 @@ export const upsertTransaction = async ({
         );
       }
 
-      if (repeatMonthly) {
+      if (installmentCount > 1) {
+        if (
+          data.type !== TransactionType.EXPENSE ||
+          data.paymentMethod !== TransactionPaymentMethod.CREDIT_CARD
+        ) {
+          throw new ActionError(
+            "O parcelamento é só para despesas no cartão de crédito.",
+          );
+        }
+
+        if (repeatMonthly) {
+          throw new ActionError(
+            "Uma compra parcelada não pode se repetir todo mês.",
+          );
+        }
+
+        // Todas as parcelas de uma vez, ligadas pelo mesmo grupo. No limite
+        // do plano grátis a compra conta como 1 (ver getCurrentMonthTransactions).
+        const installmentGroupId = randomUUID();
+
+        await db.transaction.createMany({
+          data: buildInstallments({
+            name: data.name,
+            total: data.amount,
+            count: installmentCount,
+            firstDate: data.date,
+          }).map((installment) => ({
+            ...data,
+            ...installment,
+            userId,
+            installmentGroupId,
+          })),
+        });
+      } else if (repeatMonthly) {
         const { hasPremiumPlan } = await getUserSubscription();
 
         if (!hasPremiumPlan) {
