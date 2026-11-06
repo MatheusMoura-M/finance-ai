@@ -31,6 +31,11 @@ describe("getDashboard", () => {
       .mockResolvedValueOnce([
         { category: "FOOD", _sum: { amount: 150 } },
         { category: "HOUSING", _sum: { amount: 450 } },
+      ])
+      // mês anterior, por tipo
+      .mockResolvedValueOnce([
+        { type: "DEPOSIT", _sum: { amount: 800 } },
+        { type: "EXPENSE", _sum: { amount: 500 } },
       ]);
 
     const dashboard = await getDashboard("02", 2026);
@@ -48,6 +53,33 @@ describe("getDashboard", () => {
       { category: "HOUSING", totalAmount: 450, percentageOfTotal: 75 },
       { category: "FOOD", totalAmount: 150, percentageOfTotal: 25 },
     ]);
+    expect(dashboard.previousMonth).toEqual({
+      month: 1,
+      year: 2026,
+      depositsTotal: 800,
+      expensesTotal: 500,
+      investmentsTotal: 0,
+      balance: 300,
+    });
+  });
+
+  it("compara janeiro com dezembro do ano anterior", async () => {
+    mocks.groupBy.mockResolvedValue([]);
+
+    const dashboard = await getDashboard("01", 2026);
+
+    expect(dashboard.previousMonth).toMatchObject({ month: 12, year: 2025 });
+    expect(mocks.groupBy).toHaveBeenLastCalledWith({
+      by: ["type"],
+      where: {
+        userId: "user_1",
+        date: {
+          gte: new Date(2025, 11, 1, 0, 0, 0, 0),
+          lte: new Date(2025, 11, 31, 23, 59, 59, 999),
+        },
+      },
+      _sum: { amount: true },
+    });
   });
 
   it("retorna zeros (sem NaN) quando não há transações", async () => {
