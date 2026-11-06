@@ -30,6 +30,8 @@ const formSchema = z.object({
   }),
   /** Só na criação: repetir todo mês (Premium). */
   repeatMonthly: z.boolean().optional(),
+  /** Só na criação: número de parcelas (1 = à vista). */
+  installments: z.number().int().min(1).max(24).optional(),
 });
 
 type tFormSchema = z.infer<typeof formSchema>;

@@ -89,7 +89,11 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
       return (
         <div className="space-x-1">
           <EditTransactionButton transaction={transaction} />
-          <DeleteTransactionButton transactionId={transaction.id} />
+          <DeleteTransactionButton
+            transactionId={transaction.id}
+            transactionName={transaction.name}
+            installmentTotal={transaction.installmentTotal}
+          />
         </div>
       );
     },

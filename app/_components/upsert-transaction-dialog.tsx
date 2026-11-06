@@ -14,7 +14,11 @@ import {
   TRANSACTION_TYPE_OPTIONS,
 } from "../_constants/transactions";
 import { formatCurrency } from "../_utils/currency";
-import { format } from "date-fns";
+import { addMonths, format } from "date-fns";
+import {
+  MAX_INSTALLMENTS,
+  splitInstallmentAmounts,
+} from "../_lib/installments/split";
 import { ptBR } from "date-fns/locale";
 import { formSchema, tFormSchema } from "@/app/(pages)/transactions/_schema";
 import { MoneyInput } from "./money-input";
@@ -58,6 +62,8 @@ interface UpsertTransactionDialogProps {
   transactionId?: string;
   /** A transação foi gerada por uma recorrência (editar muda só ela). */
   isRecurring?: boolean;
+  /** Parcela de uma compra parcelada, ex.: { number: 2, total: 12 }. */
+  installment?: { number: number; total: number };
 }
 
 const UpsertTransactionDialog = ({
@@ -66,6 +72,7 @@ const UpsertTransactionDialog = ({
   defaultValues,
   transactionId,
   isRecurring = false,
+  installment,
 }: UpsertTransactionDialogProps) => {
   const form = useForm<tFormSchema>({
     resolver: zodResolver(formSchema),
@@ -76,6 +83,7 @@ const UpsertTransactionDialog = ({
       paymentMethod: TransactionPaymentMethod.OTHER,
       date: new Date(),
       repeatMonthly: false,
+      installments: 1,
     },
   });
 
@@ -93,9 +101,27 @@ const UpsertTransactionDialog = ({
 
   const isUpdate = Boolean(transactionId);
 
+  // Parcelamento: só ao criar uma despesa no cartão de crédito.
+  const [watchedType, watchedPaymentMethod, watchedAmount, watchedDate] =
+    form.watch(["type", "paymentMethod", "amount", "date"]);
+  const canSplit =
+    !isUpdate &&
+    watchedType === TransactionType.EXPENSE &&
+    watchedPaymentMethod === TransactionPaymentMethod.CREDIT_CARD;
+  const installmentCount = canSplit ? (form.watch("installments") ?? 1) : 1;
+  const installmentAmounts =
+    installmentCount > 1 && watchedAmount > 0
+      ? splitInstallmentAmounts(watchedAmount, installmentCount)
+      : [];
+
   const onSubmit = async (data: tFormSchema) => {
     try {
-      const result = await upsertTransaction({ ...data, id: transactionId });
+      const result = await upsertTransaction({
+        ...data,
+        id: transactionId,
+        installments: installmentCount,
+        repeatMonthly: installmentCount > 1 ? false : data.repeatMonthly,
+      });
 
       if (!result.success) {
         toast.error(result.error);
@@ -107,9 +133,11 @@ const UpsertTransactionDialog = ({
 
       const successMessage = isUpdate
         ? "Transação atualizada com sucesso!"
-        : data.repeatMonthly
-          ? `Transação adicionada! Ela vai se repetir todo dia ${data.date.getDate()}.`
-          : "Transação adicionada com sucesso!";
+        : installmentCount > 1
+          ? `Compra parcelada em ${installmentCount}x adicionada!`
+          : data.repeatMonthly
+            ? `Transação adicionada! Ela vai se repetir todo dia ${data.date.getDate()}.`
+            : "Transação adicionada com sucesso!";
       const { budgetAlert } = result.data;
 
       if (budgetAlert) {
@@ -150,7 +178,9 @@ const UpsertTransactionDialog = ({
           <DialogDescription>
             {isRecurring
               ? "Esta transação é de uma recorrência mensal. Alterar aqui muda só ela; os próximos meses continuam como estão."
-              : "Insira as informações abaixo"}
+              : installment
+                ? `Esta é a parcela ${installment.number} de ${installment.total}. Alterar aqui muda só ela.`
+                : "Insira as informações abaixo"}
           </DialogDescription>
         </DialogHeader>
 
@@ -177,7 +207,9 @@ const UpsertTransactionDialog = ({
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Valor</FormLabel>
+                  <FormLabel>
+                    {installmentCount > 1 ? "Valor total" : "Valor"}
+                  </FormLabel>
 
                   <FormControl>
                     <MoneyInput
@@ -301,7 +333,54 @@ const UpsertTransactionDialog = ({
               )}
             />
 
-            {!isUpdate && (
+            {canSplit && (
+              <FormField
+                control={form.control}
+                name="installments"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Parcelas</FormLabel>
+
+                    <Select
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      value={String(field.value ?? 1)}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+
+                      <SelectContent>
+                        <SelectItem value="1">À vista</SelectItem>
+                        {Array.from(
+                          { length: MAX_INSTALLMENTS - 1 },
+                          (_, index) => index + 2,
+                        ).map((count) => (
+                          <SelectItem key={count} value={String(count)}>
+                            {count}x
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {installmentAmounts.length > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        {installmentAmounts[0] === installmentAmounts[1]
+                          ? `${installmentCount}x de ${formatCurrency(installmentAmounts[1])}`
+                          : `1ª de ${formatCurrency(installmentAmounts[0])} e as demais de ${formatCurrency(installmentAmounts[1])}`}
+                        {watchedDate &&
+                          `, de ${format(watchedDate, "MMM/yyyy", { locale: ptBR })} a ${format(addMonths(watchedDate, installmentCount - 1), "MMM/yyyy", { locale: ptBR })}.`}
+                      </p>
+                    )}
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {!isUpdate && installmentCount <= 1 && (
               <FormField
                 control={form.control}
                 name="repeatMonthly"

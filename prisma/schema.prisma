@@ -22,9 +22,16 @@ model Transaction {
   recurringTransactionId String?
   recurringTransaction   RecurringTransaction? @relation(fields: [recurringTransactionId], references: [id], onDelete: SetNull)
 
+  /// Compra parcelada: todas as parcelas da mesma compra têm o mesmo grupo.
+  installmentGroupId String?
+  /// Número desta parcela (1 a installmentTotal).
+  installmentNumber  Int?
+  installmentTotal   Int?
+
   /// Impede que a mesma recorrência gere duas transações na mesma data.
   @@unique([recurringTransactionId, date])
   @@index([userId, date])
+  @@index([installmentGroupId])
 }
 
 /// Transação que se repete todo mês (só Premium). As transações de cada mês

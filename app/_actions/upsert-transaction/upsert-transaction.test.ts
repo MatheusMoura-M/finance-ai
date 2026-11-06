@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   getUserSubscription: vi.fn(),
   createRecurring: vi.fn(),
   generateDue: vi.fn(),
+  createMany: vi.fn(),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({ auth: mocks.auth }));
@@ -28,7 +29,11 @@ vi.mock("@/app/_data/can-user-add-transaction", () => ({
 }));
 vi.mock("@/app/_lib/prisma", () => ({
   db: {
-    transaction: { updateMany: mocks.updateMany, create: mocks.create },
+    transaction: {
+      updateMany: mocks.updateMany,
+      create: mocks.create,
+      createMany: mocks.createMany,
+    },
     recurringTransaction: { create: mocks.createRecurring },
   },
 }));
@@ -59,6 +64,7 @@ describe("upsertTransaction", () => {
     });
     mocks.createRecurring.mockResolvedValue({});
     mocks.generateDue.mockResolvedValue(0);
+    mocks.createMany.mockResolvedValue({ count: 0 });
   });
 
   it("recusa usuário não autenticado", async () => {
@@ -193,6 +199,95 @@ describe("upsertTransaction", () => {
 
       expect(mocks.updateMany).toHaveBeenCalled();
       expect(mocks.createRecurring).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("parcelamento", () => {
+    const purchase = {
+      ...validTransaction,
+      name: "TV",
+      amount: 100,
+      paymentMethod: "CREDIT_CARD" as const,
+      date: new Date(2026, 10, 15),
+    };
+
+    it("cria todas as parcelas de uma vez, ligadas pelo mesmo grupo", async () => {
+      const result = await upsertTransaction({ ...purchase, installments: 3 });
+
+      expect(result.success).toBe(true);
+      expect(mocks.create).not.toHaveBeenCalled();
+
+      const { data } = mocks.createMany.mock.calls[0][0];
+      const groupIds = new Set(
+        data.map(
+          (row: { installmentGroupId: string }) => row.installmentGroupId,
+        ),
+      );
+
+      expect(groupIds.size).toBe(1);
+      expect(data).toEqual([
+        expect.objectContaining({
+          name: "TV (1/3)",
+          amount: 33.34,
+          date: new Date(2026, 10, 15),
+          installmentNumber: 1,
+          installmentTotal: 3,
+          userId: "user_1",
+          category: "FOOD",
+          paymentMethod: "CREDIT_CARD",
+        }),
+        expect.objectContaining({
+          name: "TV (2/3)",
+          amount: 33.33,
+          date: new Date(2026, 11, 15),
+          installmentNumber: 2,
+        }),
+        expect.objectContaining({
+          name: "TV (3/3)",
+          amount: 33.33,
+          date: new Date(2027, 0, 15),
+          installmentNumber: 3,
+        }),
+      ]);
+    });
+
+    it("só aceita despesas no cartão de crédito", async () => {
+      const result = await upsertTransaction({
+        ...purchase,
+        paymentMethod: "PIX",
+        installments: 3,
+      });
+
+      expect(result).toEqual({
+        success: false,
+        error: "O parcelamento é só para despesas no cartão de crédito.",
+      });
+      expect(mocks.createMany).not.toHaveBeenCalled();
+    });
+
+    it("não combina parcelamento com repetir todo mês", async () => {
+      const result = await upsertTransaction({
+        ...purchase,
+        installments: 3,
+        repeatMonthly: true,
+      });
+
+      expect(result.success).toBe(false);
+      expect(mocks.createMany).not.toHaveBeenCalled();
+      expect(mocks.createRecurring).not.toHaveBeenCalled();
+    });
+
+    it("recusa mais de 24 parcelas", async () => {
+      const result = await upsertTransaction({ ...purchase, installments: 25 });
+
+      expect(result).toEqual({ success: false, error: "Dados inválidos." });
+    });
+
+    it("à vista (1 parcela) cria uma transação normal", async () => {
+      await upsertTransaction({ ...purchase, installments: 1 });
+
+      expect(mocks.create).toHaveBeenCalled();
+      expect(mocks.createMany).not.toHaveBeenCalled();
     });
   });
 });
