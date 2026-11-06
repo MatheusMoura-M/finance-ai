@@ -46,7 +46,9 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useEffect } from "react";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, RepeatIcon } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { cn } from "../_lib/utils";
 import { toast } from "sonner";
 
 interface UpsertTransactionDialogProps {
@@ -54,6 +56,8 @@ interface UpsertTransactionDialogProps {
   setIsOpen: (isOpen: boolean) => void;
   defaultValues?: tFormSchema;
   transactionId?: string;
+  /** A transação foi gerada por uma recorrência (editar muda só ela). */
+  isRecurring?: boolean;
 }
 
 const UpsertTransactionDialog = ({
@@ -61,6 +65,7 @@ const UpsertTransactionDialog = ({
   setIsOpen,
   defaultValues,
   transactionId,
+  isRecurring = false,
 }: UpsertTransactionDialogProps) => {
   const form = useForm<tFormSchema>({
     resolver: zodResolver(formSchema),
@@ -70,8 +75,12 @@ const UpsertTransactionDialog = ({
       category: TransactionCategory.OTHER,
       paymentMethod: TransactionPaymentMethod.OTHER,
       date: new Date(),
+      repeatMonthly: false,
     },
   });
+
+  const { user } = useUser();
+  const hasPremiumPlan = user?.publicMetadata.subscriptionPlan === "premium";
 
   useEffect(() => {
     if (isOpen && defaultValues) {
@@ -98,7 +107,9 @@ const UpsertTransactionDialog = ({
 
       const successMessage = isUpdate
         ? "Transação atualizada com sucesso!"
-        : "Transação adicionada com sucesso!";
+        : data.repeatMonthly
+          ? `Transação adicionada! Ela vai se repetir todo dia ${data.date.getDate()}.`
+          : "Transação adicionada com sucesso!";
       const { budgetAlert } = result.data;
 
       if (budgetAlert) {
@@ -136,7 +147,11 @@ const UpsertTransactionDialog = ({
             {isUpdate ? "Atualizar" : "Adicionar"} transação
           </DialogTitle>
 
-          <DialogDescription>Insira as informações abaixo</DialogDescription>
+          <DialogDescription>
+            {isRecurring
+              ? "Esta transação é de uma recorrência mensal. Alterar aqui muda só ela; os próximos meses continuam como estão."
+              : "Insira as informações abaixo"}
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -285,6 +300,48 @@ const UpsertTransactionDialog = ({
                 </FormItem>
               )}
             />
+
+            {!isUpdate && (
+              <FormField
+                control={form.control}
+                name="repeatMonthly"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <label
+                      className={cn(
+                        "flex items-center gap-2 text-sm font-medium",
+                        hasPremiumPlan
+                          ? "cursor-pointer"
+                          : "cursor-not-allowed text-muted-foreground",
+                      )}
+                    >
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 accent-primary"
+                        checked={Boolean(field.value) && hasPremiumPlan}
+                        onChange={(event) =>
+                          field.onChange(event.target.checked)
+                        }
+                        disabled={!hasPremiumPlan}
+                      />
+                      <RepeatIcon size={16} aria-hidden />
+                      Repetir todo mês
+                      {!hasPremiumPlan && (
+                        <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[11px] font-semibold text-primary">
+                          Premium
+                        </span>
+                      )}
+                    </label>
+
+                    <p className="text-xs text-muted-foreground">
+                      {hasPremiumPlan
+                        ? `Cria esta transação todo dia ${form.watch("date")?.getDate() ?? ""} (ou no último dia, em meses mais curtos), automaticamente.`
+                        : "Assine o Premium para cadastrar aluguel, salário e assinaturas uma vez só."}
+                    </p>
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter>
               <DialogClose asChild>

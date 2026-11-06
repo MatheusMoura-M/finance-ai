@@ -28,6 +28,8 @@ const formSchema = z.object({
   date: z.date({
     required_error: "A data é obrigatória.",
   }),
+  /** Só na criação: repetir todo mês (Premium). */
+  repeatMonthly: z.boolean().optional(),
 });
 
 type tFormSchema = z.infer<typeof formSchema>;
