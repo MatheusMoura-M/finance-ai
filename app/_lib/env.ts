@@ -21,6 +21,8 @@ const serverEnvSchema = z.object({
   APP_URL: required.pipe(z.string().url("precisa ser uma URL válida")),
   // Sem OPENAI_API_KEY o relatório de IA usa um relatório de exemplo.
   OPENAI_API_KEY: optional,
+  // Modelo do relatório de IA (padrão: gpt-4o-mini).
+  OPENAI_MODEL: optional,
   // Sem CRON_SECRET a rota /api/keepalive fica aberta.
   CRON_SECRET: optional,
 });

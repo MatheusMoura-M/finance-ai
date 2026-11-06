@@ -63,3 +63,18 @@ model KeepAlive {
   pingedAt  DateTime @default(now())
   source    String?
 }
+
+/// Relatórios de IA gerados. Cada geração vira uma linha: o mais recente de
+/// cada mês é o exibido, e as linhas das últimas 24h contam para o limite diário.
+model AiReport {
+  id        String   @id @default(uuid())
+  userId    String
+  month     Int
+  year      Int
+  content   String
+  model     String
+  createdAt DateTime @default(now())
+
+  @@index([userId, year, month, createdAt])
+  @@index([userId, createdAt])
+}
