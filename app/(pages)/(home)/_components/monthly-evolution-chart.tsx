@@ -12,7 +12,9 @@ import {
   ChartContainer,
   ChartTooltip,
 } from "@/app/_components/ui/chart";
+import { TRANSACTION_TYPE_COLORS } from "@/app/_constants/transactions";
 import type { MonthlyEvolution } from "@/app/_data/get-yearly-evolution";
+import { TransactionType } from "@prisma/client";
 import { formatCurrency } from "@/app/_utils/currency";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -30,16 +32,29 @@ import {
 // Cores validadas para daltonismo no fundo escuro do app (checagem da skill de
 // dataviz): verde-água = entra, laranja = sai, azul = investido.
 const SERIES = [
-  { key: "deposits", label: "Receita", color: "#199e70" },
-  { key: "expenses", label: "Despesa", color: "#d95926" },
-  { key: "investments", label: "Investimento", color: "#3987e5" },
+  {
+    key: "deposits",
+    label: "Receita",
+    color: TRANSACTION_TYPE_COLORS[TransactionType.DEPOSIT],
+  },
+  {
+    key: "expenses",
+    label: "Despesa",
+    color: TRANSACTION_TYPE_COLORS[TransactionType.EXPENSE],
+  },
+  {
+    key: "investments",
+    label: "Investimento",
+    color: TRANSACTION_TYPE_COLORS[TransactionType.INVESTMENT],
+  },
 ] as const;
 
-const chartConfig = {
-  deposits: { label: "Receita", color: "#199e70" },
-  expenses: { label: "Despesa", color: "#d95926" },
-  investments: { label: "Investimento", color: "#3987e5" },
-} satisfies ChartConfig;
+const chartConfig = Object.fromEntries(
+  SERIES.map((series) => [
+    series.key,
+    { label: series.label, color: series.color },
+  ]),
+) satisfies ChartConfig;
 
 const MONTH_LABELS = [
   "jan",

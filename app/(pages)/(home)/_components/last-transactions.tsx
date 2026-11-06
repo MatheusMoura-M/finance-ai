@@ -18,14 +18,14 @@ interface LastTransactionsProps {
 const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
   const getAmountColor = (transaction: Transaction) => {
     if (transaction.type === TransactionType.EXPENSE) {
-      return "text-danger";
+      return "text-expense";
     }
 
     if (transaction.type === TransactionType.DEPOSIT) {
-      return "text-primary";
+      return "text-deposit";
     }
 
-    return "text-white";
+    return "text-investment";
   };
 
   const getAmountPrefix = (transaction: Transaction) => {

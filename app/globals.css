@@ -113,6 +113,11 @@ body {
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    /* Cores por tipo de transação (validadas para daltonismo no fundo escuro).
+       Mantenha em sincronia com TRANSACTION_TYPE_COLORS em app/_constants/transactions.ts */
+    --deposit: 159 73% 36%; /* #199e70 */
+    --expense: 17 70% 50%; /* #d95926 */
+    --investment: 213 77% 56%; /* #3987e5 */
   }
 
   .dark {
@@ -140,6 +145,11 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --danger: 2 85% 55%;
+    /* Cores por tipo de transação (validadas para daltonismo no fundo escuro).
+       Mantenha em sincronia com TRANSACTION_TYPE_COLORS em app/_constants/transactions.ts */
+    --deposit: 159 73% 36%; /* #199e70 */
+    --expense: 17 70% 50%; /* #d95926 */
+    --investment: 213 77% 56%; /* #3987e5 */
   }
 }
 

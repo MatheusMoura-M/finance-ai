@@ -55,7 +55,7 @@ const SummaryCards = async ({
       {/* OUTROS CARDS */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-5 md:!grid-cols-2 xxs:grid-cols-2 sm2:grid-cols-1 md2:!grid-cols-3">
         <SummaryCard
-          icon={<PiggyBankIcon size={16} />}
+          icon={<PiggyBankIcon size={16} className="text-investment" />}
           title="Investido"
           amount={investmentsTotal}
           comparison={{
@@ -66,7 +66,7 @@ const SummaryCards = async ({
           }}
         />
         <SummaryCard
-          icon={<TrendingUpIcon size={16} className="text-primary" />}
+          icon={<TrendingUpIcon size={16} className="text-deposit" />}
           title="Receita"
           amount={depositsTotal}
           comparison={{
@@ -77,7 +77,7 @@ const SummaryCards = async ({
           }}
         />
         <SummaryCard
-          icon={<TrendingDownIcon size={16} className="text-danger" />}
+          icon={<TrendingDownIcon size={16} className="text-expense" />}
           title="Despesa"
           amount={expensesTotal}
           className="col-span-1 md:!col-span-2 xxs:col-span-2 sm2:col-span-1 md2:!col-span-1"
