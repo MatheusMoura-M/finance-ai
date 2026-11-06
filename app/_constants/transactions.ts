@@ -11,8 +11,8 @@ import {
  * usadas pelas classes text-deposit, text-expense e text-investment.
  */
 export const TRANSACTION_TYPE_COLORS = {
-  [TransactionType.DEPOSIT]: "#199e70",
-  [TransactionType.EXPENSE]: "#d95926",
+  [TransactionType.DEPOSIT]: "#1f8f47",
+  [TransactionType.EXPENSE]: "#ef4444",
   [TransactionType.INVESTMENT]: "#3987e5",
 };
 

@@ -30,7 +30,7 @@ import {
 } from "recharts";
 
 // Cores validadas para daltonismo no fundo escuro do app (checagem da skill de
-// dataviz): verde-água = entra, laranja = sai, azul = investido.
+// dataviz): verde = entra, vermelho = sai, azul = investido.
 const SERIES = [
   {
     key: "deposits",
