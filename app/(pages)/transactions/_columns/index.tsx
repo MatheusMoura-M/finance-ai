@@ -6,6 +6,7 @@ import {
 } from "@/app/_constants/transactions";
 import { Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import { RepeatIcon } from "lucide-react";
 import DeleteTransactionButton from "../_components/delete-transaction-button";
 import EditTransactionButton from "../_components/edit-transaction-button";
 import TransactionTypeBadge from "../_components/type-badge";
@@ -18,6 +19,17 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
     accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nome" />
+    ),
+    cell: ({ row: { original: transaction } }) => (
+      <span className="flex items-center gap-2">
+        {transaction.name}
+        {transaction.recurringTransactionId && (
+          <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground">
+            <RepeatIcon size={11} aria-hidden />
+            todo mês
+          </span>
+        )}
+      </span>
     ),
   },
   {

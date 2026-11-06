@@ -15,6 +15,7 @@ import TransactionsPieChart from "./_components/transactions-pie-chart";
 import { getAvailableYears } from "@/app/_data/get-available-years";
 import { getYearlyEvolution } from "@/app/_data/get-yearly-evolution";
 import { getMonthBudgets } from "@/app/_data/get-month-budgets";
+import { ensureRecurringTransactions } from "@/app/_data/ensure-recurring-transactions";
 import MonthlyEvolutionChart from "./_components/monthly-evolution-chart";
 
 export const metadata = {
@@ -48,6 +49,9 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
 
     redirect(`?month=${dateFormatted}&year=${selectedYear}`);
   }
+
+  // Cria antes as transações recorrentes que faltam, para já aparecerem nos números.
+  await ensureRecurringTransactions();
 
   const [
     dashboard,

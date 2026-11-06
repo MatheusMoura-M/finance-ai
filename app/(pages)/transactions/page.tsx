@@ -6,7 +6,10 @@ import { DataTable } from "@/app/_components/ui/data-table";
 import { canUserAddTransaction } from "@/app/_data/can-user-add-transaction";
 import { getTransactions } from "@/app/_data/get-transactions";
 import { parseTransactionsSearchParams } from "@/app/_data/get-transactions/search-params";
+import { ensureRecurringTransactions } from "@/app/_data/ensure-recurring-transactions";
+import { getRecurringTransactions } from "@/app/_data/get-recurring-transactions";
 import { transactionsColumns } from "./_columns";
+import RecurringTransactionsButton from "./_components/recurring-transactions-button";
 
 export const metadata = {
   title: "Transações",
@@ -25,9 +28,13 @@ const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
 
   const query = parseTransactionsSearchParams(searchParams);
 
-  const [result, userCanAddTransaction] = await Promise.all([
+  // Cria antes as transações recorrentes que faltam até o mês atual.
+  await ensureRecurringTransactions();
+
+  const [result, userCanAddTransaction, recurrences] = await Promise.all([
     getTransactions(query),
     canUserAddTransaction(),
+    getRecurringTransactions(),
   ]);
 
   return (
@@ -38,7 +45,14 @@ const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
         <div className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold">Transações</h1>
 
-          <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
+          <div className="flex items-center gap-2">
+            {recurrences.length > 0 && (
+              <RecurringTransactionsButton recurrences={recurrences} />
+            )}
+            <AddTransactionButton
+              userCanAddTransaction={userCanAddTransaction}
+            />
+          </div>
         </div>
 
         <DataTable

@@ -18,7 +18,37 @@ model Transaction {
   updatedAt     DateTime                 @updatedAt
   userId        String
 
+  /// Recorrência que gerou esta transação (nulo para transações avulsas).
+  recurringTransactionId String?
+  recurringTransaction   RecurringTransaction? @relation(fields: [recurringTransactionId], references: [id], onDelete: SetNull)
+
+  /// Impede que a mesma recorrência gere duas transações na mesma data.
+  @@unique([recurringTransactionId, date])
   @@index([userId, date])
+}
+
+/// Transação que se repete todo mês (só Premium). As transações de cada mês
+/// são criadas automaticamente quando o usuário abre o app; editar a
+/// recorrência afeta só os meses ainda não gerados.
+model RecurringTransaction {
+  id              String                   @id @default(uuid())
+  userId          String
+  name            String
+  type            TransactionType
+  amount          Decimal                  @db.Decimal(10, 2)
+  category        TransactionCategory
+  paymentMethod   TransactionPaymentMethod
+  /// Dia do mês (1–31). Em meses mais curtos, usa o último dia.
+  dayOfMonth      Int
+  startDate       DateTime
+  endDate         DateTime?
+  /// Data da última transação gerada; a próxima geração começa no mês seguinte.
+  lastGeneratedAt DateTime?
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  transactions    Transaction[]
+
+  @@index([userId, lastGeneratedAt])
 }
 
 /// Orçamento mensal por categoria. Dois tipos de registro:

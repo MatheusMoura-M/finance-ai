@@ -6,10 +6,19 @@ const mocks = vi.hoisted(() => ({
   updateMany: vi.fn(),
   create: vi.fn(),
   getBudgetAlert: vi.fn(),
+  getUserSubscription: vi.fn(),
+  createRecurring: vi.fn(),
+  generateDue: vi.fn(),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({ auth: mocks.auth }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("@/app/_data/get-user-subscription", () => ({
+  getUserSubscription: mocks.getUserSubscription,
+}));
+vi.mock("@/app/_lib/recurring/generate", () => ({
+  generateDueRecurringTransactions: mocks.generateDue,
+}));
 vi.mock("@/app/_lib/budgets/alert", () => ({
   getBudgetAlert: mocks.getBudgetAlert,
 }));
@@ -20,6 +29,7 @@ vi.mock("@/app/_data/can-user-add-transaction", () => ({
 vi.mock("@/app/_lib/prisma", () => ({
   db: {
     transaction: { updateMany: mocks.updateMany, create: mocks.create },
+    recurringTransaction: { create: mocks.createRecurring },
   },
 }));
 
@@ -43,6 +53,12 @@ describe("upsertTransaction", () => {
     mocks.updateMany.mockResolvedValue({ count: 1 });
     mocks.create.mockResolvedValue({});
     mocks.getBudgetAlert.mockResolvedValue(null);
+    mocks.getUserSubscription.mockResolvedValue({
+      userId: "user_1",
+      hasPremiumPlan: true,
+    });
+    mocks.createRecurring.mockResolvedValue({});
+    mocks.generateDue.mockResolvedValue(0);
   });
 
   it("recusa usuário não autenticado", async () => {
@@ -122,5 +138,61 @@ describe("upsertTransaction", () => {
       validTransaction,
     );
     expect(result).toEqual({ success: true, data: { budgetAlert: alert } });
+  });
+
+  describe("repetir todo mês", () => {
+    it("cria a recorrência com a transação do mês ligada e preenche meses passados", async () => {
+      const result = await upsertTransaction({
+        ...validTransaction,
+        repeatMonthly: true,
+      });
+
+      expect(result.success).toBe(true);
+      expect(mocks.create).not.toHaveBeenCalled();
+      expect(mocks.createRecurring).toHaveBeenCalledWith({
+        data: {
+          userId: "user_1",
+          name: "Mercado",
+          type: "EXPENSE",
+          amount: 150.5,
+          category: "FOOD",
+          paymentMethod: "PIX",
+          dayOfMonth: 4,
+          startDate: validTransaction.date,
+          lastGeneratedAt: validTransaction.date,
+          transactions: { create: { ...validTransaction, userId: "user_1" } },
+        },
+      });
+      expect(mocks.generateDue).toHaveBeenCalledWith("user_1");
+    });
+
+    it("é exclusivo do Plano Premium", async () => {
+      mocks.getUserSubscription.mockResolvedValue({
+        userId: "user_1",
+        hasPremiumPlan: false,
+      });
+
+      const result = await upsertTransaction({
+        ...validTransaction,
+        repeatMonthly: true,
+      });
+
+      expect(result).toEqual({
+        success: false,
+        error: "Repetir todo mês é um recurso do Plano Premium.",
+      });
+      expect(mocks.createRecurring).not.toHaveBeenCalled();
+    });
+
+    it("é ignorado ao editar (editar muda só aquela transação)", async () => {
+      await upsertTransaction({
+        ...validTransaction,
+        id: TRANSACTION_ID,
+        repeatMonthly: true,
+      });
+
+      expect(mocks.updateMany).toHaveBeenCalled();
+      expect(mocks.createRecurring).not.toHaveBeenCalled();
+    });
   });
 });

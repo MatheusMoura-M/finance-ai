@@ -31,6 +31,7 @@ const EditTransactionButton = ({ transaction }: EditTransactionButtonProps) => {
           amount: Number(transaction.amount),
         }}
         transactionId={transaction.id}
+        isRecurring={Boolean(transaction.recurringTransactionId)}
       />
     </>
   );
