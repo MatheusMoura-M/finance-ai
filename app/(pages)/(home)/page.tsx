@@ -14,6 +14,7 @@ import TimeSelect from "./_components/time-select";
 import TransactionsPieChart from "./_components/transactions-pie-chart";
 import { getAvailableYears } from "@/app/_data/get-available-years";
 import { getYearlyEvolution } from "@/app/_data/get-yearly-evolution";
+import { getMonthBudgets } from "@/app/_data/get-month-budgets";
 import MonthlyEvolutionChart from "./_components/monthly-evolution-chart";
 
 export const metadata = {
@@ -54,12 +55,14 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
     { hasPremiumPlan },
     availableYears,
     yearlyEvolution,
+    monthBudgets,
   ] = await Promise.all([
     getDashboard(month, selectedYear),
     canUserAddTransaction(),
     getUserSubscription(),
     getAvailableYears(),
     getYearlyEvolution(selectedYear),
+    getMonthBudgets(Number(month), selectedYear),
   ]);
 
   return (
@@ -97,6 +100,9 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
 
                 <ExpensesPerCategory
                   expensesPerCategory={dashboard.totalExpensePerCategory}
+                  budgets={monthBudgets.effective}
+                  month={Number(month)}
+                  year={selectedYear}
                 />
               </div>
             </div>

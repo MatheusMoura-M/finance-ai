@@ -22,6 +22,7 @@ const config: Config = {
       },
       colors: {
         danger: "hsl(var(--danger))",
+        warning: "hsl(var(--warning))",
         deposit: "hsl(var(--deposit))",
         expense: "hsl(var(--expense))",
         investment: "hsl(var(--investment))",

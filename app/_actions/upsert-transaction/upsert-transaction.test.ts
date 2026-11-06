@@ -5,10 +5,14 @@ const mocks = vi.hoisted(() => ({
   canUserAddTransaction: vi.fn(),
   updateMany: vi.fn(),
   create: vi.fn(),
+  getBudgetAlert: vi.fn(),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({ auth: mocks.auth }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("@/app/_lib/budgets/alert", () => ({
+  getBudgetAlert: mocks.getBudgetAlert,
+}));
 vi.mock("@/app/_data/can-user-add-transaction", () => ({
   FREE_PLAN_MONTHLY_TRANSACTIONS_LIMIT: 10,
   canUserAddTransaction: mocks.canUserAddTransaction,
@@ -38,6 +42,7 @@ describe("upsertTransaction", () => {
     mocks.canUserAddTransaction.mockResolvedValue(true);
     mocks.updateMany.mockResolvedValue({ count: 1 });
     mocks.create.mockResolvedValue({});
+    mocks.getBudgetAlert.mockResolvedValue(null);
   });
 
   it("recusa usuário não autenticado", async () => {
@@ -61,7 +66,7 @@ describe("upsertTransaction", () => {
   it("cria a transação com o userId da sessão", async () => {
     const result = await upsertTransaction(validTransaction);
 
-    expect(result).toEqual({ success: true, data: undefined });
+    expect(result).toEqual({ success: true, data: { budgetAlert: null } });
     expect(mocks.create).toHaveBeenCalledWith({
       data: { ...validTransaction, userId: "user_1" },
     });
@@ -98,5 +103,24 @@ describe("upsertTransaction", () => {
       success: false,
       error: "Transação não encontrada.",
     });
+  });
+
+  it("devolve o aviso de orçamento estourado junto com o sucesso", async () => {
+    const alert = {
+      category: "FOOD",
+      spent: 850,
+      budget: 800,
+      month: 11,
+      year: 2026,
+    };
+    mocks.getBudgetAlert.mockResolvedValue(alert);
+
+    const result = await upsertTransaction(validTransaction);
+
+    expect(mocks.getBudgetAlert).toHaveBeenCalledWith(
+      "user_1",
+      validTransaction,
+    );
+    expect(result).toEqual({ success: true, data: { budgetAlert: alert } });
   });
 });
