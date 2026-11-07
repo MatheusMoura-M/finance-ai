@@ -138,12 +138,33 @@ export function DataTableToolbar<TData>({
         </div>
       </div>
 
-      <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
+      {/* No mobile: "Filtrar" e "Exportar Excel" lado a lado, com a mesma altura. */}
+      <div className="flex w-full items-center gap-2 sm:w-auto sm:justify-end">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 flex-1 text-[#e4e2e2] sm:flex-none md:hidden"
+            >
+              <Filter aria-hidden />
+              Filtrar
+            </Button>
+          </SheetTrigger>
+
+          <FilterSheet
+            table={table}
+            facets={facets}
+            dateRange={dateRange}
+            handleDateSelect={handleDateSelect}
+          />
+        </Sheet>
+
         <PremiumDownloadButton
           href={`/api/transactions/export?${searchParams.toString()}`}
           fallbackFileName="transacoes-finance-ai.xlsx"
           size="sm"
-          className="h-8"
+          className="h-8 flex-1 sm:flex-none"
           premiumMessage="Exportar para o Excel é um recurso do Plano Premium."
         >
           <DownloadIcon aria-hidden />
@@ -152,27 +173,6 @@ export function DataTableToolbar<TData>({
 
         <DataTableViewOptions table={table} />
       </div>
-
-      {/* BTN FILTER */}
-      <Sheet>
-        <SheetTrigger asChild className="md:hidden">
-          <Button
-            size="icon"
-            variant="outline"
-            className="flex h-[31px] w-full items-center rounded-md border px-4 py-2 text-sm font-medium text-[#e4e2e2] sm:w-[20%] md:w-[93px]"
-          >
-            <Filter className="mr-2 h-4 w-4" />
-            Filtrar
-          </Button>
-        </SheetTrigger>
-
-        <FilterSheet
-          table={table}
-          facets={facets}
-          dateRange={dateRange}
-          handleDateSelect={handleDateSelect}
-        />
-      </Sheet>
     </div>
   );
 }

@@ -77,27 +77,28 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
 
       <ScrollArea>
         <div className="flex h-full flex-col space-y-5 p-4 pb-4 pt-3 sm:p-6 sm:py-4">
-          <div className="flex justify-between">
-            <h1 className="content-center text-2xl font-bold lg:text-3xl">
-              Dashboard
-            </h1>
+          {/* Mobile: título, depois Relatório IA + PDF, depois o calendário. A partir do md, tudo numa linha. */}
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <h1 className="text-2xl font-bold lg:text-3xl">Dashboard</h1>
 
-            <div className="flex flex-col items-center gap-1 xs:flex-row xs:gap-3">
-              <AiReportButton
-                month={month}
-                year={selectedYear}
-                hasPremiumPlan={hasPremiumPlan}
-              />
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-3">
+              <div className="flex gap-2 md:gap-3">
+                <AiReportButton
+                  month={month}
+                  year={selectedYear}
+                  hasPremiumPlan={hasPremiumPlan}
+                />
 
-              <PremiumDownloadButton
-                href={`/api/reports/month?month=${month}&year=${selectedYear}`}
-                fallbackFileName={`relatorio-${month}-${selectedYear}.pdf`}
-                variant="ghost"
-                className="h-7 px-2 py-0 xs:h-10 xs:px-4 xs:py-2"
-                premiumMessage="O relatório em PDF é um recurso do Plano Premium."
-              >
-                PDF do mês <FileDownIcon aria-hidden />
-              </PremiumDownloadButton>
+                <PremiumDownloadButton
+                  href={`/api/reports/month?month=${month}&year=${selectedYear}`}
+                  fallbackFileName={`relatorio-${month}-${selectedYear}.pdf`}
+                  variant="outline"
+                  className="h-9 flex-1 px-3 md:h-10 md:flex-none md:border-transparent md:px-4"
+                  premiumMessage="O relatório em PDF é um recurso do Plano Premium."
+                >
+                  PDF do mês <FileDownIcon aria-hidden />
+                </PremiumDownloadButton>
+              </div>
 
               <TimeSelect availableYears={availableYears} />
             </div>

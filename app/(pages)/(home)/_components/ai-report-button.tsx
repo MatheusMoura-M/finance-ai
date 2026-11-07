@@ -165,8 +165,8 @@ const AiReportButton = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          variant={"ghost"}
-          className="h-7 px-2 py-0 xs:h-10 xs:px-4 xs:py-2"
+          variant="outline"
+          className="h-9 flex-1 px-3 md:h-10 md:flex-none md:border-transparent md:px-4"
         >
           Relatório IA <BotIcon />
         </Button>

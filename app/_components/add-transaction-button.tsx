@@ -50,7 +50,7 @@ const AddTransactionButton = ({
           ) : (
             <TooltipTrigger asChild>
               <Button
-                className="rounded-full"
+                className="h-9 rounded-full px-3 sm:h-10 sm:px-4"
                 onClick={() => setDialogIsOpen(true)}
                 disabled={!userCanAddTransaction}
               >
