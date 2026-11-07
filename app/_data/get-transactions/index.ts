@@ -1,11 +1,10 @@
 import { db } from "@/app/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { Prisma } from "@prisma/client";
-import { endOfDay, parseISO, startOfDay } from "date-fns";
 import {
   TransactionsFilterField,
   TransactionsSearchParams,
 } from "./search-params";
+import { buildTransactionsWhere } from "./where";
 
 export type TransactionsFacets = Record<
   TransactionsFilterField,
@@ -33,49 +32,9 @@ export const getTransactions = async (params: TransactionsSearchParams) => {
     throw new Error("Unauthorized");
   }
 
-  const { page, pageSize, name, from, to, sort, order } = params;
+  const { page, pageSize, sort, order } = params;
 
-  // Filtros que valem para tudo (inclusive para as contagens das facetas).
-  const baseWhere: Prisma.TransactionWhereInput = {
-    userId,
-    ...(name && { name: { contains: name, mode: "insensitive" } }),
-    ...((from || to) && {
-      date: {
-        ...(from && { gte: startOfDay(parseISO(from)) }),
-        ...(to && { lte: endOfDay(parseISO(to)) }),
-      },
-    }),
-  };
-
-  const facetFilters: Record<
-    TransactionsFilterField,
-    Prisma.TransactionWhereInput
-  > = {
-    type: params.type.length ? { type: { in: params.type } } : {},
-    category: params.category.length
-      ? { category: { in: params.category } }
-      : {},
-    paymentMethod: params.paymentMethod.length
-      ? { paymentMethod: { in: params.paymentMethod } }
-      : {},
-  };
-
-  // Para contar as opções de um filtro, aplica todos os outros filtros menos ele.
-  const whereWithout = (
-    field: TransactionsFilterField,
-  ): Prisma.TransactionWhereInput => ({
-    ...baseWhere,
-    ...Object.entries(facetFilters)
-      .filter(([key]) => key !== field)
-      .reduce((acc, [, filter]) => ({ ...acc, ...filter }), {}),
-  });
-
-  const where: Prisma.TransactionWhereInput = {
-    ...baseWhere,
-    ...facetFilters.type,
-    ...facetFilters.category,
-    ...facetFilters.paymentMethod,
-  };
+  const { where, whereWithout } = buildTransactionsWhere(userId, params);
 
   const total = await db.transaction.count({ where });
   const pageCount = Math.max(1, Math.ceil(total / pageSize));

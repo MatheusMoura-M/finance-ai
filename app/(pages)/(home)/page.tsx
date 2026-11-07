@@ -17,6 +17,8 @@ import { getYearlyEvolution } from "@/app/_data/get-yearly-evolution";
 import { getMonthBudgets } from "@/app/_data/get-month-budgets";
 import { ensureRecurringTransactions } from "@/app/_data/ensure-recurring-transactions";
 import MonthlyEvolutionChart from "./_components/monthly-evolution-chart";
+import PremiumDownloadButton from "@/app/_components/premium-download-button";
+import { FileDownIcon } from "lucide-react";
 
 export const metadata = {
   title: "Painel",
@@ -86,6 +88,16 @@ const Home = async ({ searchParams: { month, year } }: HomeProps) => {
                 year={selectedYear}
                 hasPremiumPlan={hasPremiumPlan}
               />
+
+              <PremiumDownloadButton
+                href={`/api/reports/month?month=${month}&year=${selectedYear}`}
+                fallbackFileName={`relatorio-${month}-${selectedYear}.pdf`}
+                variant="ghost"
+                className="h-7 px-2 py-0 xs:h-10 xs:px-4 xs:py-2"
+                premiumMessage="O relatório em PDF é um recurso do Plano Premium."
+              >
+                PDF do mês <FileDownIcon aria-hidden />
+              </PremiumDownloadButton>
 
               <TimeSelect availableYears={availableYears} />
             </div>

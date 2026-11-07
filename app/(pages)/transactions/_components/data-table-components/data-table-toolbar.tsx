@@ -12,7 +12,9 @@ import { useEffect, useRef, useState } from "react";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { FilterSheet } from "./filter-sheet";
 import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
-import { Filter } from "lucide-react";
+import { DownloadIcon, Filter } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import PremiumDownloadButton from "@/app/_components/premium-download-button";
 import { iFirstAndLastTransactionDate } from "@/app/_components/ui/data-table";
 import type { TransactionsFacets } from "@/app/_data/get-transactions";
 
@@ -30,6 +32,8 @@ export function DataTableToolbar<TData>({
   oldestTransaction,
 }: DataTableToolbarProps<TData> & iFirstAndLastTransactionDate) {
   const isFiltered = table.getState().columnFilters.length > 0;
+  // A exportação usa os mesmos filtros e a ordenação que estão na URL.
+  const searchParams = useSearchParams();
 
   // O período vem da URL (via filtro da coluna) ou, sem filtro, cobre tudo.
   const dateFilter = table.getColumn("date")?.getFilterValue() as
@@ -134,7 +138,20 @@ export function DataTableToolbar<TData>({
         </div>
       </div>
 
-      <DataTableViewOptions table={table} />
+      <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
+        <PremiumDownloadButton
+          href={`/api/transactions/export?${searchParams.toString()}`}
+          fallbackFileName="transacoes-finance-ai.csv"
+          size="sm"
+          className="h-8"
+          premiumMessage="Exportar para planilha é um recurso do Plano Premium."
+        >
+          <DownloadIcon aria-hidden />
+          Exportar CSV
+        </PremiumDownloadButton>
+
+        <DataTableViewOptions table={table} />
+      </div>
 
       {/* BTN FILTER */}
       <Sheet>
