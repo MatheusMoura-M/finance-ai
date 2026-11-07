@@ -6,7 +6,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -25,12 +32,25 @@ const Navbar = () => {
       {/* ESQUERDA */}
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="md:hidden">
+          <Button
+            variant="outline"
+            size="icon"
+            className="md:hidden"
+            aria-label="Abrir menu"
+          >
             <MenuIcon className="h-6 w-6" />
           </Button>
         </SheetTrigger>
 
         <SheetContent side="left">
+          {/* Título e descrição exigidos pelo Radix para leitores de tela (invisíveis na tela). */}
+          <SheetHeader className="sr-only">
+            <SheetTitle>Menu</SheetTitle>
+            <SheetDescription>
+              Navegue entre as páginas do Finance AI.
+            </SheetDescription>
+          </SheetHeader>
+
           <div className="grid gap-2 py-6">
             <Link
               href="/"

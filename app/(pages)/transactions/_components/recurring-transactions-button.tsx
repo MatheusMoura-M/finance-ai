@@ -123,7 +123,10 @@ const RecurringTransactionsButton = ({
     <>
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="rounded-full">
+          <Button
+            variant="outline"
+            className="h-9 rounded-full px-3 sm:h-10 sm:px-4"
+          >
             <RepeatIcon aria-hidden />
             <span className="sr-only sm:not-sr-only">Recorrências</span>(
             {recurrences.length})
