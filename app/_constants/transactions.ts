@@ -5,15 +5,14 @@ import {
 } from "@prisma/client";
 
 /**
- * Cor de cada tipo de transação nos gráficos (o SVG do Recharts precisa do
- * valor direto). Validadas para daltonismo no fundo escuro do app.
- * Mantenha em sincronia com --deposit/--expense/--investment em globals.css,
- * usadas pelas classes text-deposit, text-expense e text-investment.
+ * Cor de cada tipo de transação nos gráficos. Aponta para as variáveis do
+ * tema (--deposit/--expense/--investment em globals.css), então cada tema
+ * usa os seus tons — validados para daltonismo no fundo claro e no escuro.
  */
 export const TRANSACTION_TYPE_COLORS = {
-  [TransactionType.DEPOSIT]: "#1f8f47",
-  [TransactionType.EXPENSE]: "#ef4444",
-  [TransactionType.INVESTMENT]: "#3987e5",
+  [TransactionType.DEPOSIT]: "hsl(var(--deposit))",
+  [TransactionType.EXPENSE]: "hsl(var(--expense))",
+  [TransactionType.INVESTMENT]: "hsl(var(--investment))",
 };
 
 export const TRANSACTION_PAYMENT_METHOD_ICONS = {

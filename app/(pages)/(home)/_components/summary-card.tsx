@@ -24,10 +24,7 @@ const SummaryCard = ({
 }: SummaryCardProps) => {
   return (
     <Card
-      className={cn(
-        `${size === "large" ? "bg-white bg-opacity-5" : ""}`,
-        className,
-      )}
+      className={cn(`${size === "large" ? "bg-foreground/5" : ""}`, className)}
     >
       <CardHeader
         className={`px-[14px] pb-3 pt-[18px] md:px-5 lg:px-4 lg2:px-6 ${size === "large" ? "flex-row items-center gap-4" : "flex-row items-center gap-4"}`}
@@ -35,7 +32,7 @@ const SummaryCard = ({
         {icon}
 
         <p
-          className={`!mt-0 ${size === "small" ? "text-muted-foreground" : "text-white opacity-70"}`}
+          className={`!mt-0 ${size === "small" ? "text-muted-foreground" : "text-foreground/70"}`}
         >
           {title}
         </p>

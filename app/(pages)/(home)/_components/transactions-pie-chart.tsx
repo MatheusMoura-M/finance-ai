@@ -46,7 +46,7 @@ const TransactionsPieChart = ({
     expensesTotal === 0 && depositsTotal === 0 && investmentsTotal === 0;
 
   const chartData = isEmpty
-    ? [{ type: "Sem transações", amount: 1, fill: "#2b2b2b" }]
+    ? [{ type: "Sem transações", amount: 1, fill: "hsl(var(--muted))" }]
     : [
         {
           type: TransactionType.DEPOSIT,

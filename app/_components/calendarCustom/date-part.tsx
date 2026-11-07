@@ -46,7 +46,7 @@ export const DatePart = ({
     <span
       id={id}
       className={cn(
-        "date-part text-[#e4e2e2]",
+        "date-part text-foreground/90",
         highlightedPart === part && "font-bold underline",
       )}
       onMouseOver={() => handleMouseOver(part)}

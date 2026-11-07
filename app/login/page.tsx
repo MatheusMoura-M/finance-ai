@@ -1,5 +1,6 @@
 import { LogInIcon } from "lucide-react";
 import Image from "next/image";
+import Logo from "../_components/logo";
 import { Button } from "../_components/ui/button";
 import { SignInButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
@@ -16,14 +17,7 @@ const LoginPage = async () => {
     <div className="grid h-full grid-cols-1 sm:grid-cols-2">
       <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center p-8">
         {/* ESQUERDA */}
-        <Image
-          src="/logo.svg"
-          width={173}
-          height={39}
-          alt="Finance AI"
-          className="mb-8"
-          priority
-        />
+        <Logo className="mb-8" />
 
         <h1 className="mb-3 text-4xl font-bold">Bem-vindo</h1>
         <p className="mb-8 text-muted-foreground">

@@ -1,7 +1,10 @@
 "use client";
 import { UserButton } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
+import { useTheme } from "next-themes";
+import ThemeToggle from "./theme-toggle";
 import { MenuIcon } from "lucide-react";
-import Image from "next/image";
+import Logo from "./logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,6 +25,12 @@ const Navbar = () => {
   // um <div> já na hidratação se o Clerk carregar antes do React — o que causa
   // "Hydration failed". Só exibimos o botão depois que o componente montou.
   const [isMounted, setIsMounted] = useState(false);
+
+  // Menu e perfil do usuário (Clerk) acompanham o tema escolhido.
+  const { resolvedTheme } = useTheme();
+  const clerkAppearance = {
+    baseTheme: resolvedTheme === "light" ? undefined : dark,
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -90,13 +99,7 @@ const Navbar = () => {
 
       <div className="hidden items-center md:flex md:gap-10">
         <div className="flex items-center sm:gap-2">
-          <Image
-            src="/logo.svg"
-            width={173}
-            height={39}
-            alt="Finance AI"
-            priority
-          />
+          <Logo />
         </div>
 
         <Link
@@ -134,7 +137,16 @@ const Navbar = () => {
       </div>
 
       {/* DIREITA */}
-      {isMounted && <UserButton showName />}
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        {isMounted && (
+          <UserButton
+            showName
+            appearance={clerkAppearance}
+            userProfileProps={{ appearance: clerkAppearance }}
+          />
+        )}
+      </div>
     </nav>
   );
 };

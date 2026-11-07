@@ -29,8 +29,8 @@ import {
   YAxis,
 } from "recharts";
 
-// Cores validadas para daltonismo no fundo escuro do app (checagem da skill de
-// dataviz): verde = entra, vermelho = sai, azul = investido.
+// Cores do tema (claro ou escuro), validadas para daltonismo:
+// verde = entra, vermelho = sai, azul = investido.
 const SERIES = [
   {
     key: "deposits",
