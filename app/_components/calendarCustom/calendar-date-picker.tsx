@@ -327,7 +327,10 @@ export const CalendarDatePicker = React.forwardRef<
             onClick={handleTogglePopover}
             suppressHydrationWarning
           >
-            <CalendarIcon className="mr-2 h-4 w-4" color="#e4e2e2" />
+            <CalendarIcon
+              className="mr-2 h-4 w-4 text-foreground/90"
+              aria-hidden
+            />
             <span>
               {date?.from ? (
                 date.to ? (

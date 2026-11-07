@@ -55,7 +55,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
                 key={transaction.id}
               >
                 <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-white bg-opacity-[3%] p-3">
+                  <div className="rounded-lg bg-foreground/[0.03] p-3">
                     <Image
                       src={
                         TRANSACTION_PAYMENT_METHOD_ICONS[
@@ -64,7 +64,8 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
                       }
                       width={20}
                       height={20}
-                      className="h-5 w-5"
+                      // Ícones cinza-claro: no tema claro, o filtro os escurece.
+                      className="h-5 w-5 invert dark:invert-0"
                       alt={
                         TRANSACTION_PAYMENT_METHOD_LABELS[
                           transaction.paymentMethod
@@ -99,7 +100,11 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
               <h2 className="text-xl text-muted-foreground xl2:text-2xl">
                 Você não tem transações esse mês
               </h2>
-              <HandCoins size={32} color="#a1a1aa" />
+              <HandCoins
+                size={32}
+                className="text-muted-foreground"
+                aria-hidden
+              />
             </div>
           )}
         </CardContent>

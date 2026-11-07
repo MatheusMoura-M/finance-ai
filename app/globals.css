@@ -72,17 +72,17 @@ body {
   }
 
   .scrollbar-custom::-webkit-scrollbar-track {
-    background: #1a1a1a;
+    background: hsl(var(--muted));
     border-radius: 4px;
   }
 
   .scrollbar-custom::-webkit-scrollbar-thumb {
-    background: #4a4a4a;
+    background: hsl(var(--muted-foreground) / 0.5);
     border-radius: 4px;
   }
 
   .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-    background: #666;
+    background: hsl(var(--muted-foreground) / 0.8);
   }
 }
 
@@ -94,10 +94,11 @@ body {
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    /* Paleta do app: verde #1f8f47, vermelho #ef4444, azul #3987e5 (validada para daltonismo).
-       Texto escuro nos botões verdes: branco sobre esse verde não atinge o contraste mínimo. */
-    --primary: 141 64% 34%; /* #1f8f47 */
-    --primary-foreground: 20 14.3% 4.1%;
+    /* TEMA CLARO. Mesmas cores do escuro em tons mais escuros, para o texto
+       ser legível no fundo branco (validadas para daltonismo e contraste):
+       verde #15803d, vermelho #dc2626, azul #2563eb, amarelo #b45309. */
+    --primary: 142 72% 29%; /* #15803d */
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -109,22 +110,23 @@ body {
     --destructive-foreground: 0 0% 100%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 141 64% 34%; /* #1f8f47 */
+    --ring: 142 72% 29%; /* #15803d */
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    /* Cores por tipo de transação (validadas para daltonismo no fundo escuro).
-       Mantenha em sincronia com TRANSACTION_TYPE_COLORS em app/_constants/transactions.ts */
-    --deposit: 141 64% 34%; /* #1f8f47 (= --primary) */
-    --expense: 0 84% 60%; /* #ef4444 (= --danger) */
-    --investment: 213 77% 56%; /* #3987e5 */
+    --danger: 0 72% 51%; /* #dc2626 */
+    /* Cores por tipo de transação (usadas também nos gráficos). */
+    --deposit: 142 72% 29%; /* #15803d (= --primary) */
+    --expense: 0 72% 51%; /* #dc2626 (= --danger) */
+    --investment: 221 83% 53%; /* #2563eb */
     /* Alerta (ex.: orçamento perto do limite). Sempre acompanhado de ícone e texto. */
-    --warning: 45 100% 44%; /* #e0a800 */
+    --warning: 26 90% 37%; /* #b45309 */
   }
 
+  /* TEMA ESCURO (padrão): verde #1f8f47, vermelho #ef4444, azul #3987e5. */
   .dark {
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;

@@ -191,7 +191,7 @@ const AiReportButton = ({
             </div>
           ) : report ? (
             <ScrollArea
-              className="prose max-h-[450px] text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white"
+              className="prose max-h-[450px] text-foreground dark:prose-invert"
               aria-live="polite"
               aria-busy={isStreaming}
             >

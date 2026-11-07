@@ -225,7 +225,7 @@ export function DataTable<TData, TValue>({
       >
         <div className="min-w-[1080px] rounded-md border">
           <Table>
-            <TableHeader className="sticky -top-[2px] bg-[#242020] shadow-md transition-all">
+            <TableHeader className="sticky -top-[2px] bg-muted shadow-md transition-all">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {

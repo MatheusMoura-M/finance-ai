@@ -142,7 +142,11 @@ const ExpensesPerCategory = ({
                 <h2 className="text-xl text-muted-foreground xl2:text-2xl">
                   Você não tem gastos esse mês
                 </h2>
-                <HandCoins size={32} color="#a1a1aa" />
+                <HandCoins
+                  size={32}
+                  className="text-muted-foreground"
+                  aria-hidden
+                />
               </div>
               <p className="text-sm text-muted-foreground">
                 Use &quot;Orçamentos&quot; para definir quanto quer gastar em

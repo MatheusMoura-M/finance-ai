@@ -86,7 +86,7 @@ export function DataTableToolbar<TData>({
           placeholder="Filtre por nome..."
           value={nameInput}
           onChange={(event) => setNameInput(event.target.value)}
-          className="h-8 w-full placeholder:text-[#e4e2e2] focus-visible:ring-offset-1 md:w-[150px] lg:w-[250px] [&:focus-visible]:w-[calc(100%-3px)] [&:focus-visible]:md:w-[147px] [&:focus-visible]:lg:w-[247px]"
+          className="h-8 w-full placeholder:text-foreground/70 focus-visible:ring-offset-1 md:w-[150px] lg:w-[250px] [&:focus-visible]:w-[calc(100%-3px)] [&:focus-visible]:md:w-[147px] [&:focus-visible]:lg:w-[247px]"
         />
 
         <div className="hidden gap-2 md:flex">
@@ -145,7 +145,7 @@ export function DataTableToolbar<TData>({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 flex-1 text-[#e4e2e2] sm:flex-none md:hidden"
+              className="h-8 flex-1 text-foreground/90 sm:flex-none md:hidden"
             >
               <Filter aria-hidden />
               Filtrar

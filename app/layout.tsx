@@ -1,8 +1,8 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
-import { Toaster } from "sonner";
+import { ThemeProvider } from "./_components/theme-provider";
+import { Toaster } from "./_components/ui/sonner";
 import "./globals.css";
 
 const mulish = Mulish({
@@ -23,17 +23,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={`${mulish.className} dark antialiased`}>
-        <ClerkProvider
-          appearance={{
-            baseTheme: dark,
-          }}
-        >
-          <div className="flex h-full flex-col overflow-hidden">{children}</div>
-        </ClerkProvider>
+    // suppressHydrationWarning: o next-themes coloca a classe do tema no <html>
+    // antes do React carregar (para não "piscar" o tema errado).
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body className={`${mulish.className} antialiased`}>
+        <ThemeProvider>
+          <ClerkProvider>
+            <div className="flex h-full flex-col overflow-hidden">
+              {children}
+            </div>
+          </ClerkProvider>
 
-        <Toaster />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
