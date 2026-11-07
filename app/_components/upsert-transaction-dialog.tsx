@@ -50,7 +50,14 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useEffect } from "react";
-import { Loader2Icon, RepeatIcon } from "lucide-react";
+import {
+  HistoryIcon,
+  Loader2Icon,
+  RepeatIcon,
+  SparklesIcon,
+} from "lucide-react";
+import { useTransactionSuggestions } from "./use-transaction-suggestions";
+import type { SuggestionSource } from "../_lib/categorize/suggest";
 import { useUser } from "@clerk/nextjs";
 import { cn } from "../_lib/utils";
 import { toast } from "sonner";
@@ -65,6 +72,24 @@ interface UpsertTransactionDialogProps {
   /** Parcela de uma compra parcelada, ex.: { number: 2, total: 12 }. */
   installment?: { number: number; total: number };
 }
+
+/** Indica de onde veio o valor preenchido automaticamente. */
+const SuggestionHint = ({ source }: { source: SuggestionSource | null }) =>
+  source ? (
+    <p className="flex items-center gap-1 text-xs text-muted-foreground">
+      {source === "history" ? (
+        <>
+          <HistoryIcon size={12} aria-hidden /> Igual às suas transações
+          anteriores com esse nome
+        </>
+      ) : (
+        <>
+          <SparklesIcon size={12} aria-hidden /> Sugerida pelo nome · você pode
+          trocar
+        </>
+      )}
+    </p>
+  ) : null;
 
 const UpsertTransactionDialog = ({
   isOpen,
@@ -100,6 +125,15 @@ const UpsertTransactionDialog = ({
   }, [isOpen, defaultValues, form]);
 
   const isUpdate = Boolean(transactionId);
+
+  // Categoria e pagamento sugeridos pelo nome (só ao criar, só Premium).
+  const { sources: suggestionSources, markTouched } = useTransactionSuggestions(
+    {
+      form,
+      enabled: hasPremiumPlan && !isUpdate,
+      isOpen,
+    },
+  );
 
   // Parcelamento: só ao criar uma despesa no cartão de crédito.
   const [watchedType, watchedPaymentMethod, watchedAmount, watchedDate] =
@@ -235,10 +269,7 @@ const UpsertTransactionDialog = ({
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
 
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione um tipo..." />
@@ -266,12 +297,15 @@ const UpsertTransactionDialog = ({
                   <FormLabel>Categoria</FormLabel>
 
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(value) => {
+                      markTouched("category");
+                      field.onChange(value);
+                    }}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione um tipo..." />
+                        <SelectValue placeholder="Selecione uma categoria..." />
                       </SelectTrigger>
                     </FormControl>
 
@@ -284,6 +318,7 @@ const UpsertTransactionDialog = ({
                     </SelectContent>
                   </Select>
 
+                  <SuggestionHint source={suggestionSources.category} />
                   <FormMessage />
                 </FormItem>
               )}
@@ -297,8 +332,11 @@ const UpsertTransactionDialog = ({
                   <FormLabel>Método de Pagamento</FormLabel>
 
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(value) => {
+                      markTouched("paymentMethod");
+                      field.onChange(value);
+                    }}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -314,6 +352,8 @@ const UpsertTransactionDialog = ({
                       ))}
                     </SelectContent>
                   </Select>
+
+                  <SuggestionHint source={suggestionSources.paymentMethod} />
                   <FormMessage />
                 </FormItem>
               )}
