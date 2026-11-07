@@ -10,6 +10,7 @@ import { ensureRecurringTransactions } from "@/app/_data/ensure-recurring-transa
 import { getRecurringTransactions } from "@/app/_data/get-recurring-transactions";
 import { transactionsColumns } from "./_columns";
 import RecurringTransactionsButton from "./_components/recurring-transactions-button";
+import ImportStatementButton from "./_components/import-statement-button";
 
 export const metadata = {
   title: "Transações",
@@ -42,10 +43,11 @@ const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
       <Navbar />
 
       <div className="flex flex-col space-y-4 overflow-hidden p-4 pt-3 sm:space-y-6 sm:px-6 sm:py-4">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full flex-wrap items-center justify-between gap-2">
           <h1 className="text-2xl font-bold">Transações</h1>
 
-          <div className="flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2">
+            <ImportStatementButton />
             {recurrences.length > 0 && (
               <RecurringTransactionsButton recurrences={recurrences} />
             )}

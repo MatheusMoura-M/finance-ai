@@ -28,8 +28,13 @@ model Transaction {
   installmentNumber  Int?
   installmentTotal   Int?
 
+  /// Transação importada de extrato: identifica o lançamento do banco, para
+  /// que importar o mesmo arquivo de novo não duplique nada.
+  importHash String?
+
   /// Impede que a mesma recorrência gere duas transações na mesma data.
   @@unique([recurringTransactionId, date])
+  @@unique([userId, importHash])
   @@index([userId, date])
   @@index([installmentGroupId])
 }
