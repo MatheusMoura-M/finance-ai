@@ -13,7 +13,8 @@ vi.mock("@/app/_lib/prisma", () => ({
   db: { transaction: { findMany: mocks.findMany } },
 }));
 
-import { MAX_EXPORT_ROWS } from "@/app/_lib/export/csv";
+import ExcelJS from "exceljs";
+import { MAX_EXPORT_ROWS, XLSX_CONTENT_TYPE } from "@/app/_lib/export/xlsx";
 import { GET } from "./route";
 
 const request = (query = "") =>
@@ -63,11 +64,9 @@ describe("GET /api/transactions/export", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Content-Type")).toBe(
-      "text/csv; charset=utf-8",
-    );
+    expect(response.headers.get("Content-Type")).toBe(XLSX_CONTENT_TYPE);
     expect(response.headers.get("Content-Disposition")).toMatch(
-      /^attachment; filename="transacoes-finance-ai-\d{4}-\d{2}-\d{2}\.csv"$/,
+      /^attachment; filename="transacoes-finance-ai-\d{4}-\d{2}-\d{2}\.xlsx"$/,
     );
     expect(mocks.findMany).toHaveBeenCalledWith({
       where: {
@@ -90,8 +89,12 @@ describe("GET /api/transactions/export", () => {
         amount: true,
       },
     });
-    expect(await response.text()).toContain(
-      "28/03/2026;Mercado;Despesa;Alimentação;Pix;-420,00",
-    );
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(await response.arrayBuffer());
+    const row = workbook.getWorksheet("Transações")!.getRow(2);
+
+    expect(row.getCell(2).value).toBe("Mercado");
+    expect(row.getCell(4).value).toBe("Alimentação");
+    expect(row.getCell(6).value).toBe(-420);
   });
 });

@@ -9,7 +9,7 @@ import { ReactNode, useState } from "react";
 import { toast } from "sonner";
 
 interface PremiumDownloadButtonProps {
-  /** Rota que devolve o arquivo (CSV, PDF...). */
+  /** Rota que devolve o arquivo (Excel, PDF...). */
   href: string;
   /** Nome usado se a resposta não informar um. */
   fallbackFileName: string;

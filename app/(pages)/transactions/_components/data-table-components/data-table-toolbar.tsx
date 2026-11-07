@@ -141,13 +141,13 @@ export function DataTableToolbar<TData>({
       <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
         <PremiumDownloadButton
           href={`/api/transactions/export?${searchParams.toString()}`}
-          fallbackFileName="transacoes-finance-ai.csv"
+          fallbackFileName="transacoes-finance-ai.xlsx"
           size="sm"
           className="h-8"
-          premiumMessage="Exportar para planilha é um recurso do Plano Premium."
+          premiumMessage="Exportar para o Excel é um recurso do Plano Premium."
         >
           <DownloadIcon aria-hidden />
-          Exportar CSV
+          Exportar Excel
         </PremiumDownloadButton>
 
         <DataTableViewOptions table={table} />

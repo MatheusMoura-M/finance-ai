@@ -1,7 +1,11 @@
 import { getUserSubscription } from "@/app/_data/get-user-subscription";
 import { parseTransactionsSearchParams } from "@/app/_data/get-transactions/search-params";
 import { buildTransactionsWhere } from "@/app/_data/get-transactions/where";
-import { MAX_EXPORT_ROWS, buildTransactionsCsv } from "@/app/_lib/export/csv";
+import {
+  MAX_EXPORT_ROWS,
+  XLSX_CONTENT_TYPE,
+  buildTransactionsWorkbook,
+} from "@/app/_lib/export/xlsx";
 import { db } from "@/app/_lib/prisma";
 import { format } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /**
- * Exporta em CSV as transações do usuário com os mesmos filtros e a mesma
+ * Exporta em Excel (.xlsx) as transações do usuário com os mesmos filtros e a mesma
  * ordenação da tela de transações (lidos da query string). Só Premium.
  */
 export const GET = async (request: NextRequest) => {
@@ -51,18 +55,18 @@ export const GET = async (request: NextRequest) => {
     },
   });
 
-  const csv = buildTransactionsCsv(
+  const workbook = await buildTransactionsWorkbook(
     transactions.map((transaction) => ({
       ...transaction,
       amount: Number(transaction.amount),
     })),
   );
 
-  const filename = `transacoes-finance-ai-${format(new Date(), "yyyy-MM-dd")}.csv`;
+  const filename = `transacoes-finance-ai-${format(new Date(), "yyyy-MM-dd")}.xlsx`;
 
-  return new Response(csv, {
+  return new Response(new Uint8Array(workbook), {
     headers: {
-      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Type": XLSX_CONTENT_TYPE,
       "Content-Disposition": `attachment; filename="${filename}"`,
       "Cache-Control": "no-store",
     },

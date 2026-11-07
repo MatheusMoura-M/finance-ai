@@ -7,7 +7,7 @@ import {
 
 /**
  * Filtros do Prisma a partir dos parâmetros da tela de transações. Usado pela
- * tabela (getTransactions) e pela exportação em CSV, para exportar exatamente
+ * tabela (getTransactions) e pela exportação em Excel, para exportar exatamente
  * o que está filtrado na tela. Sempre restrito ao usuário.
  */
 export const buildTransactionsWhere = (
