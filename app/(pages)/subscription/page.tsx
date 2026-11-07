@@ -14,9 +14,9 @@ export const metadata = {
 };
 
 interface SubscriptionPageProps {
-  searchParams: {
+  searchParams: Promise<{
     checkout?: string;
-  };
+  }>;
 }
 
 const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
@@ -31,7 +31,7 @@ const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
     getCurrentMonthTransactions(),
   ]);
 
-  const checkoutSucceeded = searchParams.checkout === "success";
+  const checkoutSucceeded = (await searchParams).checkout === "success";
 
   return (
     <>
