@@ -1,11 +1,10 @@
 "use client";
 
-import { ptBR } from "date-fns/locale";
+import { ptBR } from "react-day-picker/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/app/_lib/utils";
-import { SelectSingleEventHandler } from "react-day-picker";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
@@ -18,7 +17,7 @@ interface DatePickerProps {
 export const DatePicker = ({ value, onChange }: DatePickerProps) => {
   const [open, setOpen] = React.useState(false);
 
-  const handleSelect: SelectSingleEventHandler = (date) => {
+  const handleSelect = (date: Date | undefined) => {
     onChange?.(date);
     setOpen(false);
   };

@@ -7,7 +7,7 @@ import { MenuIcon } from "lucide-react";
 import Logo from "./logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useIsClient } from "./use-is-client";
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -24,17 +24,13 @@ const Navbar = () => {
   // O UserButton renderiza `null` no servidor, mas no cliente pode renderizar
   // um <div> já na hidratação se o Clerk carregar antes do React — o que causa
   // "Hydration failed". Só exibimos o botão depois que o componente montou.
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsClient();
 
   // Menu e perfil do usuário (Clerk) acompanham o tema escolhido.
   const { resolvedTheme } = useTheme();
   const clerkAppearance = {
     baseTheme: resolvedTheme === "light" ? undefined : dark,
   };
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   return (
     <nav className="flex justify-between border-b border-solid px-4 py-8 sm:px-6">

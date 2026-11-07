@@ -80,20 +80,32 @@ const AiReportButton = ({
     }
   }, [month, year]);
 
-  // Trocar de mês/ano limpa o relatório anterior e interrompe uma geração em andamento.
-  useEffect(() => {
-    abortController.current?.abort();
-    requestId.current++;
+  // Trocar de mês/ano limpa o relatório anterior (ajuste durante a renderização,
+  // padrão recomendado pelo React em vez de setState dentro de um efeito).
+  const period = `${month}-${year}`;
+  const [shownPeriod, setShownPeriod] = useState(period);
+
+  if (shownPeriod !== period) {
+    setShownPeriod(period);
     setReport(null);
     setGeneratedAt(null);
     setStatus("idle");
-  }, [month, year]);
+  }
 
+  // ...e interrompe uma geração em andamento (efeito sem setState).
   useEffect(() => {
-    if (isOpen && hasPremiumPlan) {
+    requestId.current++;
+    abortController.current?.abort();
+  }, [period]);
+
+  // Ao abrir a janela, carrega o relatório salvo do mês.
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+
+    if (open && hasPremiumPlan) {
       loadSavedReport();
     }
-  }, [isOpen, hasPremiumPlan, loadSavedReport]);
+  };
 
   const handleGenerateReportClick = async () => {
     const id = ++requestId.current;
@@ -162,7 +174,7 @@ const AiReportButton = ({
   const limitReached = usage?.remaining === 0;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant="outline"

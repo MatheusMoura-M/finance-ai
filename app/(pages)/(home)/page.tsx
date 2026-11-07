@@ -25,13 +25,15 @@ export const metadata = {
 };
 
 interface HomeProps {
-  searchParams: {
-    month: string;
-    year: string;
-  };
+  // No Next 16 os parâmetros da URL chegam como Promise.
+  searchParams: Promise<{
+    month?: string;
+    year?: string;
+  }>;
 }
 
-const Home = async ({ searchParams: { month, year } }: HomeProps) => {
+const Home = async ({ searchParams }: HomeProps) => {
+  const { month, year } = await searchParams;
   const { userId } = await auth();
 
   if (!userId) {

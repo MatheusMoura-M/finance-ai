@@ -17,7 +17,7 @@ export const metadata = {
 };
 
 interface TransactionsPageProps {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
@@ -27,7 +27,7 @@ const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
     redirect("/login");
   }
 
-  const query = parseTransactionsSearchParams(searchParams);
+  const query = parseTransactionsSearchParams(await searchParams);
 
   // Cria antes as transações recorrentes que faltam até o mês atual.
   await ensureRecurringTransactions();

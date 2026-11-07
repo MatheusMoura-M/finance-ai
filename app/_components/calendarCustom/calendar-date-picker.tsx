@@ -33,7 +33,8 @@ import {
 } from "@/app/_components/ui/select";
 import { Calendar } from "../ui/calendar";
 import { DatePart } from "./date-part";
-import { ptBR } from "date-fns/locale";
+// Locale do próprio react-day-picker 9 (usa a mesma versão do date-fns dele).
+import { ptBR } from "react-day-picker/locale";
 
 const months = [
   "Janeiro",

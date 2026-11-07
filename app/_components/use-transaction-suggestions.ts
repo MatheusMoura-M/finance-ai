@@ -49,13 +49,22 @@ export const useTransactionSuggestions = ({
     paymentMethod: null,
   });
 
-  // Ao abrir: zera o estado e carrega o histórico uma vez.
+  // Ao abrir o formulário, as dicas da vez anterior somem (ajuste durante a
+  // renderização, padrão recomendado pelo React em vez de setState no efeito).
+  const isActive = isOpen && enabled;
+  const [wasActive, setWasActive] = useState(isActive);
+
+  if (wasActive !== isActive) {
+    setWasActive(isActive);
+    if (isActive) setSources({ category: null, paymentMethod: null });
+  }
+
+  // Ao abrir: zera o controle interno e carrega o histórico uma vez.
   useEffect(() => {
-    if (!isOpen || !enabled) return;
+    if (!isActive) return;
 
     touched.current = { category: false, paymentMethod: false };
     lastAutoFilled.current = { category: null, paymentMethod: null };
-    setSources({ category: null, paymentMethod: null });
 
     let cancelled = false;
 
@@ -68,7 +77,7 @@ export const useTransactionSuggestions = ({
     return () => {
       cancelled = true;
     };
-  }, [isOpen, enabled]);
+  }, [isActive]);
 
   const name = form.watch("name");
 

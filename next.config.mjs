@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // Habilita instrumentation.ts (validação das variáveis de ambiente no boot).
-    instrumentationHook: true,
-    // Geram PDF e Excel no servidor; carregados do node_modules, sem bundle.
-    serverComponentsExternalPackages: ["@react-pdf/renderer", "exceljs"],
-  },
+  // Geram PDF e Excel no servidor; carregados do node_modules, sem bundle.
+  // (instrumentation.ts já é padrão desde o Next 15, sem flag.)
+  serverExternalPackages: ["@react-pdf/renderer", "exceljs"],
 };
 
 export default nextConfig;
