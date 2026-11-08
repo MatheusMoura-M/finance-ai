@@ -9,7 +9,7 @@ export const saveBudgetsSchema = z.object({
   budgets: z
     .array(
       z.object({
-        category: z.nativeEnum(TransactionCategory),
+        category: z.enum(TransactionCategory),
         /** null = sem orçamento. */
         amount: z.number().positive().max(99_999_999).nullable(),
       }),

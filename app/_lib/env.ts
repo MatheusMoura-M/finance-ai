@@ -3,7 +3,7 @@ import { z } from "zod";
 // Variáveis vazias ("") contam como não definidas.
 const required = z.preprocess(
   (value) => (value === "" ? undefined : value),
-  z.string({ required_error: "não definida" }),
+  z.string({ error: "não definida" }),
 );
 
 const optional = z.preprocess(
@@ -18,7 +18,7 @@ const serverEnvSchema = z.object({
   STRIPE_SECRET_KEY: required,
   STRIPE_WEBHOOK_SECRET: required,
   STRIPE_PREMIUM_PLAN_PRICE_ID: required,
-  APP_URL: required.pipe(z.string().url("precisa ser uma URL válida")),
+  APP_URL: required.pipe(z.url("precisa ser uma URL válida")),
   // Sem OPENAI_API_KEY o relatório de IA usa um relatório de exemplo.
   OPENAI_API_KEY: optional,
   // Modelo do relatório de IA (padrão: gpt-4o-mini).
