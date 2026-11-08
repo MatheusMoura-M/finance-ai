@@ -18,18 +18,24 @@ export const maxDuration = 30;
 
 const SINGLETON_ID = "supabase-keepalive";
 
-const isAuthorized = (request: NextRequest) => {
+export const GET = async (request: NextRequest) => {
   const secret = process.env.CRON_SECRET;
 
-  // Sem segredo configurado a rota fica aberta — melhor isso do que o
-  // keepalive silenciosamente parar de funcionar por falta de env var.
-  if (!secret) return true;
+  // Fechada por padrão: sem CRON_SECRET ninguém consegue chamar a rota. O 503
+  // (e o erro no log) deixa claro no painel de Crons da Vercel que falta
+  // configurar a variável — a Vercel Cron envia "Bearer <CRON_SECRET>" sozinha.
+  if (!secret) {
+    console.error(
+      "[keepalive] CRON_SECRET não configurado: rota bloqueada. Defina a variável no projeto da Vercel.",
+    );
 
-  return request.headers.get("authorization") === `Bearer ${secret}`;
-};
+    return NextResponse.json(
+      { ok: false, error: "CRON_SECRET não configurado" },
+      { status: 503 },
+    );
+  }
 
-export const GET = async (request: NextRequest) => {
-  if (!isAuthorized(request)) {
+  if (request.headers.get("authorization") !== `Bearer ${secret}`) {
     return NextResponse.json(
       { ok: false, error: "unauthorized" },
       { status: 401 },

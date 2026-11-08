@@ -34,7 +34,7 @@ export const getTransactions = async (params: TransactionsSearchParams) => {
 
   const { page, pageSize, sort, order } = params;
 
-  const { where, whereWithout } = buildTransactionsWhere(userId, params);
+  const { where, whereWithout } = await buildTransactionsWhere(userId, params);
 
   const total = await db.transaction.count({ where });
   const pageCount = Math.max(1, Math.ceil(total / pageSize));

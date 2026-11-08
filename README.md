@@ -143,7 +143,7 @@ Este projeto utiliza um conjunto robusto de tecnologias modernas:
    | `APP_URL` | ✅ | URL pública do app (ex.: `http://localhost:3000`) |
    | `OPENAI_API_KEY` | — | Sem ela, o relatório de IA retorna um exemplo |
    | `OPENAI_MODEL` | — | Modelo do relatório de IA (padrão: `gpt-4o-mini`) |
-   | `CRON_SECRET` | — | Protege a rota `/api/keepalive` |
+   | `CRON_SECRET` | ✅ (produção) | Protege a rota `/api/keepalive`; sem ela a rota fica bloqueada e o Supabase pode pausar |
 
    As variáveis são validadas em `app/_lib/env.ts`; se faltar alguma, o servidor avisa no log ao iniciar.
 

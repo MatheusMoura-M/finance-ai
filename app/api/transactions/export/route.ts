@@ -39,7 +39,7 @@ export const GET = async (request: NextRequest) => {
   const params = parseTransactionsSearchParams(
     Object.fromEntries(request.nextUrl.searchParams),
   );
-  const { where } = buildTransactionsWhere(subscription.userId, params);
+  const { where } = await buildTransactionsWhere(subscription.userId, params);
 
   const transactions = await db.transaction.findMany({
     where,

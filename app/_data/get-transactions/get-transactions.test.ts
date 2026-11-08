@@ -7,11 +7,13 @@ const mocks = vi.hoisted(() => ({
   findMany: vi.fn(),
   groupBy: vi.fn(),
   aggregate: vi.fn(),
+  queryRaw: vi.fn(),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({ auth: mocks.auth }));
 vi.mock("@/app/_lib/prisma", () => ({
   db: {
+    $queryRaw: mocks.queryRaw,
     transaction: {
       count: mocks.count,
       findMany: mocks.findMany,
@@ -22,6 +24,20 @@ vi.mock("@/app/_lib/prisma", () => ({
 }));
 
 import { getTransactions } from "./index";
+import { ACCENTED_CHARS, normalizeSearchText, PLAIN_CHARS } from "./where";
+
+describe("busca sem acento", () => {
+  it("tira acentos e deixa em minúsculas", () => {
+    expect(normalizeSearchText("Água Café PÃO Maçã")).toBe(
+      "agua cafe pao maca",
+    );
+  });
+
+  it("tem uma letra sem acento para cada letra acentuada", () => {
+    expect([...PLAIN_CHARS]).toHaveLength([...ACCENTED_CHARS].length);
+    expect(PLAIN_CHARS).toMatch(/^[a-z]+$/);
+  });
+});
 
 describe("parseTransactionsSearchParams", () => {
   it("usa os padrões quando a URL está vazia", () => {
@@ -89,6 +105,7 @@ describe("getTransactions", () => {
       _min: { date: null },
       _max: { date: null },
     });
+    mocks.queryRaw.mockResolvedValue([{ id: "t1" }, { id: "t2" }]);
   });
 
   it("recusa usuário não autenticado", async () => {
@@ -115,7 +132,8 @@ describe("getTransactions", () => {
 
     const expectedWhere = {
       userId: "user_1",
-      name: { contains: "mercado", mode: "insensitive" },
+      // A busca por nome vira filtro pelos ids encontrados sem acento.
+      id: { in: ["t1", "t2"] },
       date: {
         gte: new Date(2026, 0, 1, 0, 0, 0, 0),
         lte: new Date(2026, 0, 31, 23, 59, 59, 999),
@@ -131,6 +149,21 @@ describe("getTransactions", () => {
       take: 20,
     });
     expect(result).toMatchObject({ total: 45, page: 2, pageCount: 3 });
+  });
+
+  it("busca o nome sem acento, só do usuário e com curingas escapados", async () => {
+    await getTransactions(parseTransactionsSearchParams({ name: "Água_10%" }));
+
+    const [, ...values] = mocks.queryRaw.mock.calls[0];
+
+    expect(values).toContain("user_1");
+    expect(values).toContain("%agua\\_10\\%%");
+  });
+
+  it("não consulta nomes quando não há busca", async () => {
+    await getTransactions(parseTransactionsSearchParams({}));
+
+    expect(mocks.queryRaw).not.toHaveBeenCalled();
   });
 
   it("mostra a última página quando a página pedida passou do fim", async () => {
