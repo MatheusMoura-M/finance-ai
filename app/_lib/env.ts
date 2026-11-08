@@ -23,7 +23,7 @@ const serverEnvSchema = z.object({
   OPENAI_API_KEY: optional,
   // Modelo do relatório de IA (padrão: gpt-4o-mini).
   OPENAI_MODEL: optional,
-  // Sem CRON_SECRET a rota /api/keepalive fica aberta.
+  // Sem CRON_SECRET a rota /api/keepalive fica bloqueada (responde 503).
   CRON_SECRET: optional,
 });
 

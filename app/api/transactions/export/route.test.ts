@@ -4,13 +4,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   getUserSubscription: vi.fn(),
   findMany: vi.fn(),
+  queryRaw: vi.fn(),
 }));
 
 vi.mock("@/app/_data/get-user-subscription", () => ({
   getUserSubscription: mocks.getUserSubscription,
 }));
 vi.mock("@/app/_lib/prisma", () => ({
-  db: { transaction: { findMany: mocks.findMany } },
+  db: {
+    $queryRaw: mocks.queryRaw,
+    transaction: { findMany: mocks.findMany },
+  },
 }));
 
 import ExcelJS from "exceljs";
@@ -26,6 +30,7 @@ describe("GET /api/transactions/export", () => {
       userId: "user_1",
       hasPremiumPlan: true,
     });
+    mocks.queryRaw.mockResolvedValue([{ id: "t1" }]);
     mocks.findMany.mockResolvedValue([
       {
         date: new Date(2026, 2, 28, 3),
@@ -71,7 +76,7 @@ describe("GET /api/transactions/export", () => {
     expect(mocks.findMany).toHaveBeenCalledWith({
       where: {
         userId: "user_1",
-        name: { contains: "mercado", mode: "insensitive" },
+        id: { in: ["t1"] },
         date: {
           gte: new Date(2026, 0, 1, 0, 0, 0, 0),
           lte: new Date(2026, 2, 31, 23, 59, 59, 999),
