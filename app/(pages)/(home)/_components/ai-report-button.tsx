@@ -185,7 +185,7 @@ const AiReportButton = ({
       </DialogTrigger>
 
       {hasPremiumPlan ? (
-        <DialogContent className="max-w-[640px]">
+        <DialogContent className="max-w-160">
           <DialogHeader>
             <DialogTitle>Relatório IA de {periodLabel}</DialogTitle>
 
@@ -203,7 +203,7 @@ const AiReportButton = ({
             </div>
           ) : report ? (
             <ScrollArea
-              className="prose max-h-[450px] text-foreground dark:prose-invert"
+              className="prose max-h-112.5 text-foreground dark:prose-invert"
               aria-live="polite"
               aria-busy={isStreaming}
             >
@@ -249,7 +249,7 @@ const AiReportButton = ({
           </DialogFooter>
         </DialogContent>
       ) : (
-        <DialogContent className="max-w-[600px]">
+        <DialogContent className="max-w-150">
           <DialogHeader>
             <DialogTitle>Relatório IA</DialogTitle>
 

@@ -15,7 +15,7 @@ const LoginPage = async () => {
 
   return (
     <div className="grid h-full grid-cols-1 sm:grid-cols-2">
-      <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center p-8">
+      <div className="mx-auto flex h-full max-w-137.5 flex-col justify-center p-8">
         {/* ESQUERDA */}
         <Logo className="mb-8" />
 

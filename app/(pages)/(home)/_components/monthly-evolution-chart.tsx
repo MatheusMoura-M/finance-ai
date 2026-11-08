@@ -90,7 +90,7 @@ const EvolutionTooltip = ({
   const row = payload[0].payload as ChartRow;
 
   return (
-    <div className="min-w-[200px] rounded-lg border bg-background px-3 py-2 text-xs shadow-xl">
+    <div className="min-w-50 rounded-lg border bg-background px-3 py-2 text-xs shadow-xl">
       <p className="mb-2 font-semibold capitalize">
         {format(new Date(year, row.month - 1, 1), "MMMM 'de' yyyy", {
           locale: ptBR,
@@ -172,14 +172,14 @@ const MonthlyEvolutionChart = ({
 
       <CardContent className="px-2 pb-4 sm:px-4 lg2:px-6">
         {isEmpty ? (
-          <div className="flex h-[260px] flex-col items-center justify-center gap-2 text-center">
+          <div className="flex h-65 flex-col items-center justify-center gap-2 text-center">
             <ChartColumnIcon size={32} className="text-muted-foreground" />
             <p className="text-muted-foreground">Nenhuma transação em {year}</p>
           </div>
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="aspect-auto h-[260px] w-full"
+            className="aspect-auto h-65 w-full"
             aria-label={`Gráfico de barras com receitas, despesas e investimentos de cada mês de ${year}`}
             role="img"
           >

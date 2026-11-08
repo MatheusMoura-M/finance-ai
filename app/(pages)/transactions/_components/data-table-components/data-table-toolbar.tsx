@@ -37,8 +37,7 @@ export function DataTableToolbar<TData>({
 
   // O período vem da URL (via filtro da coluna) ou, sem filtro, cobre tudo.
   const dateFilter = table.getColumn("date")?.getFilterValue() as
-    | [Date, Date]
-    | undefined;
+    [Date, Date] | undefined;
   const dateRange = {
     from: dateFilter?.[0] ?? oldestTransaction,
     to: dateFilter?.[1] ?? newestTransaction,
@@ -81,12 +80,12 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0">
-      <div className="flex w-full items-center gap-2 pt-[3px] sm:w-auto [&:has(input:focus-visible)]:pl-[3px]">
+      <div className="flex w-full items-center gap-2 pt-0.75 sm:w-auto [&:has(input:focus-visible)]:pl-0.75">
         <Input
           placeholder="Filtre por nome..."
           value={nameInput}
           onChange={(event) => setNameInput(event.target.value)}
-          className="h-8 w-full placeholder:text-foreground/70 focus-visible:ring-offset-1 md:w-[150px] lg:w-[250px] [&:focus-visible]:w-[calc(100%-3px)] [&:focus-visible]:md:w-[147px] [&:focus-visible]:lg:w-[247px]"
+          className="h-8 w-full placeholder:text-foreground/70 focus-visible:w-[calc(100%-3px)] focus-visible:ring-offset-1 md:w-37.5 md:focus-visible:w-36.75 lg:w-62.5 lg:focus-visible:w-61.75"
         />
 
         <div className="hidden gap-2 md:flex">
@@ -120,7 +119,7 @@ export function DataTableToolbar<TData>({
           <CalendarDatePicker
             date={dateRange}
             onDateSelect={handleDateSelect}
-            className="h-8 w-[250px]"
+            className="h-8 w-62.5"
             variant="outline"
             closeOnSelect
           />

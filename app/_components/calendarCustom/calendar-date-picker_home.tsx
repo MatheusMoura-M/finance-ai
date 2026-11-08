@@ -37,7 +37,7 @@ const months = [
 ];
 
 const multiSelectVariants = cva(
-  "flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-foreground ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -59,7 +59,8 @@ const multiSelectVariants = cva(
 );
 
 interface CalendarDatePickerProps
-  extends React.HTMLAttributes<HTMLButtonElement>,
+  extends
+    React.HTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof multiSelectVariants> {
   id?: string;
   className?: string;
@@ -179,7 +180,7 @@ export const CalendarDatePickerTest = React.forwardRef<
                 }}
                 value={months[selectedMonthIndex]}
               >
-                <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0">
+                <SelectTrigger className="w-30.5 font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0">
                   <SelectValue placeholder="Mês" />
                 </SelectTrigger>
 
@@ -198,7 +199,7 @@ export const CalendarDatePickerTest = React.forwardRef<
                 }}
                 value={selectedYear.toString()}
               >
-                <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0">
+                <SelectTrigger className="w-30.5 font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0">
                   <SelectValue placeholder="Ano" />
                 </SelectTrigger>
 

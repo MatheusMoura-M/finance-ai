@@ -52,7 +52,7 @@ const months = [
 ];
 
 const multiSelectVariants = cva(
-  "flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-foreground ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -74,7 +74,8 @@ const multiSelectVariants = cva(
 );
 
 interface CalendarDatePickerProps
-  extends React.HTMLAttributes<HTMLButtonElement>,
+  extends
+    React.HTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof multiSelectVariants> {
   id?: string;
   className?: string;
@@ -468,7 +469,7 @@ export const CalendarDatePicker = React.forwardRef<
                 </div>
               )}
 
-              <div className="flex h-[356px] flex-col sm-max:w-full">
+              <div className="flex h-89 flex-col sm-max:w-full">
                 <div className="flex items-center gap-4 sm-max:flex-col">
                   <div className="ml-3 flex gap-2 sm-max:ml-0 sm-max:w-full sm-max:justify-center">
                     <Select
@@ -480,7 +481,7 @@ export const CalendarDatePicker = React.forwardRef<
                         monthFrom ? months[monthFrom.getMonth()] : undefined
                       }
                     >
-                      <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
+                      <SelectTrigger className="w-30.5 font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
                         <SelectValue placeholder="Month" />
                       </SelectTrigger>
 
@@ -500,7 +501,7 @@ export const CalendarDatePicker = React.forwardRef<
                       }}
                       value={yearFrom ? yearFrom.toString() : undefined}
                     >
-                      <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
+                      <SelectTrigger className="w-30.5 font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
 
@@ -523,7 +524,7 @@ export const CalendarDatePicker = React.forwardRef<
                         }}
                         value={monthTo ? months[monthTo.getMonth()] : undefined}
                       >
-                        <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
+                        <SelectTrigger className="w-30.5 font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
                           <SelectValue placeholder="Month" />
                         </SelectTrigger>
 
@@ -543,7 +544,7 @@ export const CalendarDatePicker = React.forwardRef<
                         }}
                         value={yearTo ? yearTo.toString() : undefined}
                       >
-                        <SelectTrigger className="w-[122px] font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
+                        <SelectTrigger className="w-30.5 font-medium hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 sm-max:w-1/2">
                           <SelectValue placeholder="Year" />
                         </SelectTrigger>
 

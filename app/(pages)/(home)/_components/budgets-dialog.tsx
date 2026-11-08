@@ -155,7 +155,7 @@ const BudgetsDialog = ({ month, year, budgets }: BudgetsDialogProps) => {
           {BUDGET_CATEGORIES.map(({ value, label }) => (
             <div
               key={value}
-              className="grid grid-cols-[1fr,minmax(0,170px)] items-center gap-3"
+              className="grid grid-cols-[1fr_minmax(0,170px)] items-center gap-3"
             >
               <Label htmlFor={`budget-${value}`}>{label}</Label>
               <MoneyInput

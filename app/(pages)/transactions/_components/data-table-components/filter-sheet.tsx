@@ -30,7 +30,7 @@ export const FilterSheet = <TData,>({
   return (
     <SheetContent
       id="sheet-filter"
-      className="max-w-[390px] overflow-y-auto md:hidden"
+      className="max-w-97.5 overflow-y-auto md:hidden"
     >
       <SheetHeader className="space-y-0">
         <SheetTitle className="text-start">Filtrar documentos</SheetTitle>
