@@ -266,7 +266,7 @@ const ImportStatementButton = ({ className }: ImportStatementButtonProps) => {
                 </span>
               </div>
 
-              <ul className="scrollbar-custom -mx-2 min-h-0 flex-1 divide-y overflow-y-auto px-2">
+              <ul className="-mx-2 scrollbar-custom min-h-0 flex-1 divide-y overflow-y-auto px-2">
                 {rows.map((row) => {
                   const isIncome = row.type === TransactionType.DEPOSIT;
 
@@ -274,7 +274,7 @@ const ImportStatementButton = ({ className }: ImportStatementButtonProps) => {
                     <li
                       key={row.importHash}
                       className={cn(
-                        "grid grid-cols-[auto,minmax(0,1fr),auto] items-center gap-x-3 gap-y-2 py-3 sm:grid-cols-[auto,minmax(0,1fr),180px,auto]",
+                        "grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 py-3 sm:grid-cols-[auto_minmax(0,1fr)_180px_auto]",
                         !row.selected && "opacity-60",
                       )}
                     >

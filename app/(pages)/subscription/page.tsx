@@ -50,7 +50,7 @@ const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
           )}
 
           <div className="flex flex-wrap justify-center gap-6 md:justify-start">
-            <Card className="w-[36.53%] min-w-[345px] max-w-[450px]">
+            <Card className="w-[36.53%] max-w-112.5 min-w-86.25">
               <CardHeader className="border-b border-solid px-4 py-5 md:px-6 md:py-8">
                 <h2 className="text-center text-2xl font-semibold">
                   Plano Básico
@@ -79,10 +79,10 @@ const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
               </CardContent>
             </Card>
 
-            <Card className="w-[36.53%] min-w-[345px] max-w-[450px]">
+            <Card className="w-[36.53%] max-w-112.5 min-w-86.25">
               <CardHeader className="relative border-b border-solid px-4 py-5 md:px-6 md:py-8">
                 {hasPremiumPlan && (
-                  <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
+                  <Badge className="absolute top-12 left-4 bg-primary/10 text-primary">
                     Ativo
                   </Badge>
                 )}

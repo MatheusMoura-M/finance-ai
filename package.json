@@ -57,6 +57,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^20.19.43",
     "@types/pg": "^8.20.0",
@@ -69,10 +70,10 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.5.2",
     "postcss": "^8",
-    "prettier": "^3.5.2",
-    "prettier-plugin-tailwindcss": "^0.6.11",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "prisma": "^7.10.1",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^4.3.5",
     "typescript": "^5",
     "vitest": "^3.2.4"
   }

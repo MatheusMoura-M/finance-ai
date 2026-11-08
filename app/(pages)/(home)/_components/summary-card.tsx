@@ -26,19 +26,19 @@ const SummaryCard = ({
     <Card
       className={cn(`${size === "large" ? "bg-foreground/5" : ""}`, className)}
     >
-      <CardHeader
-        className={`px-[14px] pb-3 pt-[18px] md:px-5 lg:px-4 lg2:px-6 ${size === "large" ? "flex-row items-center gap-4" : "flex-row items-center gap-4"}`}
-      >
+      <CardHeader className="flex-row items-center gap-4 space-y-0 px-3.5 pt-4.5 pb-3 md:px-5 lg:px-4 lg2:px-6">
         {icon}
 
         <p
-          className={`!mt-0 ${size === "small" ? "text-muted-foreground" : "text-foreground/70"}`}
+          className={
+            size === "small" ? "text-muted-foreground" : "text-foreground/70"
+          }
         >
           {title}
         </p>
       </CardHeader>
 
-      <CardContent className="flex justify-between px-[14px] pb-[18px] sm:flex-row sm:items-stretch sm:space-x-0 md:px-5 lg:px-4 lg2:px-6">
+      <CardContent className="flex justify-between px-3.5 pb-4.5 sm:flex-row sm:items-stretch sm:space-x-0 md:px-5 lg:px-4 lg2:px-6">
         <div className="space-y-1">
           <p
             className={`font-bold ${size === "small" ? "text-lg md:text-xl lg:text-2xl" : "text-xl md:text-2xl lg:text-3xl"}`}

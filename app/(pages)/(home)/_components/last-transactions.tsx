@@ -37,8 +37,8 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
   };
 
   return (
-    <div className="static h-[586px] min-h-[586px] min-w-[335px] rounded-md border sm:sticky sm:top-5">
-      <CardHeader className="flex-row items-center justify-between space-x-2 space-y-0 px-4 lg2:px-6">
+    <div className="static h-146.5 min-h-146.5 min-w-83.75 rounded-md border sm:sticky sm:top-5">
+      <CardHeader className="flex-row items-center justify-between space-y-0 space-x-2 px-4 lg2:px-6">
         <CardTitle className="font-bold">Últimas transações</CardTitle>
 
         <Button variant="outline" className="rounded-full" asChild>
@@ -46,7 +46,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
         </Button>
       </CardHeader>
 
-      <ScrollArea className="h-[82%] min-h-[480px] pb-3 pr-3">
+      <ScrollArea className="h-[82%] min-h-120 pr-3 pb-3">
         <CardContent className="scrollbar-custom h-full space-y-6 overflow-auto px-4 lg2:px-6">
           {lastTransactions.length > 0 ? (
             lastTransactions.map((transaction) => (
@@ -55,7 +55,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
                 key={transaction.id}
               >
                 <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-foreground/[0.03] p-3">
+                  <div className="rounded-lg bg-foreground/3 p-3">
                     <Image
                       src={
                         TRANSACTION_PAYMENT_METHOD_ICONS[

@@ -63,14 +63,14 @@ const ExpensesPerCategory = ({
   ];
 
   return (
-    <div className="col-span-1 h-full min-h-[325px] rounded-md border pb-6 lg:col-span-2">
+    <div className="col-span-1 h-full min-h-81.25 rounded-md border pb-6 lg:col-span-2">
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle className="font-bold">Gastos por categoria</CardTitle>
         <BudgetsDialog month={month} year={year} budgets={budgets} />
       </CardHeader>
 
       <ScrollArea className="h-[78%] pr-3">
-        <CardContent className="scrollbar-custom h-full space-y-6 overflow-auto px-[14px] md:px-5 lg:px-4 lg2:px-6">
+        <CardContent className="scrollbar-custom h-full space-y-6 overflow-auto px-3.5 md:px-5 lg:px-4 lg2:px-6">
           {rows.length > 0 ? (
             rows.map((row) => {
               const budget = budgets[row.category];

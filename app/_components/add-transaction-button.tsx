@@ -39,7 +39,7 @@ const AddTransactionButton = ({
 
                 {/* BTN MOBILE */}
                 <Button
-                  className="inline-flex h-10 w-10 rounded-full p-0 md2:hidden [&>svg]:!h-5 [&>svg]:!w-5"
+                  className="inline-flex h-10 w-10 rounded-full p-0 md2:hidden [&>svg]:h-5! [&>svg]:w-5!"
                   onClick={() => setDialogIsOpen(true)}
                   disabled={!userCanAddTransaction}
                 >

@@ -218,14 +218,14 @@ export function DataTable<TData, TValue>({
 
       <ScrollArea
         className={cn(
-          "h-full max-h-[75%] transition-opacity sm:max-h-[80%] [&>div]:!overflow-auto",
+          "h-full max-h-[75%] transition-opacity sm:max-h-[80%] [&>div]:overflow-auto!",
           isPending && "opacity-60",
         )}
         aria-busy={isPending}
       >
-        <div className="min-w-[1080px] rounded-md border">
+        <div className="min-w-270 rounded-md border">
           <Table>
-            <TableHeader className="sticky -top-[2px] bg-muted shadow-md transition-all">
+            <TableHeader className="sticky -top-0.5 bg-muted shadow-md transition-all">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {

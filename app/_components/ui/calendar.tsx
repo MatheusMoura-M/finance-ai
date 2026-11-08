@@ -50,7 +50,7 @@ function Calendar({
           "h-9 w-9 p-0 font-normal",
         ),
         selected:
-          "[&>button]:bg-primary [&>button]:text-primary-foreground [&>button]:hover:bg-primary [&>button]:hover:text-primary-foreground [&>button]:focus:bg-primary [&>button]:focus:text-primary-foreground",
+          "[&>button]:bg-primary [&>button]:text-primary-foreground hover:[&>button]:bg-primary hover:[&>button]:text-primary-foreground focus:[&>button]:bg-primary focus:[&>button]:text-primary-foreground",
         today: "[&>button]:bg-accent [&>button]:text-accent-foreground",
         outside:
           "text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:opacity-30",
@@ -59,7 +59,7 @@ function Calendar({
         range_start: "rounded-l-md bg-accent",
         range_end: "rounded-r-md bg-accent",
         range_middle:
-          "bg-accent [&>button]:!bg-transparent [&>button]:!text-accent-foreground",
+          "bg-accent [&>button]:bg-transparent! [&>button]:text-accent-foreground!",
         hidden: "invisible",
         ...classNames,
       }}

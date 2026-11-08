@@ -26,7 +26,7 @@ const TimeSelect = ({ availableYears }: TimeSelectProps) => {
     <CalendarDatePickerTest
       date={date}
       onDateSelect={handleDateChange}
-      className="h-9 w-full md:h-8 md:w-[180px]"
+      className="h-9 w-full md:h-8 md:w-45"
       variant="outline"
       availableYears={availableYears}
     />
