@@ -25,9 +25,9 @@ export const confirmImportSchema = z.object({
         date: z.string().datetime(),
         name: z.string().trim().min(1).max(120),
         amount: z.number().positive().max(99_999_999),
-        type: z.nativeEnum(TransactionType),
-        category: z.nativeEnum(TransactionCategory),
-        paymentMethod: z.nativeEnum(TransactionPaymentMethod),
+        type: z.enum(TransactionType),
+        category: z.enum(TransactionCategory),
+        paymentMethod: z.enum(TransactionPaymentMethod),
       }),
     )
     .min(1)

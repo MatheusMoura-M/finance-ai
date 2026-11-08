@@ -5,29 +5,21 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 
+// No Zod 4 a mensagem vai em `error` (antes: required_error/message) e vale
+// tanto para campo vazio quanto para valor inválido.
 const formSchema = z.object({
-  name: z.string().trim().min(1, {
-    message: "O nome é obrigatório.",
-  }),
+  name: z.string().trim().min(1, { error: "O nome é obrigatório." }),
   amount: z
-    .number({
-      required_error: "O valor é obrigatório",
-    })
-    .positive({
-      message: "O valor deve ser positivo.",
-    }),
-  type: z.nativeEnum(TransactionType, {
-    required_error: "O tipo é obrigatório.",
+    .number({ error: "O valor é obrigatório." })
+    .positive({ error: "O valor deve ser positivo." }),
+  type: z.enum(TransactionType, { error: "O tipo é obrigatório." }),
+  category: z.enum(TransactionCategory, {
+    error: "A categoria é obrigatória.",
   }),
-  category: z.nativeEnum(TransactionCategory, {
-    required_error: "A categoria é obrigatória.",
+  paymentMethod: z.enum(TransactionPaymentMethod, {
+    error: "O método de pagamento é obrigatório.",
   }),
-  paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
-    required_error: "O método de pagamento é obrigatório.",
-  }),
-  date: z.date({
-    required_error: "A data é obrigatória.",
-  }),
+  date: z.date({ error: "A data é obrigatória." }),
   /** Só na criação: repetir todo mês (Premium). */
   repeatMonthly: z.boolean().optional(),
   /** Só na criação: número de parcelas (1 = à vista). */

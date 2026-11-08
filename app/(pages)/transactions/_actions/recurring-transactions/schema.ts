@@ -6,12 +6,12 @@ import {
 import { z } from "zod";
 
 export const updateRecurringTransactionSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   name: z.string().trim().min(1),
   amount: z.number().positive(),
-  type: z.nativeEnum(TransactionType),
-  category: z.nativeEnum(TransactionCategory),
-  paymentMethod: z.nativeEnum(TransactionPaymentMethod),
+  type: z.enum(TransactionType),
+  category: z.enum(TransactionCategory),
+  paymentMethod: z.enum(TransactionPaymentMethod),
   dayOfMonth: z.number().int().min(1).max(31),
 });
 
@@ -20,7 +20,7 @@ export type UpdateRecurringTransactionSchema = z.infer<
 >;
 
 export const deleteRecurringTransactionSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
 });
 
 export type DeleteRecurringTransactionSchema = z.infer<
