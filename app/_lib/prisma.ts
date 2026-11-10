@@ -1,22 +1,31 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { attachDatabasePool } from "@vercel/functions";
+import { Pool } from "pg";
 
-// O pooler de sessão do Supabase (porta 5432) aceita no máximo 15 conexões no
-// total. O pg abre até 10 por pool por padrão, e o dashboard faz várias
-// consultas em paralelo: com mais de uma instância (dev recarregando, várias
-// funções na Vercel) o limite estourava ("max clients reached"). Com 5 por
-// instância, as consultas excedentes só esperam na fila.
+// DATABASE_URL deve apontar para o pooler do Supabase em modo TRANSAÇÃO
+// (porta 6543). No modo sessão (porta 5432) cada conexão aberta ocupa uma das
+// 15 vagas do pooler enquanto existir; com várias instâncias da Vercel
+// segurando conexões o limite estourava ("EMAXCONNSESSION max clients
+// reached") e as páginas caíam. No modo transação a vaga só fica ocupada
+// durante a consulta. Migrations usam DIRECT_URL (ver prisma.config.ts).
 const MAX_CONNECTIONS = 5;
 
-const createPrismaClient = () =>
-  new PrismaClient({
-    adapter: new PrismaPg({
-      connectionString: process.env.DATABASE_URL!,
-      max: MAX_CONNECTIONS,
-      // Devolve conexões ociosas ao pooler em vez de segurá-las.
-      idleTimeoutMillis: 10_000,
-    }),
+const createPrismaClient = () => {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL!,
+    max: MAX_CONNECTIONS,
+    // Devolve conexões ociosas ao pooler em vez de segurá-las.
+    idleTimeoutMillis: 5_000,
   });
+
+  // Na Vercel (Fluid compute) mantém a instância viva só o suficiente para
+  // fechar as conexões ociosas antes de ela ser suspensa, em vez de deixá-las
+  // presas no pooler. Fora da Vercel não faz nada.
+  attachDatabasePool(pool);
+
+  return new PrismaClient({ adapter: new PrismaPg(pool) });
+};
 
 declare global {
   var cachedPrisma: PrismaClient | undefined;
